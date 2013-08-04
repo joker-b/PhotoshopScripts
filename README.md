@@ -5,10 +5,16 @@ These are scripts I've found useful for photo applications.
 ===========
 
 ## Charthrob.jsx
-Useful for creating grayscale charts and calibrartin any print process like Cyanotype or Platinum Printing.
+Useful for creating digital negatives, calibration curves and charts for any print process like Cyanotype or
+Platinum Printing.
+
+You can find a Third-Party Guide to using Charthrob on inkgetnegative.com here:
+http://www.inkjetnegative.com/images/RNP/quick_guide_to_making_digital_ne.htm
 
 ## AllMine.jsx
 A quick smack on the File-Info block, marking Photoshop images with common (for me) tags and copyright notifications.
+
+(Classic "agglutinated over the years" coding style here: yeah, if I did it again I'd make objects for camera types etc)
 
 ## kbImport3.py
 Not a Photoshop tool but a standalone Python script that can be used for importing images and videos and audio from

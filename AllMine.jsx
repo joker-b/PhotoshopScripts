@@ -102,27 +102,38 @@ function scan_exif_stuff(doc)
 	    }
 	} else if (q[0] == "Model") {
 	    if (q[1] == "DMC-LX1") {
-		info.keywords = Set.add(info.keywords, "LX1");
-		info.keywords = Set.add(info.keywords, "DMC_LX1");
-		lumix = true;
-		multiplier = 4.4;
+			info.keywords = Set.add(info.keywords, "LX1");
+			info.keywords = Set.add(info.keywords, "DMC_LX1");
+			lumix = true;
+			multiplier = 4.4;
 	    } else if (q[1] == "DMC-LX2") {
-		info.keywords = Set.add(info.keywords, "LX2");
-		info.keywords = Set.add(info.keywords, "DMC_LX2");
-		lumix = true;
+			info.keywords = Set.add(info.keywords, "LX2");
+			info.keywords = Set.add(info.keywords, "DMC_LX2");
+			lumix = true;
 		multiplier = 4.4;
 	    } else if (q[1] == "DMC-LX3") {
-		info.keywords = Set.add(info.keywords, "LX3");
-		info.keywords = Set.add(info.keywords, "DMC_LX3");
-		info.keywords = Set.add(info.keywords, "Bike");		// probably!
-		info.keywords = Set.add(info.keywords, "Bicycle");	// probably!
-		lumix = true;
-		multiplier = 4.67;
+			info.keywords = Set.add(info.keywords, "LX3");
+			info.keywords = Set.add(info.keywords, "DMC_LX3");
+			info.keywords = Set.add(info.keywords, "Bike");		// probably!
+			info.keywords = Set.add(info.keywords, "Bicycle");	// probably!
+			lumix = true;
+			multiplier = 4.67;
 	    } else if (q[1] == "DMC-LX5") {
-		info.keywords = Set.add(info.keywords, "LX5");
-		info.keywords = Set.add(info.keywords, "DMC_LX5");
-		lumix = true;
-		multiplier = 4.67;
+			info.keywords = Set.add(info.keywords, "LX5");
+			info.keywords = Set.add(info.keywords, "DMC_LX5");
+			lumix = true;
+			multiplier = 4.67;
+	    } else if (q[1] == "DMC-LX7") {
+			info.keywords = Set.add(info.keywords, "LX7");
+			info.keywords = Set.add(info.keywords, "DMC_LX7");
+			lumix = true;
+			multiplier = 4.67;
+	    } else if (q[1] == "X100S") {
+			info.keywords = Set.add(info.keywords, "Fuji");
+			info.keywords = Set.add(info.keywords, "Fujifilm");
+			info.keywords = Set.add(info.keywords, "Fuji X100S");
+			lumix = false;
+			multiplier = 1.52;
 	    } else if (q[1] == "Canon EOS 5D") {
 		    info.keywords = Set.add(info.keywords, "5D");
 		    info.keywords = Set.add(info.keywords, "EOS");
@@ -137,13 +148,20 @@ function scan_exif_stuff(doc)
 		    info.keywords = Set.add(info.keywords, "EOS");
 		    info.keywords = Set.add(info.keywords, "300D");
 		    multiplier = 1.6;
+	    } else if (q[1] == "Glass1") {
+		    info.keywords = Set.add(info.keywords, "Google Glass");
+		    info.keywords = Set.add(info.keywords, "Glass");
+		    info.keywords = Set.add(info.keywords, "Google");
+		    multiplier = 8.0;
 	    } else {
-		if (exifMsgs != "") { exifMsgs += "\n"; }
-		exifMsgs += ("Model: \"" + q[1] + "\"");
-		// alert("Model: \""+q[1]+"\"");
+			if (exifMsgs != "") {
+				exifMsgs += "\n";
+			}
+			exifMsgs += ("Model: \"" + q[1] + "\"");
+			// alert("Model: \""+q[1]+"\"");
 	    }
 	} else if ((q[0] == "Date Time") ||
-		   (q[0] == "Date Time Original")) {
+				(q[0] == "Date Time Original")) {
 	    info.keywords = Set.add(info.keywords,q[1].substr(0,4));
 	} else if (q[0] == "Focal Length in 35mm Film") {
 	    // alert("35mm FL was ["+q[1]+"]");
@@ -193,17 +211,26 @@ function scan_exif_stuff(doc)
 	} else if (q[0] == "EXIF tag 262") {
 	} else if (q[0] == "EXIF tag 277") {
 	} else if (q[0] == "EXIF tag 34864") {
+	} else if (q[0] == "EXIF tag 41483") { // Glass
+	} else if (q[0] == "Brightness Value") { // first seen on x100s
+	} else if (q[0] == "Subject Distance Range") { // first seen on x100s
+	} else if (q[0] == "Subject Distance") { // first seen on Glass
+	} else if (q[0] == "Image Unique ID") { // first seen on Glass
 	} else if (q[0] == "Artist") {
 	    if (q[1] != "Kevin Bjorke") {
-		if (exifMsgs != "") { exifMsgs += "\n"; }
-		exifMsgs += ("Artist tag: \""+q[1]+"\"");
-		// alert("Artist tag: \""+q[1]+"\"");
-	    }
-	} else {
-	    if (exifMsgs != "") { exifMsgs += "\n"; }
-	    exifMsgs += ("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
-	    // alert("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
-	}
+			if (exifMsgs != "") {
+				exifMsgs += "\n";
+			}
+			exifMsgs += ("Artist tag: \""+q[1]+"\"");
+			// alert("Artist tag: \""+q[1]+"\"");
+		    }
+		} else {
+		    if (exifMsgs != "") {
+		    	exifMsgs += "\n";
+		    }
+		    exifMsgs += ("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
+		    // alert("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
+		}
     }
     if (lumix) {
 		info.keywords = Set.add(info.keywords, "Leica");
@@ -214,27 +241,27 @@ function scan_exif_stuff(doc)
 		    info.keywords = Set.add(info.keywords, "9_16");
 		}
 		digiCam = true;
-		}
+	}
     if (! digiCam) {
-	info.keywords = Set.add(info.keywords, "film");
-	info.keywords = Set.add(info.keywords, "scanned");
+		info.keywords = Set.add(info.keywords, "film");
+		info.keywords = Set.add(info.keywords, "scanned");
     }
     if (FL <= 0) {
-	FL = oFL * multiplier;
-	// alert("Calculated FL was "+FL);
+		FL = oFL * multiplier;
+		// alert("Calculated FL was "+FL);
     }
     if (FL > 0) {
-	if (FL <= 35) {
-	    info.keywords = Set.add(info.keywords, "Wide_Angle");
-	} else if (FL >= 85) {
-	    info.keywords = Set.add(info.keywords, "Telephoto");
-	}
-    if (multiplier != 1.0) {
-        var fls = FL.toString();
-        if (fls.substr(0,1) == "0") {
-           fls = fls.substr (1);
-	    }
-        info.keywords = Set.add(info.keywords, (fls+"mm_equiv"));
+		if (FL <= 35) {
+		    info.keywords = Set.add(info.keywords, "Wide_Angle");
+		} else if (FL >= 85) {
+		    info.keywords = Set.add(info.keywords, "Telephoto");
+		}
+	    if (multiplier != 1.0) {
+	        var fls = FL.toString();
+	        if (fls.substr(0,1) == "0") {
+	           fls = fls.substr (1);
+		    }
+	        info.keywords = Set.add(info.keywords, (fls+"mm_equiv"));
 		}
     }
     // alert(blah);
@@ -244,34 +271,34 @@ function scan_exif_stuff(doc)
 function main()
 {
     if (!app.documents.length > 0) {    // stop if no document is opened.
-	alert("Sorry, No Current Document");
-	return;
+		alert("Sorry, No Current Document");
+		return;
     }
     var strtRulerUnits = app.preferences.rulerUnits;
     if (strtRulerUnits != Units.PIXELS) {
-	app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
+		app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
     }
     var info = app.activeDocument.info;
     var initKeys = info.keywords.length;
     var msgs = "";
     if (initKeys > 0) {
-	msgs = (msgs + initKeys.toString() + " keys already defined");
-	// alert(initKeys.toString()+" keys already defined");
+		msgs = (msgs + initKeys.toString() + " keys already defined");
+		// alert(initKeys.toString()+" keys already defined");
     }
     var newKeys = [];
     if (app.activeDocument.mode == DocumentMode.GRAYSCALE) {
-	newKeys = newKeys.concat(["BW","Black_and_White","Balck_&_White","Monochrome"]);
-	// info.keywords = Set.add(info.keywords, "bw");
-	// info.keywords = Set.add(info.keywords, "black_and_white");
-	// info.keywords = Set.add(info.keywords, "monochrome");
+		newKeys = newKeys.concat(["BW","Black_and_White","Balck_&_White","Monochrome"]);
+		// info.keywords = Set.add(info.keywords, "bw");
+		// info.keywords = Set.add(info.keywords, "black_and_white");
+		// info.keywords = Set.add(info.keywords, "monochrome");
     }
     var dt = new Date();
     var thisYear = dt.getFullYear()
     var thisYearS = thisYear.toString()
     if (info.CreationDate == "") {
-	info.creationDate = dt.toString();
-//    } else {
-//	alert("Image Created <"+info.creationDate+">");
+		info.creationDate = dt.toString();
+	//    } else {
+	//	alert("Image Created <"+info.creationDate+">");
     }
     // alert("Title is ("+info.title+")");
     newKeys = newKeys.concat(["Kevin_Bjorke","Bjorke","PhotoRant","Botzilla.com",
@@ -293,8 +320,8 @@ function main()
     for (ky in newKeys) { info.keywords = Set.add(info.keywords, newKeys[ky]); }
     var exifMsgs = scan_exif_stuff(app.activeDocument);
     if (exifMsgs != "") {
-	if (msgs != "") { msgs += "\n"; }
-	msgs += exifMsgs;
+		if (msgs != "") { msgs += "\n"; }
+		msgs += exifMsgs;
     }
     info.author = "Kevin Bjorke";
     info.credit = "K. Bjorke";
@@ -303,23 +330,23 @@ function main()
     info.copyrightNotice = "©"+thisYearS+" Kevin Bjorke";
     info.ownerUrl = "http://www.botzilla.com/";
     if (info.title == "") {
-	info.title = no_ext(app.activeDocument.name);
+		info.title = no_ext(app.activeDocument.name);
     }
     // alert("New Title is ("+info.title+")");
     if (info.headline == "") {
-	info.headline = info.title;
+		info.headline = info.title;
     }
     if (info.city == "") {info.city = "Santa Clara"; }
     if (info.provineState == "") {info.provinceState = "California"; }
     if (info.country == "") { info.country == "USA"; }
     if (initKeys == 0) {
-	info.keywords = Set.add(info.keywords, "needs_tags");
+		info.keywords = Set.add(info.keywords, "needs_tags");
     }
     if (msgs != "") {
-	alert (msgs);
+		alert (msgs);
     }
     if (strtRulerUnits != Units.PIXELS) {
-	app.preferences.rulerUnits = strtRulerUnits;
+		app.preferences.rulerUnits = strtRulerUnits;
     }
 }
 

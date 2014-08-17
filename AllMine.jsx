@@ -132,11 +132,13 @@ function scan_exif_stuff(doc)
 			info.keywords = Set.add(info.keywords, "Fuji");
 			info.keywords = Set.add(info.keywords, "Fujifilm");
 			info.keywords = Set.add(info.keywords, "Fuji X100S");
+			info.keywords = Set.add(info.keywords, "X100S");
 			lumix = false;
-			multiplier = 1.52;
+			multiplier = (35.0/23.0);
 	    } else if (q[1] == "Canon EOS 5D") {
 		    info.keywords = Set.add(info.keywords, "5D");
 		    info.keywords = Set.add(info.keywords, "EOS");
+		    info.keywords = Set.add(info.keywords, "Canon 5D");
 		    digiCam = true;
 		    multiplier = 1.0;
 	    } else if (q[1] == "Canon EOS 40D") {
@@ -248,6 +250,7 @@ function scan_exif_stuff(doc)
     }
     if (FL <= 0) {
 		FL = oFL * multiplier;
+		FL = Math.floor(FL+0.49);
 		// alert("Calculated FL was "+FL);
     }
     if (FL > 0) {
@@ -261,6 +264,7 @@ function scan_exif_stuff(doc)
 	        if (fls.substr(0,1) == "0") {
 	           fls = fls.substr (1);
 		    }
+	        info.keywords = Set.add(info.keywords, (fls+"mm"));
 	        info.keywords = Set.add(info.keywords, (fls+"mm_equiv"));
 		}
     }

@@ -86,6 +86,7 @@ function scan_exif_stuff(doc)
     var info = doc.info;
     var digiCam = false;
 	var lumix = false;
+	var fujix = false;
     var blah = "EXIF:\n";
     var FL = 0;
     var oFL = 0;
@@ -136,10 +137,12 @@ function scan_exif_stuff(doc)
 		    } else if (q[1] == "X100S") {
 		    	add_keys(info,["Fuji","Fujifilm","Fuji X","Fuji X100s","X100s"]);
 				lumix = false;
+				fujix = true;
 				multiplier = (35.0/23.0);
 		    } else if (q[1] == "X-T1") {
 		    	add_keys(info,["Fuji","Fujifilm","Fuji X","Fuji X-T1","X-T1"]);
 				lumix = false;
+				fujix = true;
 				multiplier = (35.0/23.0);
 		    } else if (q[1] == "Canon EOS 5D") {
 		    	add_keys(info,["5D","EOS","Canon 5D"]);
@@ -262,6 +265,17 @@ function scan_exif_stuff(doc)
 		    info.keywords = Set.add(info.keywords, "9_16");
 		}
 		digiCam = true;
+	} else if (fujix) {
+		digiCam = true;
+		if (oFL == 45) {
+			add_keys(info,["Zeiss","Contax","Planar","f/2","Fotodiox"]);
+		} else if (oFL == 90) {
+			add_keys(info,["Zeiss","Contax","Sonnar","f/2.8","Fotodiox"]);
+		} else if (oFL == 50) {
+			add_keys(info,["Canon","Canon FD","f/1.8","Fotodiox"]);
+		} else if (oFL == 16) {
+			add_keys(info,["Rokinon","f/2.8"]);
+		}
 	}
     if (! digiCam) {
 		add_keys(info,["film","scanned"]);

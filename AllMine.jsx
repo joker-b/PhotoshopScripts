@@ -91,7 +91,14 @@ function scan_exif_stuff(doc)
     var FL = 0;
     var oFL = 0;
     var multiplier = 1.6;
-    var exifMsgs = "";
+    var descBits = {
+    	camera: 'Scanned',
+    	lens: '',
+    	shutter: '',
+    	aperture: '',
+    	flash: '',
+    	exifMsgs: ''
+    };
     var fls;
     for (var i = 0; i < info.exif.length; i++) {
 		q = info.exif[i];
@@ -103,66 +110,79 @@ function scan_exif_stuff(doc)
 		    // alert("Flash ["+q[1]+"]");
 		    var flashVal = 0 + q[1]
 		    if (flashVal < 16) {
-			blah += "STROBE FIRED\n";
-			info.keywords = Set.add(info.keywords, "Strobe");
+				blah += "STROBE FIRED\n";
+				info.keywords = Set.add(info.keywords, "Strobe");
+				descBits.flash = "+ Flash";
 		    }
 		} else if (q[0] == "Scene Type") {
 		    info.source = q[1];
 		} else if (q[0] == "Custom Rendered") {
 		    if (q[1] == "Custom Process") {
-			info.keywords = Set.add(info.keywords, "BW");
+				info.keywords = Set.add(info.keywords, "BW");
 		    }
 		} else if (q[0] == "Model") {
 		    if (q[1] == "DMC-LX1") {
 		    	add_keys(info,["LX1","DMC_LX1"]);
 				lumix = true;
 				multiplier = 4.4;
+				descBits.camera = 'LX1';
 		    } else if (q[1] == "DMC-LX2") {
 		    	add_keys(info,["LX2","DMC_LX2"]);
 				lumix = true;
-			multiplier = 4.4;
+				multiplier = 4.4;
+				descBits.camera = 'LX2';
 		    } else if (q[1] == "DMC-LX3") {
 		    	add_keys(info,["LX3","DMC_LX3"]);
 		    	//add_keys(info,["Bike","Bicycle"]);
 				lumix = true;
 				multiplier = 4.67;
+				descBits.camera = 'LX3';
 		    } else if (q[1] == "DMC-LX5") {
 		    	add_keys(info,["LX5","DMC_LX5"]);
 				lumix = true;
 				multiplier = 4.67;
+				descBits.camera = 'LX5';
 		    } else if (q[1] == "DMC-LX7") {
 		    	add_keys(info,["LX7","DMC_LX7"]);
 				lumix = true;
 				multiplier = 4.67;
+				descBits.camera = 'LX7';
 		    } else if (q[1] == "X100S") {
 		    	add_keys(info,["Fuji","Fujifilm","Fuji X","Fuji X100s","X100s"]);
 				lumix = false;
 				fujix = true;
 				multiplier = (35.0/23.0);
+				descBits.camera = 'X100S';
 		    } else if (q[1] == "X-T1") {
 		    	add_keys(info,["Fuji","Fujifilm","Fuji X","Fuji X-T1","X-T1"]);
 				lumix = false;
 				fujix = true;
 				multiplier = (35.0/23.0);
+				descBits.camera = 'X-T1';
 		    } else if (q[1] == "Canon EOS 5D") {
 		    	add_keys(info,["5D","EOS","Canon 5D"]);
 			    digiCam = true;
 			    multiplier = 1.0;
+				descBits.camera = '5D';
 		    } else if (q[1] == "Canon EOS 40D") {
 		    	add_keys(info,["40D","EOS","Canon 40D"]);
 			    digiCam = true;
 			    multiplier = 1.6;
+				descBits.camera = '40D';
 		    } else if (q[1] == "Canon EOS DIGITAL REBEL") {
 		    	add_keys(info,["300D","EOS"]);
 			    multiplier = 1.6;
+				descBits.camera = '300D';
 		    } else if (q[1] == "Glass1") {
 		    	add_keys(info,["Google","Glass","Google Glass","Android"]);
 			    multiplier = 8.0;
+				descBits.camera = 'Google Glass';
 		    } else {
-				if (exifMsgs != "") {
-					exifMsgs += "\n";
+				if (descBits.exifMsgs != "") {
+					descBits.exifMsgs += "\n";
 				}
-				exifMsgs += ("Model: \"" + q[1] + "\"");
+				descBits.exifMsgs += ("Model: \"" + q[1] + "\"");
+				descBits.camera = ('Camera: '+q[1]);
 				// alert("Model: \""+q[1]+"\"");
 		    }
 		} else if ((q[0] == "Date Time") ||
@@ -173,13 +193,15 @@ function scan_exif_stuff(doc)
 		    FL = 0 + q[1];
 		} else if (q[0] == "Orientation") {
 		} else if (q[0] == "Shutter Speed") {
+				descBits.shutter = ('- '+q[1]);
 		} else if (q[0] == "Focal Length") {
 		    // alert("Base FL was ["+q[1]+"]");
 		    oFL = 0 + q[1];
+			descBits.lens = (', '+Math.floor(0.5+oFL)+'mm');
 		} else if (q[0] == "Metering Mode") {
 		} else if (q[0] == "Copyright") {
 			if (q[1].match(/[0-9]/)) {
-				exifMsgs += ("\nEXIF Copyright Notice: \""+q[1]+"\"");
+				descBits.exifMsgs += ("\nEXIF Copyright Notice: \""+q[1]+"\"");
 			}
 		} else if (q[0] == "Color Space") {
 		} else if (q[0] == "Pixel X Dimension") {
@@ -194,8 +216,11 @@ function scan_exif_stuff(doc)
 		} else if (q[0] == "Resolution Unit") {
 		} else if (q[0] == "yCbCr Positioning") {
 		} else if (q[0] == "Exposure Time") {
+				descBits.shutter = (descBits.shutter+'- T'+q[1]);
 		} else if (q[0] == "F-Stop") {
+				descBits.aperture = (' f/'+q[1]);
 		} else if (q[0] == "Aperture Value") {
+				descBits.aperture = (descBits.aperture+'@ f'+q[1]);
 		} else if (q[0] == "Max Aperture Value") {
 		} else if (q[0] == "Exposure Bias Value") {
 		} else if (q[0] == "Exposure Mode") {
@@ -241,17 +266,17 @@ function scan_exif_stuff(doc)
 		} else if (q[0] == "Image Unique ID") { // first seen on Glass
 		} else if (q[0] == "Artist") {
 		    if (q[1] != "Kevin Bjorke") {
-				if (exifMsgs != "") {
-					exifMsgs += "\n";
+				if (descBits.exifMsgs != "") {
+					descBits.exifMsgs += "\n";
 				}
-				exifMsgs += ("Artist tag: \""+q[1]+"\"");
+				descBits.exifMsgs += ("Artist tag: \""+q[1]+"\"");
 				// alert("Artist tag: \""+q[1]+"\"");
 		    }
 		} else {
-		    if (exifMsgs != "") {
-		    	exifMsgs += "\n";
+		    if (descBits.exifMsgs != "") {
+		    	descBits.exifMsgs += "\n";
 		    }
-		    exifMsgs += ("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
+		    descBits.exifMsgs += ("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
 		    // alert("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
 		}
     }
@@ -309,7 +334,7 @@ function scan_exif_stuff(doc)
 		}
     }
     // alert(blah);
-    return exifMsgs;
+    return descBits;
 }
 
 function main()
@@ -351,10 +376,10 @@ function main()
     // keywords added to doc...
     //
     add_keys(info,newKeys);
-    var exifMsgs = scan_exif_stuff(app.activeDocument);
-    if (exifMsgs != "") {
+    var descBits = scan_exif_stuff(app.activeDocument);
+    if (descBits.exifMsgs != "") {
 		if (msgs != "") { msgs += "\n"; }
-		msgs += exifMsgs;
+		msgs += descBits.exifMsgs;
     }
     info.author = "Kevin Bjorke";
     info.credit = "Kevin Bjorke";
@@ -370,7 +395,12 @@ function main()
 		info.headline = info.title;
     }
    if (info.caption == "") {
-		info.caption = no_ext(app.activeDocument.name);
+		info.caption = (no_ext(app.activeDocument.name)+'\n'+
+										descBits.camera+
+										descBits.lens+
+										descBits.shutter+
+										descBits.aperture+
+										descBits.flash);
 		info.captionWriter = "Kevin Bjorke";
     }
     if (info.city == "") {info.city = "San Francisco"; }

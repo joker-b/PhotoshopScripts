@@ -91,11 +91,14 @@ function scan_exif_stuff(doc)
     var FL = 0;
     var oFL = 0;
     var multiplier = 1.6;
+    var used = false;
+    var debugEXIF = false;
     var descBits = {
     	camera: 'Scanned',
     	lens: '',
     	shutter: '',
     	aperture: '',
+    	iso: '',
     	flash: '',
     	exifMsgs: ''
     };
@@ -106,6 +109,7 @@ function scan_exif_stuff(doc)
 		if (q[0] == "Make") {
 		    info.keywords = Set.add(info.keywords, q[1]);
 		    digiCam = true;
+		    used = true;
 		} else if (q[0] == "Flash") {
 		    // alert("Flash ["+q[1]+"]");
 		    var flashVal = 0 + q[1]
@@ -114,13 +118,17 @@ function scan_exif_stuff(doc)
 				info.keywords = Set.add(info.keywords, "Strobe");
 				descBits.flash = "+ Flash";
 		    }
+		    used = true;
 		} else if (q[0] == "Scene Type") {
 		    info.source = q[1];
+		    used = true;
 		} else if (q[0] == "Custom Rendered") {
 		    if (q[1] == "Custom Process") {
 				info.keywords = Set.add(info.keywords, "BW");
 		    }
+		    used = true;
 		} else if (q[0] == "Model") {
+			used = true;
 		    if (q[1] == "DMC-LX1") {
 		    	add_keys(info,["LX1","DMC_LX1"]);
 				lumix = true;
@@ -152,7 +160,7 @@ function scan_exif_stuff(doc)
 				lumix = false;
 				fujix = true;
 				multiplier = (35.0/23.0);
-				descBits.camera = 'X100S';
+				descBits.camera = 'X100s';
 		    } else if (q[1] == "X-T1") {
 		    	add_keys(info,["Fuji","Fujifilm","Fuji X","Fuji X-T1","X-T1"]);
 				lumix = false;
@@ -188,21 +196,26 @@ function scan_exif_stuff(doc)
 		} else if ((q[0] == "Date Time") ||
 					(q[0] == "Date Time Original")) {
 		    info.keywords = Set.add(info.keywords,q[1].substr(0,4));
+		    used = true;
 		} else if (q[0] == "Focal Length in 35mm Film") {
 		    // alert("35mm FL was ["+q[1]+"]");
 		    FL = 0 + q[1];
+		    used = true;
 		} else if (q[0] == "Orientation") {
 		} else if (q[0] == "Shutter Speed") {
-				descBits.shutter = ('- '+q[1]);
+				descBits.shutter = (' - '+q[1]);
 		} else if (q[0] == "Focal Length") {
 		    // alert("Base FL was ["+q[1]+"]");
 		    oFL = 0 + q[1];
-			descBits.lens = (', '+Math.floor(0.5+oFL)+'mm');
+		    fls = (Math.floor(oFL+0.49)).toString();
+			descBits.lens = (', '+fls+'mm');
+			used = true;
 		} else if (q[0] == "Metering Mode") {
 		} else if (q[0] == "Copyright") {
 			if (q[1].match(/[0-9]/)) {
 				descBits.exifMsgs += ("\nEXIF Copyright Notice: \""+q[1]+"\"");
 			}
+			used = true;
 		} else if (q[0] == "Color Space") {
 		} else if (q[0] == "Pixel X Dimension") {
 		} else if (q[0] == "Pixel Y Dimension") {
@@ -216,11 +229,12 @@ function scan_exif_stuff(doc)
 		} else if (q[0] == "Resolution Unit") {
 		} else if (q[0] == "yCbCr Positioning") {
 		} else if (q[0] == "Exposure Time") {
-				descBits.shutter = (descBits.shutter+'- T'+q[1]);
+				//descBits.shutter = (descBits.shutter+'- T'+q[1]);
 		} else if (q[0] == "F-Stop") {
-				descBits.aperture = (' f/'+q[1]);
+			descBits.aperture = (' '+q[1]);
+			used = true;
 		} else if (q[0] == "Aperture Value") {
-				descBits.aperture = (descBits.aperture+'@ f'+q[1]);
+				//descBits.aperture = (descBits.aperture+'@ f'+q[1]);
 		} else if (q[0] == "Max Aperture Value") {
 		} else if (q[0] == "Exposure Bias Value") {
 		} else if (q[0] == "Exposure Mode") {
@@ -230,7 +244,10 @@ function scan_exif_stuff(doc)
 			if (q[1] != "Normal") {
 			    info.keywords = Set.add(info.keywords, q[1]);
 			}
+			used = true;
 		} else if (q[0] == "ISO Speed Ratings") {
+			descBits.iso = (', ISO '+q[1]);
+			used = true;
 		} else if (q[0] == "Sensing Method") {
 		} else if (q[0] == "File Source") {
 		} else if (q[0] == "ExifVersion") {
@@ -243,6 +260,7 @@ function scan_exif_stuff(doc)
 			if (q[1] != "Unknown") {
 			    info.keywords = Set.add(info.keywords, q[1]);
 			}
+			used = true;
 		} else if (q[0] == "Gain Control") {
 		} else if (q[0] == "Contrast") {
 		} else if (q[0] == "Saturation") {
@@ -260,6 +278,7 @@ function scan_exif_stuff(doc)
 			    // info.keywords = Set.add(info.keywords, "Zoom");
 			    // info.keywords = Set.add(info.keywords, "Kit Lens");
 			}
+			used = true;
 		} else if (q[0] == "EXIF tag 42037") { // X-T1: serial #
 		} else if (q[0] == "Brightness Value") { // first seen on x100s
 		} else if (q[0] == "Subject Distance Range") { // first seen on x100s
@@ -273,12 +292,17 @@ function scan_exif_stuff(doc)
 				descBits.exifMsgs += ("Artist tag: \""+q[1]+"\"");
 				// alert("Artist tag: \""+q[1]+"\"");
 		    }
+		    used = true;
 		} else {
 		    if (descBits.exifMsgs != "") {
 		    	descBits.exifMsgs += "\n";
 		    }
 		    descBits.exifMsgs += ("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
 		    // alert("EXIF \""+q[0]+"\" was \""+q[1]+"\"");
+		}
+		if (debugEXIF && (! used)) {
+			alert(q.toString());
+			used = false;
 		}
     }
     //
@@ -396,12 +420,13 @@ function main()
 		info.headline = info.title;
     }
    if (info.caption == "") {
-		info.caption = (no_ext(app.activeDocument.name)+'\n'+
-										descBits.camera+
-										descBits.lens+
-										descBits.shutter+
-										descBits.aperture+
-										descBits.flash);
+		info.caption = (descBits.camera+
+						descBits.lens+
+						descBits.shutter+
+						descBits.aperture+
+						descBits.iso+
+						descBits.flash+'\n'+
+						no_ext(app.activeDocument.name));
 		info.captionWriter = "Kevin Bjorke";
     }
     if (info.city == "") {info.city = "San Francisco"; }

@@ -218,8 +218,8 @@ function scan_exif_stuff(doc)
 				descBits.alertText += ("Artist tag: \""+q[1]+"\"");
 				// alert("Artist tag: \""+q[1]+"\"");
 		    }
-		} else if (q[0] == "Metering Mode") { debugMsg=true;
-		} else if (q[0] == "Orientation") { debugMsg=true;
+		} else if (q[0] == "Metering Mode") { // debugMsg=true;
+		} else if (q[0] == "Orientation") { // debugMsg=true;
 		} else if (q[0] == "Color Space") {
 		} else if (q[0] == "Pixel X Dimension") {
 		} else if (q[0] == "Pixel Y Dimension") {
@@ -236,8 +236,8 @@ function scan_exif_stuff(doc)
 		} else if (q[0] == "Aperture Value") {
 		} else if (q[0] == "Max Aperture Value") {
 		} else if (q[0] == "Exposure Bias Value") {
-		} else if (q[0] == "Exposure Mode") { debugMsg=true;
-		} else if (q[0] == "Exposure Program") { debugMsg=true;
+		} else if (q[0] == "Exposure Mode") { //debugMsg=true;
+		} else if (q[0] == "Exposure Program") { info.keywords = Set.add(info.keywords, q[1]);
 		} else if (q[0] == "White Balance") {
 		} else if (q[0] == "Sensing Method") {
 		} else if (q[0] == "File Source") {
@@ -347,7 +347,7 @@ function aspect_desc(doc)
     } else if (a>1.68) {
 	   	info.keywords = Set.add(info.keywords, (w?'16_9':'9_16'));	
      } else if (a>1.54) {
-    	info.keywords = Set.add(info.keywords, (w?'3_2':'2_3');	
+    	info.keywords = Set.add(info.keywords, (w?'3_2':'2_3'));	
     } else if (a>1.3) {
     	info.keywords = Set.add(info.keywords, (w?'4_3':'3_4'));	
     } else {

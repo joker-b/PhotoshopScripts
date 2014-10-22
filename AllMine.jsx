@@ -285,9 +285,9 @@ function scan_exif_stuff(doc)
 	} else if (descBits.fujix) {
     	add_keys(info,["Fuji","Fujifilm","Fuji X"]);
 		if (oFL == 45) {
-			add_keys(info,["Zeiss","Contax","Planar","f/2","Fotodiox"]);
+			add_keys(info,["Zeiss","Contax","Planar","f/2","Fotodiox","planar245","carlzeiss"]);
 		} else if (oFL == 90) {
-			add_keys(info,["Zeiss","Contax","Sonnar","f/2.8","Fotodiox"]);
+			add_keys(info,["Zeiss","Contax","Sonnar","f/2.8","Fotodiox","sonnar2890","carlzeiss"]);
 		} else if (oFL == 50) {
 			add_keys(info,["Canon","Canon FD","f/1.8","Fotodiox"]);
 		} else if (oFL == 16) {
@@ -333,26 +333,26 @@ function aspect_desc(doc)
     var a, l, s, w;
     l = Math.max(doc.width,doc.height);
     s = Math.min(doc.width,doc.height);
-    a = (l/s);
-    w = (doc.width > doc.height);
-    if (a>2.36) {
+    aspect = (l/s);
+    wide = (doc.width > doc.height);
+    if (aspect>2.36) {
     	info.keywords = Set.add(info.keywords, 'Panorama');
     	if (!w) {
 	   		info.keywords = Set.add(info.keywords, 'Tall');
 	   	}
-    } else if (a>2.3) {
-    	info.keywords = Set.add(info.keywords, (w?'2.35_1':'1_2.35'));	
-    } else if (a>1.97) {
-    	info.keywords = Set.add(info.keywords, (w?'2_1':'1_2'));	
-    } else if (a>1.68) {
-	   	info.keywords = Set.add(info.keywords, (w?'16_9':'9_16'));	
-     } else if (a>1.54) {
-    	info.keywords = Set.add(info.keywords, (w?'3_2':'2_3'));	
-    } else if (a>1.3) {
-    	info.keywords = Set.add(info.keywords, (w?'4_3':'3_4'));	
+    } else if (aspect>2.3) {
+    	info.keywords = Set.add(info.keywords, (wide?'2.35:1':'1:2.35'));	
+    } else if (aspect>1.97) {
+    	info.keywords = Set.add(info.keywords, (wide?'2:1':'1:2'));	
+    } else if (aspect>1.68) {
+	   	info.keywords = Set.add(info.keywords, (wide?'16:9':'9:16'));
+     } else if (aspect>1.45) {
+    	info.keywords = Set.add(info.keywords, (wide?'3:2':'2:3'));	
+    } else if (aspect>1.25) {
+    	info.keywords = Set.add(info.keywords, (wide?'4:3':'3:4'));	
     } else {
     	info.keywords = Set.add(info.keywords, 'Square');	    	
-    	info.keywords = Set.add(info.keywords, '1_1');	    	
+    	info.keywords = Set.add(info.keywords, '1:1');	    	
     }
 }
 

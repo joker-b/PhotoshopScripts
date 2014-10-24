@@ -260,7 +260,9 @@ function scan_exif_stuff(doc)
 		} else if (q[0] == "EXIF tag 42035") { // X-T1: "FUJIFILM" - Lens Maker
 		} else if (q[0] == "EXIF tag 42036") { // X-T1: "XF18-55mmF2.8-4 R LM OIS"
 			if (q[1] == "XF18-55mmF2.8-4 R LM OIS") {
-			    info.keywords = Set.add(info.keywords, "18-55mm");
+				add_keys(info,["18-55mm","f/2.8"]);
+			} else if (q[1] == "XF35mmF1.4 R") {
+				info.keywords = Set.add(info.keywords, "f/1.4");
 			}
 		} else if (q[0] == "EXIF tag 42037") { // X-T1: serial #
 		} else if (q[0] == "Brightness Value") { // first seen on x100s

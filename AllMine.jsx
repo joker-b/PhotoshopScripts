@@ -418,6 +418,7 @@ function main()
 						descBits.aperture+
 						descBits.iso+
 						descBits.flash+'\n'+
+						'http://www.botzilla.com/blog/\n'+
 						no_ext(app.activeDocument.name));
 		info.captionWriter = "Kevin Bjorke";
     }

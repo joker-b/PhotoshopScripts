@@ -6,6 +6,28 @@
 #target photoshop
 app.bringToFront();
 
+// User Personalization //////////////////////////
+//
+// This is not "designed" code I'm afraid -- it's grown from my own practical use and has a few warts.
+// This data structure can help personalize it a little -- tailor  the fields "to fit"
+//
+// The script recognizes a few different Canon, Leica, Fuji, Google and Panasonic cameras and gives them extra tags. Other
+//    camera metadata won't break anything, and should get picked up fine.
+//
+
+var Person = {
+	fullname: 'Kevin Bjorke',
+	url: 'http://www.botzilla.com/',
+	blog: 'http://www.botzilla.com/blog/',
+	relation: 'Owner',
+	city: 'San Francisco',
+	region: 'California',
+	country: 'USA',
+	commonTags: ["Bjorke","PhotoRant","Botzilla.com", "SF","Bay_Area"], // added to every pic
+	reminder: 'needs_tags' // added only if the image has NO tags before being processed...
+};
+
+
 /// from xlib ///////////////////////////////////////
 
 //
@@ -215,7 +237,7 @@ function scan_exif_stuff(doc)
 				info.keywords = Set.add(info.keywords, "BW");
 		    }
 		} else if (q[0] == "Artist") {
-		    if (q[1] != "Kevin Bjorke") {
+		    if (q[1] != Person.fullname) {
 				if (descBits.alertText != "") {
 					descBits.alertText += "\n";
 				}
@@ -289,9 +311,12 @@ function scan_exif_stuff(doc)
     //
     //
     if (descBits.lumix) {
+    	// used to accomodate the Leica/Panasonic relationship
     	add_keys(info,["Leica","Lumix","Leicasonic","Panaleica"]);
 	} else if (descBits.fujix) {
+		// Various "Fuji X" cameras
     	add_keys(info,["Fuji","Fujifilm","Fuji X"]);
+    	// some Fuji-X lens adapters (just nes I've used)
 		if (oFL == 45) {
 			add_keys(info,["Zeiss","Contax","Planar","f/2","Fotodiox","planar245","carlzeiss"]);
 		} else if (oFL == 90) {
@@ -302,7 +327,7 @@ function scan_exif_stuff(doc)
 			add_keys(info,["Rokinon","f/2.8"]);
 		}
 	}
-    if (descBits.camera == 'Scanned') { // never saw a camera
+    if (descBits.camera == 'Scanned') { // never saw any camera data - this must have been a film scan
 		add_keys(info,["film","scanned"]);
     }
     if (FL <= 0) {
@@ -328,7 +353,7 @@ function scan_exif_stuff(doc)
 		    }
 	        info.keywords = Set.add(info.keywords, (fls+"mm"));
 	        info.keywords = Set.add(info.keywords, (fls+"mm_equiv"));
-	        info.keywords = Set.add(info.keywords, ("Mult:"+descBits.multiplier));
+	        //info.keywords = Set.add(info.keywords, ("Mult:"+descBits.multiplier));
 		}
     }
     return descBits;
@@ -393,8 +418,7 @@ function main()
     if (info.CreationDate == "") {
 		info.creationDate = dt.toString();
     }
-    newKeys = newKeys.concat(["Kevin_Bjorke","Bjorke","PhotoRant","Botzilla.com",
-	    						"San_Francisco","SF"/*,"Santa_Clara"*/,"Bay_Area","California"]);
+    newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname,Person.city,Person.region]));
     //
     // keywords added to doc...
     //
@@ -405,12 +429,12 @@ function main()
 		if (msgs != "") { msgs += "\n"; }
 		msgs += descBits.alertText;
     }
-    info.author = "Kevin Bjorke";
-    info.credit = "Kevin Bjorke";
-    info.authorPosition = "Owner";
+    info.author = Person.fullname;
+    info.credit = Person.fullname;
+    info.authorPosition = Person.relation;
     info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
-    info.copyrightNotice = "©"+thisYearS+" Kevin Bjorke";
-    info.ownerUrl = "http://www.botzilla.com/";
+    info.copyrightNotice = "©"+thisYearS+" "+Person.fullname;
+    info.ownerUrl = Person.url;
     if (info.title == "") {
 		info.title = no_ext(app.activeDocument.name);
     }
@@ -425,15 +449,15 @@ function main()
 						descBits.aperture+
 						descBits.iso+
 						descBits.flash+'\n'+
-						'http://www.botzilla.com/blog/\n'+
+						Person.blog+'\n'+
 						no_ext(app.activeDocument.name));
-		info.captionWriter = "Kevin Bjorke";
+		info.captionWriter = Person.fullname;
     }
-    if (info.city == "") {info.city = "San Francisco"; }
-    if (info.provinceState == "") {info.provinceState = "California"; }
-    if (info.country == "") { info.country == "USA"; }
+    if (info.city == "") {info.city = Person.city; }
+    if (info.provinceState == "") {info.provinceState = Person.region; }
+    if (info.country == "") { info.country == Person.country; }
     if (initKeys == 0) {
-		info.keywords = Set.add(info.keywords, "needs_tags");
+		info.keywords = Set.add(info.keywords, Person.reminder);
     }
     if (msgs != "") {
 		alert (msgs);

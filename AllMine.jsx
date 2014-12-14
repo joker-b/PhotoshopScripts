@@ -117,6 +117,10 @@ function camera_id(ModelName,info,descBits) {
 		descBits.fujix = true;
 		descBits.multiplier = (35.0/23.0);
 		descBits.camera = 'X-T1';
+    } else if (ModelName == "M Monochrom") {
+    	add_keys(info,["Leica","Leica M",ModelName,"Monochrom","M"]);
+		descBits.multiplier = 1.0;
+		descBits.camera = 'M Monochrom';
     } else if (ModelName == "Canon EOS 5D") {
     	add_keys(info,["5D","EOS","Canon 5D"]);
 	    descBits.multiplier = 1.0;
@@ -263,6 +267,8 @@ function scan_exif_stuff(doc)
 				add_keys(info,["18-55mm","f/2.8"]);
 			} else if (q[1] == "XF35mmF1.4 R") {
 				info.keywords = Set.add(info.keywords, "f/1.4");
+			} else if (q[1] == "Leica Summicron-M 50mm f/2 (IV, V)") {
+				add_keys(info,["Summicron","Summicron-M","f/2"]);
 			}
 		} else if (q[0] == "EXIF tag 42037") { // X-T1: serial #
 		} else if (q[0] == "Brightness Value") { // first seen on x100s
@@ -322,6 +328,7 @@ function scan_exif_stuff(doc)
 		    }
 	        info.keywords = Set.add(info.keywords, (fls+"mm"));
 	        info.keywords = Set.add(info.keywords, (fls+"mm_equiv"));
+	        info.keywords = Set.add(info.keywords, ("Mult:"+descBits.multiplier));
 		}
     }
     return descBits;

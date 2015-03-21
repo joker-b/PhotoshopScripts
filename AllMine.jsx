@@ -1,5 +1,5 @@
 // $Id$
-// rev 9 Oct 08
+// rev 7 feb 2015
 //
 // Intended usage:
 // Label Pix
@@ -23,7 +23,7 @@ var Person = {
 	city: 'San Francisco',
 	region: 'California',
 	country: 'USA',
-	commonTags: ["Bjorke","PhotoRant","Botzilla.com", "SF","Bay_Area"], // added to every pic
+	commonTags: ["Bjorke","PhotoRant","Botzilla.com", "SF", "Bay Area"], // added to every pic
 	reminder: 'needs_tags' // added only if the image has NO tags before being processed...
 };
 
@@ -134,6 +134,11 @@ function camera_id(ModelName,info,descBits) {
 		descBits.fujix = true;
 		descBits.multiplier = (35.0/23.0);
 		descBits.camera = 'X100s';
+    } else if (ModelName == "X100T") {
+    	add_keys(info,["Fuji X100T","X100T"]);
+		descBits.fujix = true;
+		descBits.multiplier = (35.0/23.0);
+		descBits.camera = 'X100T';
     } else if (ModelName == "X-T1") {
     	add_keys(info,["Fuji X-T1","X-T1"]);
 		descBits.fujix = true;
@@ -315,7 +320,7 @@ function scan_exif_stuff(doc)
     	add_keys(info,["Leica","Lumix","Leicasonic","Panaleica"]);
 	} else if (descBits.fujix) {
 		// Various "Fuji X" cameras
-    	add_keys(info,["Fuji","Fujifilm","Fuji X"]);
+    	add_keys(info,["Fuji","Fujifilm","Fuji X",("Fujifilm "+descBits.camera)]);
     	// some Fuji-X lens adapters (just nes I've used)
 		if (oFL == 45) {
 			add_keys(info,["Zeiss","Contax","Planar","f/2","Fotodiox","planar245","carlzeiss"]);
@@ -342,7 +347,10 @@ function scan_exif_stuff(doc)
     }
     if (FL > 0) {
 		if (FL <= 35) {
-		    info.keywords = Set.add(info.keywords, "Wide_Angle");
+		    info.keywords = Set.add(info.keywords, "Wide Angle");
+		    if (FL < 27) {
+		    	info.keywords = Set.add(info.keywords, "Ultra Wide Angle");
+		    }
 		} else if (FL >= 85) {
 		    info.keywords = Set.add(info.keywords, "Telephoto");
 		}

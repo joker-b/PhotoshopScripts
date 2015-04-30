@@ -414,7 +414,7 @@ function main()
     var initKeys = info.keywords.length;
     var msgs = "";
     if (initKeys > 0) {
-		msgs = (msgs + initKeys.toString() + " keys already defined");
+		msgs = (msgs + initKeys.toString() + " key"+((initKeys>1)?"s":"")+" already defined");
     }
     var newKeys = [];
     if (app.activeDocument.mode == DocumentMode.GRAYSCALE) {

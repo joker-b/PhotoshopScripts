@@ -1,0 +1,678 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Mesh",
+				"THREE.MeshLambertMaterial"
+			],
+			[
+				"pr",
+				"prefix"
+			],
+			[
+				"Ar",
+				"ArchDir"
+			],
+			[
+				"uni",
+				"unified_dir_name"
+			],
+			[
+				"pa",
+				"parser"
+			],
+			[
+				"name",
+				"namespace"
+			],
+			[
+				"optio",
+				"option_string"
+			],
+			[
+				"Test",
+				"TestAction"
+			],
+			[
+				"arg",
+				"argparse"
+			],
+			[
+				"isd",
+				"isdir"
+			],
+			[
+				"pix",
+				"pixDestDir"
+			],
+			[
+				"ng-",
+				"ng-click	AngularJS"
+			],
+			[
+				"no",
+				"notifications"
+			],
+			[
+				"w",
+				"website"
+			],
+			[
+				"ga",
+				"ga_fake_site"
+			],
+			[
+				"GA",
+				"gatrack"
+			],
+			[
+				"p",
+				"params"
+			],
+			[
+				"Host",
+				"HostName"
+			],
+			[
+				"Fa",
+				"FakeSketchup"
+			],
+			[
+				"f",
+				"fStop"
+			],
+			[
+				"C",
+				"CAMERA"
+			],
+			[
+				"st",
+				"start_params"
+			],
+			[
+				"is",
+				"isApp"
+			],
+			[
+				"fin",
+				"find_archive_drive"
+			],
+			[
+				"fi",
+				"find_extra_android_image_dirs"
+			],
+			[
+				"src",
+				"srcMedia"
+			],
+			[
+				"find",
+				"find_AVCHD"
+			],
+			[
+				"ide",
+				"identify_phone"
+			],
+			[
+				"upda",
+				"update_login_state"
+			],
+			[
+				"Vis",
+				"Vislogin.login"
+			],
+			[
+				"l",
+				"li	Tag"
+			],
+			[
+				"app",
+				"append"
+			],
+			[
+				"owner",
+				"owner_user_id"
+			],
+			[
+				"ow",
+				"owner_user_id"
+			],
+			[
+				"un",
+				"undefined"
+			],
+			[
+				"fot-",
+				"font-weight"
+			],
+			[
+				"ng-s",
+				"ng-show	AngularJS"
+			],
+			[
+				"getF",
+				"getFriendsPhotos"
+			],
+			[
+				"check",
+				"checkIfVoteActionRequested"
+			],
+			[
+				"getU",
+				"getUploadUrl"
+			],
+			[
+				"invite",
+				"invite_build"
+			],
+			[
+				"ren",
+				"renderSignIn"
+			],
+			[
+				"sin",
+				"signedIn"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "inst ",
+		"selected_items":
+		[
+			[
+				"inst ",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"browse p",
+				"Preferences: Browse Packages"
+			],
+			[
+				"package i",
+				"Package Control: Install Package"
+			],
+			[
+				"packa ins",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 530.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/kevinbjorke/src/PhotoshopScripts"
+	],
+	"file_history":
+	[
+		"/Users/kevinbjorke/src/PhotoshopScripts/AllMine.jsx",
+		"/Users/kevinbjorke/src/PhotoshopScripts/.gitignore",
+		"/Users/kevinbjorke/src/PhotoshopScripts/BridgeDescNoodling.jsx",
+		"/Users/kevinbjorke/src/three.js/examples/misc_controls_orbit.html",
+		"/Users/kevinbjorke/src/objQuick/.gitignore",
+		"/Users/kevinbjorke/src/kbImport/kbImport3.py",
+		"/Users/kevinbjorke/src/kbImport/OFferLetterNote-Matterport.txt",
+		"/Users/kevinbjorke/src/kbImport/test_kbImport.py",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/enhanced-materials.html",
+		"/Users/kevinbjorke/src/vis-eol/app/index.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/index.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/light-and-shadow-control.html",
+		"/Users/kevinbjorke/src/vis-eol/Gruntfile.js",
+		"/Users/kevinbjorke/src/vis-eol/app/index-a.html",
+		"/Users/kevinbjorke/src/vis-eol/bower.json",
+		"/Users/kevinbjorke/src/vis-eol/app/scripts/main.js",
+		"/Users/kevinbjorke/src/vis-eol/test/spec/test.js",
+		"/Users/kevinbjorke/src/vis-eol/l.txt",
+		"/Users/kevinbjorke/src/vis-eol/app/quick-reference-guide.html",
+		"/Users/kevinbjorke/src/vis-eol/app/styles/main.css",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/theres-a-kind-of-joy-kyu-young-kim-of-acs-architects.html",
+		"/Users/kevinbjorke/src/vis-eol/app/faq.html",
+		"/Users/kevinbjorke/src/vis-eol/app/terms-of-use.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/image-formats.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/architecture-students.html",
+		"/Users/kevinbjorke/src/vis-eol/app/terms-of-service.html",
+		"/Users/kevinbjorke/src/vis-eol/app/tos.html",
+		"/Users/kevinbjorke/src/vis-eol/app/privacy.html",
+		"/Users/kevinbjorke/src/vis-eol/app/404.html",
+		"/Users/kevinbjorke/src/vis-eol/README.md",
+		"/Users/kevinbjorke/src/vis-eol/app/faq-temp",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/designing-that-perfect-point-sean-headrick-of-aerotestra.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/keyboard-shortcuts-for-visualizer.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/where-to-start.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/bienvenido-sketchup-2015.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/ground-shadows.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/blog-entry-sample.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/section-planes-slice-is-nice.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/my-favorite-toolbars.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/tiny-houses-the-big-picture.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/happy-together-visualizer-and-solar-north.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/custom-image-sizes.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/picture-development-timer.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/perfect-image-alignment.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/entity-shadows.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/color-by-layer.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/working-together-with-visualizer-and-dropbox.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/glass-water-and-reflections.html",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/survey-winner-2014.html",
+		"/Users/kevinbjorke/src/kbImport/.gitignore",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/where-to-start",
+		"/Users/kevinbjorke/src/vis-eol/app/blog/color-by-layer",
+		"/Users/kevinbjorke/src/vis1/README.md",
+		"/Users/kevinbjorke/src/hackademic/app/styles/main.scss",
+		"/Users/kevinbjorke/src/hackademic/README.md",
+		"/Users/kevinbjorke/src/kbDash1/app/index.html",
+		"/Users/kevinbjorke/src/kbDash1/app/bower_components/google-analytics/google-analytics-base.html",
+		"/Users/kevinbjorke/src/kbDash1/app/bower_components/google-analytics/google-analytics-dashboard.html",
+		"/Users/kevinbjorke/src/kbDash1/app/bower_components/google-analytics/google-analytics-chart.html",
+		"/Users/kevinbjorke/src/kbDash1/app/styles/main.css",
+		"/Users/kevinbjorke/src/kbDash1/app/elements/elements.html",
+		"/Users/kevinbjorke/src/hackademic/app/index_old.html",
+		"/Users/kevinbjorke/src/kbDash1/app/styles/main.scss",
+		"/Users/kevinbjorke/src/kbDash1/kbDash1.sublime-project",
+		"/Users/kevinbjorke/src/hackademic/app/elements/my-element.html",
+		"/Users/kevinbjorke/src/hackademic/app/index.html",
+		"/Users/kevinbjorke/src/hackademic/app/elements/editable-color-picker.html",
+		"/Users/kevinbjorke/src/hackademic/app/elements/fav-color.html",
+		"/Users/kevinbjorke/src/hackademic/app/elements/age-slider.html",
+		"/Users/kevinbjorke/src/hackademic/app/elements/color-picker.html",
+		"/Users/kevinbjorke/src/kbDash1/Gruntfile.js",
+		"/Users/kevinbjorke/.bash_profile",
+		"/Users/kevinbjorke/.bashrc",
+		"/Users/kevinbjorke/.npmrc",
+		"/Users/kevinbjorke/Google Drive/gsCodeLabs/spreadsheets/Spreadsheet to Object Literal Notation servlet.gscript",
+		"/Users/kevinbjorke/src/hackademic/app/elements/name-tag.html",
+		"/Users/kevinbjorke/src/hackademic/app/elements/ready-element.html",
+		"/Users/kevinbjorke/src/hackademic/app/elements/proto-element.html",
+		"/Users/kevinbjorke/Documents/Caustic/arch_landing_scratch.html",
+		"/Users/kevinbjorke/Documents/Caustic/dl_bomb.html",
+		"/Users/kevinbjorke/src/Botz/index.html",
+		"/Users/kevinbjorke/src/Botz/photo/g1links.html",
+		"/Users/kevinbjorke/src/Botz/bio.html",
+		"/Users/kevinbjorke/src/Botz/searches.html",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/lib/MT/L10N/en_us.pm",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-xmlrpc.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-view.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-tb.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-send-entry.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-search.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-db-pass.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-comments.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-close2.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-close.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-check.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-blacklist.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt-add-notify.cgi",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/lib/MT/default-templates.pl",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/index.html",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/mt.cfg",
+		"/Users/kevinbjorke/src/Botz/photo/salon/index.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/catArchive.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/entryArch.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/monthArch.html",
+		"/Users/kevinbjorke/src/Botz/cgi-bin/ChartThrobScan.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/maindex.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/styles-template.css",
+		"/Users/kevinbjorke/src/Botz/mt-templates/commentError.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/commentList.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/commentPvw.html",
+		"/Users/kevinbjorke/src/Botz/mt-templates/masterArch.html",
+		"/Applications/Sublime Text.app/Contents/MacOS/changelog.txt",
+		"/Users/kevinbjorke/weatherParser.java",
+		"/Users/kevinbjorke/src/Sunshine/app/src/main/java/com/example/android/sunshine/app/data/WeatherProvider.java",
+		"/Users/kevinbjorke/src/Sunshine/app/src/androidTest/java/com/example/android/sunshine/app/test/TestProvider.java",
+		"/Users/kevinbjorke/src/Sunshine/app/src/androidTest/java/com/example/android/sunshine/app/test/TestDb.java",
+		"/Users/kevinbjorke/src/ML/mlclass-ex8-005/mlclass-ex8/cofiCostFunc.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex8-005/mlclass-ex8/X/cofiCostFunc.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex8-005/mlclass-ex8/selectThreshold.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex8-005/mlclass-ex8/X/selectThreshold.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex8-005/mlclass-ex8/estimateGaussian.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex8-005/mlclass-ex8/X/estimateGaussian.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex7-005/mlclass-ex7/recoverData.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex7-005/mlclass-ex7/X/recoverData.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex7-005/mlclass-ex7/projectData.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex7-005/mlclass-ex7/X/projectData.m",
+		"/Users/kevinbjorke/src/ML/mlclass-ex7-005/mlclass-ex7/pca.m"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"\n		",
+			"stat",
+			"unify",
+			"rename",
+			"user_args",
+			"parse_",
+			"archive_image",
+			"archive_pix",
+			"def a",
+			"gTest",
+			"unit",
+			"argpar",
+			"unittest2",
+			"unitt",
+			"gTest",
+			"gForce",
+			"ignore",
+			"href=\"/bl",
+			"href",
+			"media/uploads/",
+			"nen([bj])",
+			"wire",
+			"nen([bj])",
+			"wiredep",
+			"ponen",
+			"wire",
+			"nen([bj])",
+			"index",
+			"nen([bj])",
+			"nen\\([bj]\\)",
+			"nen\\(bj\\)",
+			"nen(bj)",
+			"serve",
+			"media/uploads/",
+			"log",
+			"oot",
+			"</?span>",
+			"&nbsp;",
+			"here.",
+			"name=",
+			"2014",
+			"EXR",
+			"JPG",
+			"img ",
+			"Two",
+			"<img ",
+			"/media/uploads/quickref_1.2",
+			"/media/uploads",
+			"img ",
+			"hadows",
+			"/?media/uploads",
+			"main",
+			"bower",
+			"../images",
+			"href",
+			"\"/ima",
+			"=\"../",
+			"src",
+			"componen",
+			"media/uploads",
+			"nbo",
+			"&nbsp;",
+			"archive_image(",
+			"archive_image",
+			"destName",
+			"archive_pix",
+			"patJPG",
+			"patDotAvchd",
+			"patAvchd",
+			"patVidFiles",
+			"patAvchdFiles",
+			"patDNGsrc",
+			"archive_pix",
+			"archive_images_and_video",
+			"gapi",
+			"</h4>",
+			"<h4>",
+			"ring",
+			"unify",
+			"self.jobname",
+			"time\\.",
+			"year_subdir",
+			"user_arg",
+			"col-sm-4",
+			"col-sm-[36]",
+			"jpg",
+			"</?\\s?p>",
+			"font",
+			"</font>",
+			"<font size=\"+1\">",
+			"font",
+			"</?b>",
+			"dd>",
+			"/>\n",
+			"comm",
+			"background",
+			"form",
+			"align",
+			"<br />",
+			"<script",
+			"container",
+			"commen",
+			"666666",
+			"999999",
+			"titl",
+			"banner",
+			"font-fam",
+			"font",
+			"avail",
+			"acceptable_source_vols",
+			"RemovableMedia",
+			"self.createdD",
+			"safe_mkdir",
+			"reating .ir",
+			"..",
+			"archive_pix",
+			"archive_images_and_video",
+			"def archi",
+			"->",
+			"dest_dir_name",
+			"Theta1_Total",
+			"size(theta)",
+			"hypothesis",
+			"App",
+			"screenState",
+			"screen",
+			"Screen",
+			"set_screen"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"unittest",
+			"images/",
+			"nents/\\1",
+			"images/",
+			"",
+			" ",
+			"Twopt",
+			"Full",
+			"Ecase",
+			"Glass",
+			"EXR",
+			"Shdw",
+			"Jpg",
+			"Dof",
+			"Alpha",
+			"Compet",
+			"Ruby",
+			"Macwin",
+			"Multi",
+			"Lamp",
+			"Mirror",
+			"VIZ",
+			"Kbd",
+			"Section",
+			"Match",
+			"Done",
+			"Grain",
+			"Photo",
+			"<img class=\"img-responsive\" ",
+			"/images",
+			"\"../ima",
+			"images",
+			"",
+			"regexJPG",
+			"regexDotAvchd",
+			"regexAvchd",
+			"regexVidFiles",
+			"regexAvchdFiles",
+			"regexDNGsrc",
+			"</b></p>",
+			"<p><b>",
+			"col-sm-3",
+			"col-sm-4",
+			"",
+			"li>",
+			"</li>",
+			"999999",
+			"FFFFFF",
+			"available_source_vols",
+			"ts",
+			"h",
+			"SketchUp",
+			"currentPage",
+			"set_page",
+			"DNG",
+			"isPhone",
+			"*  "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 167.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "ps-scripts.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 323.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

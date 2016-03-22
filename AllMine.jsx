@@ -291,6 +291,10 @@ function scanEXIFstuff(doc)
 					addKeys(info,['18-55mm','f/2.8']);
 				} else if (q[1] === 'XF35mmF1.4 R') {
 					info.keywords = Set.add(info.keywords, 'f/1.4');
+				} else if (q[1] === 'XF35mmF2 R WR') {
+					info.keywords = Set.add(info.keywords, 'f/2.0');
+				} else if (q[1] === 'XF16mmF1.4 R WR') {
+					info.keywords = Set.add(info.keywords, 'f/1.4');
 				} else if (q[1] === 'Leica Summicron-M 50mm f/2 (IV, V)') {
 					addKeys(info,['Summicron','Summicron-M','f/2']);
 				} else {

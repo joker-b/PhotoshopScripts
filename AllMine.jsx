@@ -3,8 +3,13 @@
 //
 // Intended usage:
 // Label Pix
+
+/* global app, alert, Units, DocumentMode, CopyrightedType */
+
+/* jshint ignore: start */
 #target photoshop
 app.bringToFront();
+/* jshint ignore: end */
 
 // User Personalization //////////////////////////
 //
@@ -27,6 +32,140 @@ var Person = {
 	reminder: 'needs_tags' // added only if the image has NO tags before being processed...
 };
 
+var Vendor = { // an enum
+	lumix: 'Lumix',
+	fuji: 'Fuji',
+	canon: 'Canon',
+	leica: 'Leica',
+	google: 'Google',
+	samsung: 'Samsung',
+};
+
+var Cameras = {
+    'DMC-LX1': {
+    	info: ['LX1','DMC_LX1'],
+		brand: Vendor.lumix,
+		multiplier: 4.4,
+		camera: 'LX1',
+    },
+    'DMC-LX2': {
+    	info: ['LX2','DMC_LX2'],
+		brand: Vendor.lumix,
+		multiplier: 4.4,
+		camera: 'LX2',
+    },
+    'DMC-LX3': {
+    	info: ['LX3','DMC_LX3'],
+		brand: Vendor.lumix,
+		multiplier: 4.67,
+		camera: 'LX3',
+    },
+    'DMC-LX5': {
+    	info: ['LX5','DMC_LX5'],
+		brand: Vendor.lumix,
+		multiplier: 4.67,
+		camera: 'LX5',
+    },
+    'DMC-LX7': {
+    	info: ['LX7','DMC_LX7'],
+		brand: Vendor.lumix,
+		multiplier: 4.67,
+		camera: 'LX7',
+    },
+    'X100S': {
+    	info: ['Fuji X100s','X100s'],
+		brand: Vendor.fuji,
+		multiplier: (35.0/23.0),
+		camera: 'X100s',
+    },
+    'X100T': {
+    	info: ['Fuji X100T','X100T'],
+		brand: Vendor.fuji,
+		multiplier: (35.0/23.0),
+		camera: 'X100T',
+    },
+    'X-T1': {
+    	info: ['Fuji X-T1','X-T1'],
+		brand: Vendor.fuji,
+		multiplier: (35.0/23.0),
+		camera: 'X-T1',
+    },
+    'X-Pro2': {
+    	info: ['Fuji X-Pro2','X-Pro2'],
+		brand: Vendor.fuji,
+		multiplier: (35.0/23.0),
+		camera: 'X-Pro2',
+    },
+    'M Monochrom': {
+    	info: ['Leica','Leica M','M Monochrom','Monochrom','M'],
+    	brand: Vendor.leica,
+		multiplier: 1.0,
+		camera: 'M Monochrom',
+    },
+    'Canon EOS 5D': {
+    	info: ['5D','EOS','Canon 5D'],
+	    brand: Vendor.canon,
+	    multiplier: 1.0,
+		camera: '5D',
+    },
+    'Canon EOS 40D': {
+    	info: ['40D','EOS','Canon 40D'],
+	    brand: Vendor.canon,
+	    multiplier: 1.6,
+		camera: '40D',
+    },
+    'Canon EOS DIGITAL REBEL': {
+    	info: ['300D','EOS'],
+	    brand: Vendor.canon,
+	    multiplier: 1.6,
+		camera: '300D',
+    },
+    'Glass1': {
+    	info: ['Google','Glass','Google Glass','Android'],
+    	brand: Vendor.google,
+	    multiplier: 8.0,
+		camera: 'Google Glass',
+	},
+};
+
+var Lenses = {
+	'XF18-55mmF2.8-4 R LM OIS': {
+		info: ['18-55mm','f/2.8'],
+	},
+	'XF35mmF1.4 R': {
+		info: ['f/1.4'],
+	},
+	'XF35mmF2 R WR': {
+		info: ['f/2.0'],
+	},
+	'XF16mmF1.4 R WR': {
+		info: ['f/1.4'],
+	},
+	'Leica Summicron-M 50mm f/2 (IV, V)': {
+		info: ['Summicron','Summicron-M','f/2'],
+	},
+
+};
+
+var AdaptedLenses = {
+	45: {
+		info: ['Zeiss','Contax','Planar','f/2','Fotodiox','planar245','carlzeiss'],
+		minAperture: 2
+	},
+	90: {
+		info: ['Zeiss','Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss'],
+		minAperture: 2.8
+	},
+	50: {
+		info: ['Canon','Canon FD','f/1.8','Fotodiox'],
+		minAperture: 1.8
+	},
+	16: {
+		info: ['Rokinon','f/2.8'],
+		minAperture: 2.8
+	},
+};
+
 
 /// from xlib ///////////////////////////////////////
 
@@ -37,7 +176,7 @@ var Person = {
 //     is unique in the array. This is useful for things
 //     like doc.info.keywords
 //
-Set = function Set() {};
+Set = function Set() {}; // funny idiom unique to PS?
 Set.add = function(ar, str) {
 	'use strict';
 	return Set.merge(ar, new Array(str));
@@ -63,7 +202,7 @@ Set.contains = function(ar, str) {
 };
 Set.merge = function(ar1, ar2) {
   'use strict';
-  var obj = new Object();
+  var obj = {}; // new Object();
   var ar = [];
   var idx;
 
@@ -114,79 +253,20 @@ function addKeys(Info,ItemList) {
 
 function cameraID(ModelName,info,descBits) {
 	'use strict';
-    if (ModelName === 'DMC-LX1') {
-    	addKeys(info,['LX1','DMC_LX1']);
-		descBits.lumix = true;
-		descBits.multiplier = 4.4;
-		descBits.camera = 'LX1';
-    } else if (ModelName === 'DMC-LX2') {
-    	addKeys(info,['LX2','DMC_LX2']);
-		descBits.lumix = true;
-		descBits.multiplier = 4.4;
-		descBits.camera = 'LX2';
-    } else if (ModelName === 'DMC-LX3') {
-    	addKeys(info,['LX3','DMC_LX3']);
-    	//addKeys(info,['Bike','Bicycle']);
-		descBits.lumix = true;
-		descBits.multiplier = 4.67;
-		descBits.camera = 'LX3';
-    } else if (ModelName === 'DMC-LX5') {
-    	addKeys(info,['LX5','DMC_LX5']);
-		descBits.lumix = true;
-		descBits.multiplier = 4.67;
-		descBits.camera = 'LX5';
-    } else if (ModelName === 'DMC-LX7') {
-    	addKeys(info,['LX7','DMC_LX7']);
-		descBits.lumix = true;
-		descBits.multiplier = 4.67;
-		descBits.camera = 'LX7';
-    } else if (ModelName === 'X100S') {
-    	addKeys(info,['Fuji X100s','X100s']);
-		descBits.fujix = true;
-		descBits.multiplier = (35.0/23.0);
-		descBits.camera = 'X100s';
-    } else if (ModelName === 'X100T') {
-    	addKeys(info,['Fuji X100T','X100T']);
-		descBits.fujix = true;
-		descBits.multiplier = (35.0/23.0);
-		descBits.camera = 'X100T';
-    } else if (ModelName === 'X-T1') {
-    	addKeys(info,['Fuji X-T1','X-T1']);
-		descBits.fujix = true;
-		descBits.multiplier = (35.0/23.0);
-		descBits.camera = 'X-T1';
-    } else if (ModelName === 'X-Pro2') {
-    	addKeys(info,['Fuji X-Pro2','X-Pro2']);
-		descBits.fujix = true;
-		descBits.multiplier = (35.0/23.0);
-		descBits.camera = 'X-Pro2';
-    } else if (ModelName === 'M Monochrom') {
-    	addKeys(info,['Leica','Leica M',ModelName,'Monochrom','M']);
-		descBits.multiplier = 1.0;
-		descBits.camera = 'M Monochrom';
-    } else if (ModelName === 'Canon EOS 5D') {
-    	addKeys(info,['5D','EOS','Canon 5D']);
-	    descBits.multiplier = 1.0;
-		descBits.camera = '5D';
-    } else if (ModelName === 'Canon EOS 40D') {
-    	addKeys(info,['40D','EOS','Canon 40D']);
-	    descBits.multiplier = 1.6;
-		descBits.camera = '40D';
-    } else if (ModelName === 'Canon EOS DIGITAL REBEL') {
-    	addKeys(info,['300D','EOS']);
-	    descBits.multiplier = 1.6;
-		descBits.camera = '300D';
-    } else if (ModelName === 'Glass1') {
-    	addKeys(info,['Google','Glass','Google Glass','Android']);
-	    descBits.multiplier = 8.0;
-		descBits.camera = 'Google Glass';
-    } else {
+	var camera = Cameras[ModelName];
+	if (camera) {
+		addKeys(info,camera.info);
+		for (var v in camera) {
+			if (v !== 'info') {
+				descBits[v] = camera[v];
+			}
+		}
+	} else {
 		if (descBits.alertText !== '') {
 			descBits.alertText += '\n';
 		}
 		descBits.alertText += ('Model: ="' + ModelName + '"');
 		descBits.camera = ('Camera: '+ModelName);
-		// alert('Model: "=+q[1]+='"');
     }
 	return info;
 }
@@ -201,8 +281,9 @@ function scanEXIFstuff(doc)
     var oFL = 0;
     var fls;
     var debugMsg = false;
+    var knownLens = false;
     var descBits = {
-    	camera: 'Scanned',
+    	camera: 'Digital',
     	lens: '',
     	shutter: '',
     	aperture: '',
@@ -210,8 +291,7 @@ function scanEXIFstuff(doc)
     	flash: '',
     	alertText: '',
     	multiplier: 1.6,
-    	fujix: false,
-    	lumix: false,
+    	brand: 'Ubuntu',
     	minAperture: 1.4,
     };
     for (var i = 0; i < info.exif.length; i++) {
@@ -287,19 +367,13 @@ function scanEXIFstuff(doc)
 				info.keywords = Set.add(info.keywords, q[1]);
 				break;
 			case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
-				if (q[1] === 'XF18-55mmF2.8-4 R LM OIS') {
-					addKeys(info,['18-55mm','f/2.8']);
-				} else if (q[1] === 'XF35mmF1.4 R') {
-					info.keywords = Set.add(info.keywords, 'f/1.4');
-				} else if (q[1] === 'XF35mmF2 R WR') {
-					info.keywords = Set.add(info.keywords, 'f/2.0');
-				} else if (q[1] === 'XF16mmF1.4 R WR') {
-					info.keywords = Set.add(info.keywords, 'f/1.4');
-				} else if (q[1] === 'Leica Summicron-M 50mm f/2 (IV, V)') {
-					addKeys(info,['Summicron','Summicron-M','f/2']);
+				var lens = Lenses[q[1]];
+				if (lens) {
+					addKeys(info,lens.info);
 				} else {
 					descBits.alertText += (q[1]);
 				}
+				knownLens = true;
 				break;
 			case 'Metering Mode': // debugMsg=true;
 			case 'Orientation': // debugMsg=true;
@@ -359,26 +433,17 @@ function scanEXIFstuff(doc)
     }
     //
     //
-    if (descBits.lumix) {
+    if (descBits.brand === Vendor.lumix) {
     	// used to accomodate the Leica/Panasonic relationship
     	addKeys(info,['Leica','Lumix','Leicasonic','Panaleica']);
-	} else if (descBits.fujix) {
+	} else if (descBits.brand === Vendor.fuji) {
 		// Various "Fuji X' cameras
     	addKeys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-    	// some Fuji-X lens adapters (just nes I've used)
-		if (oFL == 45) {
-			addKeys(info,['Zeiss','Contax','Planar','f/2','Fotodiox','planar245','carlzeiss']);
-			descBits.minAperture = 2;
-		} else if (oFL == 90) {
-			addKeys(info,['Zeiss','Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss']);
-			descBits.minAperture = 2.8;
-		} else if (oFL == 50) {
-			addKeys(info,['Canon','Canon FD','f/1.8','Fotodiox']);
-			descBits.minAperture = 1.8;
-		} else if (oFL == 16) {
-			addKeys(info,['Rokinon','f/2.8']);
-			descBits.minAperture = 2.8;
-		}
+    	var aLens = AdaptedLenses[oFL];
+    	if (aLens && !knownLens) {
+    		addKeys(info,aLens.info);
+    		descBits.minAperture = aLens.minAperture;
+    	}
 	}
     if (descBits.camera === 'Scanned') { // never saw any camera data - this must have been a film scan
 		addKeys(info,['film','scanned']);
@@ -402,7 +467,7 @@ function scanEXIFstuff(doc)
 		} else if (FL >= 85) {
 		    info.keywords = Set.add(info.keywords, 'Telephoto');
 		}
-	    if (descBits.multiplier != 1.0) {
+	    if (descBits.multiplier !== 1.0) {
 	        fls = FL.toString();
 	        if (fls.substr(0,1) === '0') {
 	           fls = fls.substr (1);
@@ -454,7 +519,7 @@ function aspectDesc(doc)
 function main()
 {
 	'use strict';
-    if (!(app.documents.length > 0)) {    // stop if no document is opened.
+    if (app.documents.length < 1) {    // stop if no document is opened.
 		alert('Sorry, No Current Document');
 		return;
     }
@@ -516,7 +581,7 @@ function main()
     if (info.city === '') {info.city = Person.city; }
     if (info.provinceState === '') {info.provinceState = Person.region; }
     if (info.country === '') { info.country = Person.country; }
-    if (initKeys == 0) {
+    if (initKeys === 0) {
 		info.keywords = Set.add(info.keywords, Person.reminder);
     }
     if (msgs !== '') {

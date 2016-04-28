@@ -141,6 +141,9 @@ var Lenses = {
 	'XF16mmF1.4 R WR': {
 		info: ['f/1.4'],
 	},
+	'XF18mmF2 R': {
+		info: ['f/2.0'],
+	},
 	'Leica Summicron-M 50mm f/2 (IV, V)': {
 		info: ['Summicron','Summicron-M','f/2'],
 	},

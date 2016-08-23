@@ -135,6 +135,12 @@ var Lenses = {
 	'XF35mmF1.4 R': {
 		info: ['f/1.4'],
 	},
+	'XF90mmF2 R WR': {
+		info: ['f/2.0'],
+	},
+	'XF56mmF1.2 R': {
+		info: ['f/1.2'],
+	},
 	'XF35mmF2 R WR': {
 		info: ['f/2.0'],
 	},
@@ -531,8 +537,8 @@ function main()
 		app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
     }
     var info = app.activeDocument.info;
-    var initKeys = info.keywords.length;
     var msgs = '';
+    var initKeys = info.keywords.length;
     if (initKeys > 0) {
 		msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
     }

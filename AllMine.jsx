@@ -135,7 +135,7 @@ var Lenses = {
 	'XF35mmF1.4 R': {
 		info: ['f/1.4'],
 	},
-	'XF90mmF2 R WR': {
+	'XF90mmF2 R LM WR': {
 		info: ['f/2.0'],
 	},
 	'XF56mmF1.2 R': {
@@ -570,7 +570,8 @@ function main()
     info.copyrightNotice = '©'+thisYearS+' '+Person.fullname;
     info.ownerUrl = Person.url;
     if (info.title === '') {
-		info.title = noExtension(app.activeDocument.name);
+		var t = noExtension(app.activeDocument.name);
+		info.title = t.replace(/^bjorke_/,'');
     }
     // alert("New Title is ("+info.title+")");
     if (info.headline === '') {

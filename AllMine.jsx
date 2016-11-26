@@ -39,6 +39,7 @@ var Vendor = { // an enum
 	leica: 'Leica',
 	google: 'Google',
 	samsung: 'Samsung',
+	ricoh: 'Ricoh',
 };
 
 var Cameras = {
@@ -97,7 +98,7 @@ var Cameras = {
 		camera: 'X-Pro2',
     },
     'M Monochrom': {
-    	info: ['Leica','Leica M','M Monochrom','Monochrom','M'],
+    	info: ['Leica','Leica M','M Monochrom','Monochrom','M','Monochrome'],
     	brand: Vendor.leica,
 		multiplier: 1.0,
 		camera: 'M Monochrom',
@@ -119,6 +120,11 @@ var Cameras = {
 	    brand: Vendor.canon,
 	    multiplier: 1.6,
 		camera: '300D',
+    },
+    'RICOH THETA S': {
+    	info: ['Ricoh','Theta S','Theta','Panorama', 'Spherical'],
+    	brand: Vendor.ricoh,
+		camera: 'Ricoh Theta S',
     },
     'Glass1': {
     	info: ['Google','Glass','Google Glass','Android'],
@@ -142,6 +148,9 @@ var Lenses = {
 		info: ['f/1.2'],
 	},
 	'XF35mmF2 R WR': {
+		info: ['f/2.0'],
+	},
+	'XF23mmF2 R WR': {
 		info: ['f/2.0'],
 	},
 	'XF16mmF1.4 R WR': {
@@ -280,6 +289,19 @@ function cameraID(ModelName,info,descBits) {
 	return info;
 }
 
+// stub to provide modern-style string "trim()"
+function trim11 (str) {
+	'use strict';
+    str = str.replace(/^\s+/, '');
+    for (var i = str.length - 1; i >= 0; i--) {
+        if (/\S/.test(str.charAt(i))) {
+            str = str.substring(0, i + 1);
+            break;
+        }
+    }
+    return str;
+}
+
 ////////////// march through EXIF tags //////////////
 
 function scanEXIFstuff(doc)
@@ -305,12 +327,13 @@ function scanEXIFstuff(doc)
     };
     for (var i = 0; i < info.exif.length; i++) {
 		var q = info.exif[i];
+		var qName = trim11(q[1]);
 		switch (q[0]) {
 			case 'Make':
-			    info.keywords = Set.add(info.keywords, q[1]);
+			    info.keywords = Set.add(info.keywords, qName);
 			    break;
 			case 'Model':
-				cameraID(q[1],info,descBits);  // identify specific model of camera
+				cameraID(qName,info,descBits);  // identify specific model of camera
 			    break;
 			case 'Date Time':
 			case 'Date Time Original':
@@ -387,6 +410,11 @@ function scanEXIFstuff(doc)
 			case 'Metering Mode': // debugMsg=true;
 			case 'Orientation': // debugMsg=true;
 			case 'Color Space':
+			case 'GPS Version': // theta s
+			case 'GPS Image Direction Ref': // theta s
+			case 'GPS Image Direction': // theta s
+			case 'Image Description': // theta s single \n char
+			case 'Components Configuration': // theta s
 			case 'Pixel X Dimension':
 			case 'Pixel Y Dimension':
 			case 'Focal Plane X Resolution':

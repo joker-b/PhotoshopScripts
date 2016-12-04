@@ -126,6 +126,11 @@ var Cameras = {
     	brand: Vendor.ricoh,
 		camera: 'Ricoh Theta S',
     },
+    'SM-G920T': {
+    	info: ['Samsung','Phone','Galaxy 6'],
+    	brand: Vendor.samsung,
+		camera: 'Samsung Galaxy 6',
+    },
     'Glass1': {
     	info: ['Google','Glass','Google Glass','Android'],
     	brand: Vendor.google,

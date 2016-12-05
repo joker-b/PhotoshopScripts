@@ -180,6 +180,10 @@ var AdaptedLenses = {
 		minAperture: 2.8
 	},
 	50: {
+		info: ['Meike','f/2.0'],
+		minAperture: 2.0
+	},
+	51: { //hack
 		info: ['Canon','Canon FD','f/1.8','Fotodiox'],
 		minAperture: 1.8
 	},

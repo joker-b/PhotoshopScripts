@@ -49,7 +49,7 @@
 			],
 			[
 				"ng-",
-				"ng-click	AngularJS"
+				"ng-click\tAngularJS"
 			],
 			[
 				"no",
@@ -125,7 +125,7 @@
 			],
 			[
 				"l",
-				"li	Tag"
+				"li\tTag"
 			],
 			[
 				"app",
@@ -149,7 +149,7 @@
 			],
 			[
 				"ng-s",
-				"ng-show	AngularJS"
+				"ng-show\tAngularJS"
 			],
 			[
 				"getF",
@@ -183,7 +183,8 @@
 			"file": "AllMine.jsx",
 			"settings":
 			{
-				"buffer_size": 15460,
+				"buffer_size": 16555,
+				"encoding": "Western (Windows 1252)",
 				"line_ending": "Unix"
 			}
 		}
@@ -390,6 +391,15 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"AdaptedLenses",
+			"trim",
+			"cameraID",
+			"Cameras",
+			"Vendor",
+			"Cameras",
+			"cameraID",
+			"Model",
+			"initKeys",
 			"Direc",
 			"lens =",
 			"alertText",
@@ -441,7 +451,7 @@
 			"aperture",
 			"35",
 			"T1",
-			"\n		",
+			"\n\t\t",
 			"stat",
 			"unify",
 			"rename",
@@ -508,16 +518,7 @@
 			"destName",
 			"archive_pix",
 			"patJPG",
-			"patDotAvchd",
-			"patAvchd",
-			"patVidFiles",
-			"patAvchdFiles",
-			"patDNGsrc",
-			"archive_pix",
-			"archive_images_and_video",
-			"gapi",
-			"</h4>",
-			"<h4>"
+			"patDotAvchd"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -610,15 +611,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15460,
+						"buffer_size": 16555,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3221,
-								3221
+								4054,
+								4054
 							]
 						],
 						"settings":
@@ -626,7 +627,7 @@
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1864.0,
+						"translation.y": 2603.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -715,7 +716,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 323.0,
 	"status_bar_visible": true,
 	"template_settings":

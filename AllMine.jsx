@@ -472,6 +472,7 @@ function scanEXIFstuff(doc)
 			case 'EXIF tag 277': // "3'
 			case 'EXIF tag 34864':
 			case 'EXIF tag 41483': // Glass
+			case 'EXIF tag 42033': // X100S body ser # (?)
 			case 'EXIF tag 42034': // X-T1: "1800/100'
 			case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker
 			case 'EXIF tag 42037': // X-T1: serial #
@@ -592,9 +593,10 @@ function main()
     var info = app.activeDocument.info;
     var msgs = '';
     var initKeys = info.keywords.length;
-    if (initKeys > 0) {
-		msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
-    }
+    // this dialog message temporarily disabled....
+    //if (initKeys > 0) {
+	//	msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
+    //}
     var newKeys = [];
     if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
 		newKeys = newKeys.concat(['BW','Black_and_White','Black_&_White','Monochrome']);

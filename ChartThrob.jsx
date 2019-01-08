@@ -196,10 +196,6 @@ function helpDialog()
 	dlg.gttl.orientation = 'column';
 	dlg.gttl.spacing = 2;
 	var tp = st(dlg.gttl,(gTitle+', '+gDate));
-		var tg = tp.graphics;
-		var colArr = [1, .7, 1, 1];
-		var tc  = tg.newBrush (tg.BrushType.SOLID_COLOR, colArr, 1);
-		tg.foregroundColor = tc;
 	st(dlg.gttl,'http://www.botzilla.com/');
 	dlg.gtop = dlg.add('group');
 	dlg.gtop.orientation = 'column';
@@ -315,10 +311,6 @@ function userDialog()
 	dlg.gttl.orientation = 'column';
 	dlg.gttl.spacing = 2;
 	var tp = st(dlg.gttl,(gTitle+', '+gDate));
-		var tg = tp.graphics;
-		var colArr = [1, .7, 1, 1];
-		var tc  = tg.newBrush (tg.BrushType.SOLID_COLOR, colArr, 1);
-		tg.foregroundColor = tc;
 	st(dlg.gttl,'http://www.botzilla.com/');
 
 	// scan panel

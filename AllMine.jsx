@@ -1,5 +1,5 @@
 // $Id$
-// rev 7 feb 2015
+// rev 2 aug 2019
 //
 // Intended usage:
 // Label Pix
@@ -22,13 +22,15 @@ app.bringToFront();
 
 var Person = {
 	fullname: 'Kevin Bjorke',
-	url: 'http://www.botzilla.com/',
-	blog: 'http://www.botzilla.com/blog/',
+	altNames: ["K.Bjorke botzilla.com","K. Bjorke"],
+	url: 'http://www.kevin-bjorke.com/',
+	blog: 'http://www.botzilla.com/',
 	relation: 'Owner',
 	city: 'San Francisco',
 	region: 'California',
 	country: 'USA',
-	commonTags: ['Bjorke','PhotoRant','Botzilla.com', 'SF', 'Bay Area'], // added to every pic
+	commonTags: ['Bjorke', 'Botzilla.com', 'SF', 'Bay Area',
+			'Petaluma', 'Sonoma County'], // added to every pic
 	reminder: 'needs_tags' // added only if the image has NO tags before being processed...
 };
 
@@ -84,6 +86,12 @@ var Cameras = {
 		brand: Vendor.fuji,
 		multiplier: (35.0/23.0),
 		camera: 'X100T',
+    },
+    'X100F': {
+    	info: ['Fuji X100F','X100F'],
+		brand: Vendor.fuji,
+		multiplier: (35.0/23.0),
+		camera: 'X100F',
     },
     'X-T1': {
     	info: ['Fuji X-T1','X-T1'],
@@ -322,6 +330,7 @@ function scanEXIFstuff(doc)
     var fls;
     var debugMsg = false;
     var knownLens = false;
+    var knownPerson = false;
     var descBits = {
     	camera: 'Digital',
     	lens: '',
@@ -396,13 +405,16 @@ function scanEXIFstuff(doc)
 			    }
 			    break;
 			case 'Artist':
-			    if (q[1] !== Person.fullname) {
-					if (descBits.alertText !== '') {
-						descBits.alertText += '\n';
-					}
-					descBits.alertText += ('Artist tag: "'+q[1]+'"');
-					// alert('Artist tag: "'+q[1]+'"');
+			    knownPerson = (q[1] === Person.fullname);
+			    for (var ip=0; ip<Person.altNames.length; ip+=1) {
+					knownPerson |= (q[1] === Person.altNames[ip]);
 			    }
+			    if (!knownPerson) {
+    			    if (descBits.alertText !== '') {
+    					descBits.alertText += '\n';
+    			    }
+    			    descBits.alertText += ('Artist tag: "'+q[1]+'"');
+                }
 			    break;
 			case 'Exposure Program':
 				info.keywords = Set.add(info.keywords, q[1]);
@@ -461,6 +473,8 @@ function scanEXIFstuff(doc)
 			case 'EXIF tag 42034': // X-T1: "1800/100'
 			case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker
 			case 'EXIF tag 42037': // X-T1: serial #
+			case 'EXIF tag 42033': // X100F serial# ?
+			case 'EXIF tag 42033': // LX7 something supposedly body Ser # but... not?
 			case 'Brightness Value': // first seen on x100s
 			case 'Subject Distance Range': // first seen on x100s
 			case 'Subject Distance': // first seen on Glass
@@ -482,7 +496,7 @@ function scanEXIFstuff(doc)
     if (descBits.brand === Vendor.lumix) {
     	// used to accomodate the Leica/Panasonic relationship
     	addKeys(info,['Leica','Lumix','Leicasonic','Panaleica']);
-	} else if (descBits.brand === Vendor.fuji) {
+    } else if (descBits.brand === Vendor.fuji) {
 		// Various "Fuji X' cameras
     	addKeys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
     	var aLens = AdaptedLenses[oFL];
@@ -490,7 +504,7 @@ function scanEXIFstuff(doc)
     		addKeys(info,aLens.info);
     		descBits.minAperture = aLens.minAperture;
     	}
-	}
+    }
     if (descBits.camera === 'Scanned') { // never saw any camera data - this must have been a film scan
 		addKeys(info,['film','scanned']);
     }

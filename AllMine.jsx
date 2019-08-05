@@ -358,13 +358,13 @@ function scanEXIFstuff(doc)
 			    info.keywords = Set.add(info.keywords,q[1].substr(0,4));
 			    break;
 			case 'Focal Length in 35mm Film':
-			    FL = 0 + q[1];
+			    FL = parseFloat(q[1]);
 			    break;
 			case 'Shutter Speed':
 				descBits.shutter = (' - '+q[1]);
 			    break;
 			case 'Focal Length':
-			    oFL = 0 + q[1];
+			    oFL = parseFloat(q[1]);
 			    fls = (Math.floor(oFL+0.49)).toString();
 				descBits.lens = (', '+fls+'mm');
 			    break;
@@ -375,8 +375,10 @@ function scanEXIFstuff(doc)
 				descBits.iso = (', ISO '+q[1]);
 			    break;
 			case 'Copyright':
-				if (q[1].match(/[0-9]/)) {
-					descBits.alertText += ('\nEXIF Copyright Notice: "'+q[1]+'"');
+				if (q[1].match(/[0-9]/) && !knownPerson) {
+                    if (q[1].indexOf(Person.fullName) < 0) {
+    					descBits.alertText += ('\nEXIF Copyright Notice:\n"'+q[1]+'"');
+                    }
 				}
 			    break;
 			case 'Scene Capture Type':
@@ -390,7 +392,7 @@ function scanEXIFstuff(doc)
 				}
 			    break;
 			case 'Flash':
-			    var flashVal = 0 + q[1];
+			    var flashVal = parseInt(q[1]);
 			    if (flashVal < 16) {
 					info.keywords = Set.add(info.keywords, 'Strobe');
 					descBits.flash = '+ Flash';
@@ -405,7 +407,7 @@ function scanEXIFstuff(doc)
 			    }
 			    break;
 			case 'Artist':
-			    knownPerson = (q[1] === Person.fullname);
+			    knownPerson = (q[1].indexOf(Person.fullname) !== -1);
 			    for (var ip=0; ip<Person.altNames.length; ip+=1) {
 					knownPerson |= (q[1] === Person.altNames[ip]);
 			    }

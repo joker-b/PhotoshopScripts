@@ -1,5 +1,5 @@
 // $Id$
-// rev 2 aug 2019
+// rev 21 feb 2020
 //
 // Intended usage:
 // Label Pix
@@ -40,6 +40,7 @@ var Vendor = { // an enum
 	canon: 'Canon',
 	leica: 'Leica',
 	google: 'Google',
+    olympus: 'Olympus',
 	samsung: 'Samsung',
 	ricoh: 'Ricoh',
 };
@@ -92,6 +93,12 @@ var Cameras = {
 		brand: Vendor.fuji,
 		multiplier: (35.0/23.0),
 		camera: 'X100F',
+    },
+    'X100V': {
+        info: ['Fuji X100F','X100F'],
+        brand: Vendor.fuji,
+        multiplier: (35.0/23.0),
+        camera: 'X100F',
     },
     'X-T1': {
     	info: ['Fuji X-T1','X-T1'],
@@ -151,27 +158,33 @@ var Lenses = {
 	'XF18-55mmF2.8-4 R LM OIS': {
 		info: ['18-55mm','f/2.8'],
 	},
-	'XF35mmF1.4 R': {
-		info: ['f/1.4'],
-	},
 	'XF90mmF2 R LM WR': {
 		info: ['f/2.0'],
 	},
 	'XF56mmF1.2 R': {
 		info: ['f/1.2'],
 	},
+	'XF35mmF1.4 R': {
+		info: ['f/1.4'],
+	},
 	'XF35mmF2 R WR': {
 		info: ['f/2.0'],
 	},
+    'XF23mmF1.4 R': {
+        info: ['f/1.4'],
+    },
 	'XF23mmF2 R WR': {
+		info: ['f/2.0'],
+	},
+	'XF18mmF2 R': {
 		info: ['f/2.0'],
 	},
 	'XF16mmF1.4 R WR': {
 		info: ['f/1.4'],
 	},
-	'XF18mmF2 R': {
-		info: ['f/2.0'],
-	},
+    'XF14mmF2.8 R': {
+        info: ['f/1.4'],
+    },
 	'Leica Summicron-M 50mm f/2 (IV, V)': {
 		info: ['Summicron','Summicron-M','f/2'],
 	},
@@ -393,7 +406,8 @@ function scanEXIFstuff(doc)
 			    break;
 			case 'Flash':
 			    var flashVal = parseInt(q[1]);
-			    if (flashVal < 16) {
+			    if ((flashVal < 16) && (flashVal > 0)) {
+                    descBits.alertText += ('\nflashVal: '+flashVal+'');
 					info.keywords = Set.add(info.keywords, 'Strobe');
 					descBits.flash = '+ Flash';
 			    }
@@ -430,7 +444,7 @@ function scanEXIFstuff(doc)
 				}
 				knownLens = true;
 				break;
-			case 'Metering Mode': // debugMsg=true;
+			case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
 			case 'Orientation': // debugMsg=true;
 			case 'Color Space':
 			case 'GPS Version': // theta s
@@ -467,23 +481,25 @@ function scanEXIFstuff(doc)
 			case 'Contrast':
 			case 'Saturation':
 			case 'Sharpness':
-			case 'EXIF tag 258': // '8 8 8'
-			case 'EXIF tag 262': // 'RGB'
-			case 'EXIF tag 277': // "3'
-			case 'EXIF tag 34864':
-			case 'EXIF tag 41483': // Glass
-			case 'EXIF tag 42033': // X100S body ser # (?)
-			case 'EXIF tag 42034': // X-T1: "1800/100'
-			case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker
-			case 'EXIF tag 42037': // X-T1: serial #
-			case 'EXIF tag 42033': // X100F serial# ?
-			case 'EXIF tag 42033': // LX7 something supposedly body Ser # but... not?
 			case 'Brightness Value': // first seen on x100s
 			case 'Subject Distance Range': // first seen on x100s
 			case 'Subject Distance': // first seen on Glass
 			case 'Image Unique ID': // first seen on Glass
+			case 'EXIF tag 258': // '8 8 8' Bits Per Sample
+			case 'EXIF tag 262': // 'RGB' Photometric Interpretation
+			case 'EXIF tag 277': // "3' Samples Per Pixel (channels)
+			case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
+			case 'EXIF tag 42037': // lens ser #
+			case 'EXIF tag 42034': // lens info "rdf:Seq"
+			case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
+                break;
+			case 'EXIF tag 41483': // Glass
+			case 'EXIF tag 42033': // X100F serial# ?
+			case 'EXIF tag 42033': // LX7 something supposedly body Ser # but... not?
+                descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
 				break;
 			default:
+                descBits.alertText += ('\nTag '+q[0]+'? "'+qName+'"');
 				debugMsg = true;
 		}
 		if (debugMsg) {
@@ -622,7 +638,7 @@ function main()
     info.credit = Person.fullname;
     info.authorPosition = Person.relation;
     info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
-    info.copyrightNotice = '©'+thisYearS+' '+Person.fullname;
+    info.copyrightNotice = 'Â©'+thisYearS+' '+Person.fullname;
     info.ownerUrl = Person.url;
     if (info.title === '') {
 		var t = noExtension(app.activeDocument.name);

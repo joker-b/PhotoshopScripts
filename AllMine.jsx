@@ -609,9 +609,10 @@ function main()
     var info = app.activeDocument.info;
     var msgs = '';
     var initKeys = info.keywords.length;
-    if (initKeys > 0) {
-		msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
-    }
+    // this dialog message temporarily disabled....
+    //if (initKeys > 0) {
+	//	msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
+    //}
     var newKeys = [];
     if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
 		newKeys = newKeys.concat(['BW','Black_and_White','Black_&_White','Monochrome']);
@@ -637,7 +638,7 @@ function main()
     info.credit = Person.fullname;
     info.authorPosition = Person.relation;
     info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
-    info.copyrightNotice = '©'+thisYearS+' '+Person.fullname;
+    info.copyrightNotice = 'Â©'+thisYearS+' '+Person.fullname;
     info.ownerUrl = Person.url;
     if (info.title === '') {
 		var t = noExtension(app.activeDocument.name);

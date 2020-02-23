@@ -492,14 +492,12 @@ function scanEXIFstuff(doc)
 			case 'EXIF tag 42037': // lens ser #
 			case 'EXIF tag 42034': // lens info "rdf:Seq"
 			case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
+			case 'EXIF tag 42033': // X100F serial# (LX7 too?)
+			case 'EXIF tag 41483': // Glass, unknown
                 break;
-			case 'EXIF tag 41483': // Glass
-			case 'EXIF tag 42033': // X100F serial# ?
-			case 'EXIF tag 42033': // LX7 something supposedly body Ser # but... not?
-                descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
-				break;
+                // descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
+				// break;
 			default:
-                descBits.alertText += ('\nTag '+q[0]+'? "'+qName+'"');
 				debugMsg = true;
 		}
 		if (debugMsg) {

@@ -287,6 +287,14 @@ function noExtension(name) {
   return base;
 }
 
+function jobName(name) { // document name input
+  'use strict';
+  if (!name) { return 'empty_jobname'; }
+  base = name.replace(/(_[A-Z0-9]{4}\d{4}.*)/,''); // strip back
+  if (base === '') { return 'no_jobname'; }
+  return base.replace(/[a-zA-Z0-9]*_/,''); // strip front, if there is one
+}
+
 //////// add keywords from a list ///
 
 function addKeys(Info,ItemList) {
@@ -625,6 +633,7 @@ function main()
     //
     // keywords added to doc...
     //
+	newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
     addKeys(info,newKeys);
     var descBits = scanEXIFstuff(app.activeDocument);
     aspectDesc(app.activeDocument);
@@ -636,7 +645,7 @@ function main()
     info.credit = Person.fullname;
     info.authorPosition = Person.relation;
     info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
-    info.copyrightNotice = '©'+thisYearS+' '+Person.fullname;
+    info.copyrightNotice = ' © '+thisYearS+' '+Person.fullname;
     info.ownerUrl = Person.url;
     if (info.title === '') {
 		var t = noExtension(app.activeDocument.name);

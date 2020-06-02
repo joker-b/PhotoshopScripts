@@ -37,7 +37,7 @@ Person = {
 	'reminder': 'needs_tags'
 }
 
-Vendor = { // an enum
+Vendor = { # an enum
 	'lumix': 'Lumix',
 	'fuji': 'Fuji',
 	'canon': 'Canon',
@@ -48,173 +48,60 @@ Vendor = { // an enum
 	'ricoh': 'Ricoh',
 };
 
+class CameraInfo:
+	def __init__(self, Info=[], Brand='', Multiplier=1.0, Camera='info'):
+		self.info = Info
+		self.brand = brand
+		self.multiplier = Multiplier
+		self.camera = Camera
+
+class LensInfo:
+	def __init++(self, Info=[], MinAperture = None):
+		self.info = Info
+		self.minAperature = MinAperture
+
+
 Cameras = {
-    'DMC-LX1': {
-    	'info': ['LX1','DMC_LX1'],
-		'brand': Vendor.lumix,
-		'multiplier': 4.4,
-		'camera': 'LX1',
-    },
-    'DMC-LX2': {
-    	'info': ['LX2','DMC_LX2'],
-		'brand': Vendor.lumix,
-		'multiplier': 4.4,
-		'camera': 'LX2',
-    },
-    'DMC-LX3': {
-    	'info': ['LX3','DMC_LX3'],
-		'brand': Vendor.lumix,
-		'multiplier': 4.67,
-		'camera': 'LX3',
-    },
-    'DMC-LX5': {
-    	'info': ['LX5','DMC_LX5'],
-		'brand': Vendor.lumix,
-		'multiplier': 4.67,
-		'camera': 'LX5',
-    },
-    'DMC-LX7': {
-    	'info': ['LX7','DMC_LX7'],
-		'brand': Vendor.lumix,
-		'multiplier': 4.67,
-		'camera': 'LX7',
-    },
-    'X100S': {
-    	'info': ['Fuji X100s','X100s'],
-		'brand': Vendor.fuji,
-		'multiplier': (35.0/23.0),
-		'camera': 'X100s',
-    },
-    'X100T': {
-    	'info': ['Fuji X100T','X100T'],
-		'brand': Vendor.fuji,
-		'multiplier': (35.0/23.0),
-		'camera': 'X100T',
-    },
-    'X100F': {
-    	'info': ['Fuji X100F','X100F'],
-		'brand': Vendor.fuji,
-		'multiplier': (35.0/23.0),
-		'camera': 'X100F',
-    },
-    'X100V': {
-        'info': ['Fuji X100F','X100F'],
-        'brand': Vendor.fuji,
-        'multiplier': (35.0/23.0),
-        'camera': 'X100F',
-    },
-    'X-T1': {
-    	'info': ['Fuji X-T1','X-T1'],
-		'brand': Vendor.fuji,
-		'multiplier': (35.0/23.0),
-		'camera': 'X-T1',
-    },
-    'X-Pro2': {
-    	'info': ['Fuji X-Pro2','X-Pro2'],
-		'brand': Vendor.fuji,
-		'multiplier': (35.0/23.0),
-		'camera': 'X-Pro2',
-    },
-    'M Monochrom': {
-    	'info': ['Leica','Leica M','M Monochrom','Monochrom','M','Monochrome'],
-    	'brand': Vendor.leica,
-		'multiplier': 1.0,
-		'camera': 'M Monochrom',
-    },
-    'Canon EOS 5D': {
-    	'info': ['5D','EOS','Canon 5D'],
-	    'brand': Vendor.canon,
-	    'multiplier': 1.0,
-		'camera': '5D',
-    },
-    'Canon EOS 40D': {
-    	'info': ['40D','EOS','Canon 40D'],
-	    'brand': Vendor.canon,
-	    'multiplier': 1.6,
-		'camera': '40D',
-    },
-    'Canon EOS DIGITAL REBEL': {
-    	'info': ['300D','EOS'],
-	    'brand': Vendor.canon,
-	    'multiplier': 1.6,
-		'camera': '300D',
-    },
-    'RICOH THETA S': {
-    	'info': ['Ricoh','Theta S','Theta','Panorama', 'Spherical'],
-    	'brand': Vendor.ricoh,
-		'camera': 'Ricoh Theta S',
-    },
-    'SM-G920T': {
-    	'info': ['Samsung','Phone','Galaxy 6'],
-    	'brand': Vendor.samsung,
-		'camera': 'Samsung Galaxy 6',
-    },
-    'Glass1': {
-    	'info': ['Google','Glass','Google Glass','Android'],
-    	'brand': Vendor.google,
-	    'multiplier': 8.0,
-		'camera': 'Google Glass',
-	},
-};
+    'DMC-LX1': CameraInfo(['LX1','DMC_LX1'], Vendor.lumix, 4.4, 'LX1'),
+    'DMC-LX2': CameraInfo(['LX2','DMC_LX2'], Vendor.lumix, 4.4, 'LX2'),
+    'DMC-LX3': CameraInfo(['LX3','DMC_LX3'], Vendor.lumix, 4.67, 'LX3'),
+    'DMC-LX5': CameraInfo(['LX5','DMC_LX5'], Vendor.lumix, 4.67, 'LX5'),
+    'DMC-LX7': CameraInfo(['LX7','DMC_LX7'], Vendor.lumix, 4.67, 'LX7'),
+    'X100S': CameraInfo(['Fuji X100s','X100s'], Vendor.fuji, (35.0/23.0), 'X100s'),
+    'X100T': CameraInfo(['Fuji X100T','X100T'], Vendor.fuji, (35.0/23.0), 'X100T'),
+    'X100F': CameraInfo(['Fuji X100F','X100F'], Vendor.fuji, (35.0/23.0), 'X100F'),
+    'X100V': CameraInfo(['Fuji X100F','X100F'], Vendor.fuji, (35.0/23.0), 'X100F'),
+    'X-T1': CameraInfo(['Fuji X-T1','X-T1'], Vendor.fuji, (35.0/23.0), 'X-T1'),
+    'X-Pro2': CameraInfo(['Fuji X-Pro2','X-Pro2'], Vendor.fuji, (35.0/23.0), 'X-Pro2'),
+    'M Monochrom': CameraInfo(['Leica','Leica M','M Monochrom','Monochrom','M','Monochrome'], Vendor.leica, 1.0, 'M Monochrom'),
+    'Canon EOS 5D': CameraInfo(['5D','EOS','Canon 5D'], Vendor.canon, 1.0, '5D'),
+    'Canon EOS 40D': CameraInfo(['40D','EOS','Canon 40D'], Vendor.canon, 1.6, '40D'),
+    'Canon EOS DIGITAL REBEL': CameraInfo(['300D','EOS'], Vendor.canon, 1.6, '300D'),
+    'RICOH THETA S': CameraInfo(['Ricoh','Theta S','Theta','Panorama', 'Spherical'], Vendor.ricoh, 1.0, 'Ricoh Theta S'),
+    'SM-G920T': CameraInfo(['Samsung','Phone','Galaxy 6'], Vendor.samsung, 1.0, 'Samsung Galaxy 6'),
+    'Glass1': CameraInfo(['Google','Glass','Google Glass','Android'], Vendor.google, 8.0, 'Google Glass')
+}
 
-var Lenses = {
-	'XF18-55mmF2.8-4 R LM OIS': {
-		'info': ['18-55mm','f/2.8'],
-	},
-	'XF90mmF2 R LM WR': {
-		'info': ['f/2.0'],
-	},
-	'XF56mmF1.2 R': {
-		'info': ['f/1.2'],
-	},
-	'XF35mmF1.4 R': {
-		'info': ['f/1.4'],
-	},
-	'XF35mmF2 R WR': {
-		'info': ['f/2.0'],
-	},
-    'XF23mmF1.4 R': {
-        'info': ['f/1.4'],
-    },
-	'XF23mmF2 R WR': {
-		'info': ['f/2.0'],
-	},
-	'XF18mmF2 R': {
-		'info': ['f/2.0'],
-	},
-	'XF16mmF1.4 R WR': {
-		'info': ['f/1.4'],
-	},
-    'XF14mmF2.8 R': {
-        'info': ['f/1.4'],
-    },
-	'Leica Summicron-M 50mm f/2 (IV, V)': {
-		'info': ['Summicron','Summicron-M','f/2'],
-	},
-
-};
+Lenses = {
+	'XF18-55mmF2.8-4 R LM OIS': LensInfo(['18-55mm','f/2.8']),
+	'XF90mmF2 R LM WR': LensInfo(['f/2.0']),
+	'XF56mmF1.2 R': LensInfo(['f/1.2']),
+	'XF35mmF1.4 R': LensInfo(['f/1.4']),
+	'XF35mmF2 R WR': LensInfo(['f/2.0']),
+    'XF23mmF1.4 R': LensInfo(['f/1.4']),
+	'XF23mmF2 R WR': LensInfo(['f/2.0']),
+	'XF18mmF2 R': LensInfo(		['f/2.0']),
+	'XF16mmF1.4 R WR': LensInfo(['f/1.4']),
+    'XF14mmF2.8 R': LensInfo(['f/1.4']),
+	'Leica Summicron-M 50mm f/2 (IV, V)': LensInfo(['Summicron','Summicron-M','f/2'])
+);
 
 var AdaptedLenses = {
-	45: {
-		'info': ['Zeiss','Contax','Planar','f/2','Fotodiox','planar245','carlzeiss'],
-		minAperture: 2
-	},
-	90: {
-		'info': ['Zeiss','Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss'],
-		minAperture: 2.8
-	},
-	50: {
-		'info': ['Meike','f/2.0'],
-		minAperture: 2.0
-	},
-	51: { //hack
-		'info': ['Canon','Canon FD','f/1.8','Fotodiox'],
-		minAperture: 1.8
-	},
-	16: {
-		'info': ['Rokinon','f/2.8'],
-		minAperture: 2.8
-	},
+	45: LensInfo(['Zeiss','Contax','Planar','f/2','Fotodiox','planar245','carlzeiss'], 2 ),
+	90: LensInfo(['Zeiss','Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss'], 2.8 ),
+	50: LensInfo(['Meike','f/2.0'], 2.0 ),
+	51: LensInfo(['Canon','Canon FD','f/1.8','Fotodiox'], 1.8 ),
+	16: LensInfo(['Rokinon','f/2.8'], 2.8 ),
 };
 
 

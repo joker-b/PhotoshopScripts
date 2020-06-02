@@ -12,6 +12,9 @@ app.bringToFront();
 /* jshint ignore: end */
 '''
 
+import sys
+import os
+
 '''
 // User Personalization //////////////////////////
 //
@@ -24,86 +27,97 @@ app.bringToFront();
 '''
 
 Person = {
-	'fullname': 'Kevin Bjorke',
-	'altNames': ["K.Bjorke botzilla.com","K. Bjorke"],
-	'url': 'http://www.kevin-bjorke.com/',
-	'blog': 'http://www.botzilla.com/',
-	'relation': 'Owner',
-	'city': 'San Francisco',
-	'region': 'California',
-	'country': 'USA',
-	'commonTags': ['Bjorke', 'Botzilla.com', 'SF', 'Bay Area',
-			'Petaluma', 'Sonoma County'],
-	'reminder': 'needs_tags'
+  'fullname': 'Kevin Bjorke',
+  'altNames': ["K.Bjorke botzilla.com","K. Bjorke"],
+  'url': 'http://www.kevin-bjorke.com/',
+  'blog': 'http://www.botzilla.com/',
+  'relation': 'Owner',
+  'city': 'San Francisco',
+  'region': 'California',
+  'country': 'USA',
+  'commonTags': ['Bjorke', 'Botzilla.com', 'SF', 'Bay Area',
+      'Petaluma', 'Sonoma County'],
+  'reminder': 'needs_tags'
 }
 
-Vendor = { # an enum
-	'lumix': 'Lumix',
-	'fuji': 'Fuji',
-	'canon': 'Canon',
-	'leica': 'Leica',
-	'google': 'Google',
-    'olympus': 'Olympus',
-	'samsung': 'Samsung',
-	'ricoh': 'Ricoh',
-};
+class Vendor:
+    'use as an enum'
+    lumix = 'Lumix'
+    fuji = 'Fuji'
+    canon = 'Canon'
+    leica = 'Leica'
+    google = 'Google'
+    olympus = 'Olympus'
+    samsung = 'Samsung'
+    ricoh = 'Ricoh'
+
 
 class CameraInfo:
-	def __init__(self, Info=[], Brand='', Multiplier=1.0, Camera='info'):
-		self.info = Info
-		self.brand = brand
-		self.multiplier = Multiplier
-		self.camera = Camera
+    'bundler'
+    def __init__(self, Info=['camera'], Brand='', Multiplier=1.0, Camera='info'):
+        self.info = Info
+        self.brand = Brand
+        self.multiplier = Multiplier
+        self.camera = Camera
 
 class LensInfo:
-	def __init++(self, Info=[], MinAperture = None):
-		self.info = Info
-		self.minAperature = MinAperture
+    'bundler'
+    def __init__(self, Info=['lens'], MinAperture=None):
+        self.info = Info
+        self.minAperature = MinAperture
 
 
 Cameras = {
-    'DMC-LX1': CameraInfo(['LX1','DMC_LX1'], Vendor.lumix, 4.4, 'LX1'),
-    'DMC-LX2': CameraInfo(['LX2','DMC_LX2'], Vendor.lumix, 4.4, 'LX2'),
-    'DMC-LX3': CameraInfo(['LX3','DMC_LX3'], Vendor.lumix, 4.67, 'LX3'),
-    'DMC-LX5': CameraInfo(['LX5','DMC_LX5'], Vendor.lumix, 4.67, 'LX5'),
-    'DMC-LX7': CameraInfo(['LX7','DMC_LX7'], Vendor.lumix, 4.67, 'LX7'),
-    'X100S': CameraInfo(['Fuji X100s','X100s'], Vendor.fuji, (35.0/23.0), 'X100s'),
-    'X100T': CameraInfo(['Fuji X100T','X100T'], Vendor.fuji, (35.0/23.0), 'X100T'),
-    'X100F': CameraInfo(['Fuji X100F','X100F'], Vendor.fuji, (35.0/23.0), 'X100F'),
-    'X100V': CameraInfo(['Fuji X100F','X100F'], Vendor.fuji, (35.0/23.0), 'X100F'),
-    'X-T1': CameraInfo(['Fuji X-T1','X-T1'], Vendor.fuji, (35.0/23.0), 'X-T1'),
-    'X-Pro2': CameraInfo(['Fuji X-Pro2','X-Pro2'], Vendor.fuji, (35.0/23.0), 'X-Pro2'),
-    'M Monochrom': CameraInfo(['Leica','Leica M','M Monochrom','Monochrom','M','Monochrome'], Vendor.leica, 1.0, 'M Monochrom'),
-    'Canon EOS 5D': CameraInfo(['5D','EOS','Canon 5D'], Vendor.canon, 1.0, '5D'),
-    'Canon EOS 40D': CameraInfo(['40D','EOS','Canon 40D'], Vendor.canon, 1.6, '40D'),
-    'Canon EOS DIGITAL REBEL': CameraInfo(['300D','EOS'], Vendor.canon, 1.6, '300D'),
-    'RICOH THETA S': CameraInfo(['Ricoh','Theta S','Theta','Panorama', 'Spherical'], Vendor.ricoh, 1.0, 'Ricoh Theta S'),
-    'SM-G920T': CameraInfo(['Samsung','Phone','Galaxy 6'], Vendor.samsung, 1.0, 'Samsung Galaxy 6'),
-    'Glass1': CameraInfo(['Google','Glass','Google Glass','Android'], Vendor.google, 8.0, 'Google Glass')
+    'DMC-LX1': CameraInfo(['LX1', 'DMC_LX1'], Vendor.lumix, 4.4, 'LX1'),
+    'DMC-LX2': CameraInfo(['LX2', 'DMC_LX2'], Vendor.lumix, 4.4, 'LX2'),
+    'DMC-LX3': CameraInfo(['LX3', 'DMC_LX3'], Vendor.lumix, 4.67, 'LX3'),
+    'DMC-LX5': CameraInfo(['LX5', 'DMC_LX5'], Vendor.lumix, 4.67, 'LX5'),
+    'DMC-LX7': CameraInfo(['LX7', 'DMC_LX7'], Vendor.lumix, 4.67, 'LX7'),
+    'X100S': CameraInfo(['Fuji X100s', 'X100s'], Vendor.fuji, (35.0/23.0), 'X100s'),
+    'X100T': CameraInfo(['Fuji X100T', 'X100T'], Vendor.fuji, (35.0/23.0), 'X100T'),
+    'X100F': CameraInfo(['Fuji X100F', 'X100F'], Vendor.fuji, (35.0/23.0), 'X100F'),
+    'X100V': CameraInfo(['Fuji X100F', 'X100F'], Vendor.fuji, (35.0/23.0), 'X100F'),
+    'X-T1': CameraInfo(['Fuji X-T1', 'X-T1'], Vendor.fuji, (35.0/23.0), 'X-T1'),
+    'X-Pro2': CameraInfo(['Fuji X-Pro2', 'X-Pro2'], Vendor.fuji, (35.0/23.0), 'X-Pro2'),
+    'M Monochrom': CameraInfo(['Leica', 'Leica M', 'M Monochrom', 'Monochrom', 'M', 'Monochrome'],
+                              Vendor.leica, 1.0, 'M Monochrom'),
+    'Canon EOS 5D': CameraInfo(['5D', 'EOS', 'Canon 5D'], Vendor.canon, 1.0, '5D'),
+    'Canon EOS 40D': CameraInfo(['40D', 'EOS', 'Canon 40D'], Vendor.canon, 1.6, '40D'),
+    'Canon EOS DIGITAL REBEL': CameraInfo(['300D', 'EOS'], Vendor.canon, 1.6, '300D'),
+    'RICOH THETA S': CameraInfo(['Ricoh', 'Theta S', 'Theta', 'Panorama', 'Spherical'],
+                                Vendor.ricoh, 1.0, 'Ricoh Theta S'),
+    'SM-G920T': CameraInfo(['Samsung', 'Phone', 'Galaxy 6'],
+                           Vendor.samsung, 1.0, 'Samsung Galaxy 6'),
+    'Glass1': CameraInfo(['Google', 'Glass', 'Google Glass', 'Android'],
+                         Vendor.google, 8.0, 'Google Glass')
 }
 
 Lenses = {
-	'XF18-55mmF2.8-4 R LM OIS': LensInfo(['18-55mm','f/2.8']),
-	'XF90mmF2 R LM WR': LensInfo(['f/2.0']),
-	'XF56mmF1.2 R': LensInfo(['f/1.2']),
-	'XF35mmF1.4 R': LensInfo(['f/1.4']),
-	'XF35mmF2 R WR': LensInfo(['f/2.0']),
+    'XF18-55mmF2.8-4 R LM OIS': LensInfo(['18-55mm', 'f/2.8']),
+    'XF90mmF2 R LM WR': LensInfo(['f/2.0']),
+    'XF56mmF1.2 R': LensInfo(['f/1.2']),
+    'XF35mmF1.4 R': LensInfo(['f/1.4']),
+    'XF35mmF2 R WR': LensInfo(['f/2.0']),
     'XF23mmF1.4 R': LensInfo(['f/1.4']),
-	'XF23mmF2 R WR': LensInfo(['f/2.0']),
-	'XF18mmF2 R': LensInfo(		['f/2.0']),
-	'XF16mmF1.4 R WR': LensInfo(['f/1.4']),
+    'XF23mmF2 R WR': LensInfo(['f/2.0']),
+    'XF18mmF2 R': LensInfo(['f/2.0']),
+    'XF16mmF1.4 R WR': LensInfo(['f/1.4']),
     'XF14mmF2.8 R': LensInfo(['f/1.4']),
-	'Leica Summicron-M 50mm f/2 (IV, V)': LensInfo(['Summicron','Summicron-M','f/2'])
-);
+    'Leica Summicron-M 50mm f/2 (IV, V)': LensInfo(['Summicron', 'Summicron-M', 'f/2'])
+}
 
-var AdaptedLenses = {
-	45: LensInfo(['Zeiss','Contax','Planar','f/2','Fotodiox','planar245','carlzeiss'], 2 ),
-	90: LensInfo(['Zeiss','Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss'], 2.8 ),
-	50: LensInfo(['Meike','f/2.0'], 2.0 ),
-	51: LensInfo(['Canon','Canon FD','f/1.8','Fotodiox'], 1.8 ),
-	16: LensInfo(['Rokinon','f/2.8'], 2.8 ),
-};
+AdaptedLenses = {
+    45: LensInfo(['Zeiss', 'Contax', 'Planar', 'f/2', 'Fotodiox', 'planar245', 'carlzeiss'], 2),
+    90: LensInfo(['Zeiss', 'Contax', 'Sonnar', 'f/2.8', 'Fotodiox', 'sonnar2890', 'carlzeiss'],
+                 2.8),
+    50: LensInfo(['Meike', 'f/2.0'], 2.0),
+    51: LensInfo(['Canon', 'Canon FD', 'f/1.8', 'Fotodiox'], 1.8),
+    16: LensInfo(['Rokinon', 'f/2.8'], 2.8),
+}
 
+sys.exit()
+
+'''
 
 /// from xlib ///////////////////////////////////////
 
@@ -116,8 +130,8 @@ var AdaptedLenses = {
 //
 Set = function Set() {}; // funny idiom unique to PS?
 Set.add = function(ar, str) {
-	'use strict';
-	return Set.merge(ar, new Array(str));
+  'use strict';
+  return Set.merge(ar, new Array(str));
 };
 Set.remove = function(ar, str) {
   'use strict';
@@ -188,38 +202,38 @@ function jobName(name) { // document name input
 //////// add keywords from a list ///
 
 function addKeys(Info,ItemList) {
-	'use strict';
-	var i;
-	for (i in ItemList) {
-		Info.keywords = Set.add(Info.keywords, ItemList[i]);
-	}
+  'use strict';
+  var i;
+  for (i in ItemList) {
+    Info.keywords = Set.add(Info.keywords, ItemList[i]);
+  }
 }
 
 ///////// Camera-model bits ////////////////////
 
 function cameraID(ModelName,info,descBits) {
-	'use strict';
-	var camera = Cameras[ModelName];
-	if (camera) {
-		addKeys(info,camera.info);
-		for (var v in camera) {
-			if (v !== 'info') {
-				descBits[v] = camera[v];
-			}
-		}
-	} else {
-		if (descBits.alertText !== '') {
-			descBits.alertText += '\n';
-		}
-		descBits.alertText += ('Model: ="' + ModelName + '"');
-		descBits.camera = ('Camera: '+ModelName);
+  'use strict';
+  var camera = Cameras[ModelName];
+  if (camera) {
+    addKeys(info,camera.info);
+    for (var v in camera) {
+      if (v !== 'info') {
+        descBits[v] = camera[v];
+      }
     }
-	return info;
+  } else {
+    if (descBits.alertText !== '') {
+      descBits.alertText += '\n';
+    }
+    descBits.alertText += ('Model: ="' + ModelName + '"');
+    descBits.camera = ('Camera: '+ModelName);
+    }
+  return info;
 }
 
 // stub to provide modern-style string "trim()"
 function trim11 (str) {
-	'use strict';
+  'use strict';
     str = str.replace(/^\s+/, '');
     for (var i = str.length - 1; i >= 0; i--) {
         if (/\S/.test(str.charAt(i))) {
@@ -234,7 +248,7 @@ function trim11 (str) {
 
 function scanEXIFstuff(doc)
 {
-	'use strict';
+  'use strict';
     var info = doc.info;
     var FL = 0;
     var oFL = 0;
@@ -243,217 +257,217 @@ function scanEXIFstuff(doc)
     var knownLens = false;
     var knownPerson = false;
     var descBits = {
-    	'camera': 'Digital',
-    	lens: '',
-    	shutter: '',
-    	aperture: '',
-    	iso: '',
-    	flash: '',
-    	alertText: '',
-    	'multiplier': 1.6,
-    	'brand': 'Ubuntu',
-    	minAperture: 1.4,
+      'camera': 'Digital',
+      lens: '',
+      shutter: '',
+      aperture: '',
+      iso: '',
+      flash: '',
+      alertText: '',
+      'multiplier': 1.6,
+      'brand': 'Ubuntu',
+      min_aperture: 1.4,
     };
     for (var i = 0; i < info.exif.length; i++) {
-		var q = info.exif[i];
-		var qName = trim11(q[1]);
-		switch (q[0]) {
-			case 'Make':
-			    info.keywords = Set.add(info.keywords, qName);
-			    break;
-			case 'Model':
-				cameraID(qName,info,descBits);  // identify specific model of camera
-			    break;
-			case 'Date Time':
-			case 'Date Time Original':
-			    info.keywords = Set.add(info.keywords,q[1].substr(0,4));
-			    break;
-			case 'Focal Length in 35mm Film':
-			    FL = parseFloat(q[1]);
-			    break;
-			case 'Shutter Speed':
-				descBits.shutter = (' - '+q[1]);
-			    break;
-			case 'Focal Length':
-			    oFL = parseFloat(q[1]);
-			    fls = (Math.floor(oFL+0.49)).toString();
-				descBits.lens = (', '+fls+'mm');
-			    break;
-			case 'F-Stop':
-				descBits.aperture = (' '+q[1]);
-			    break;
-			case 'ISO Speed Ratings':
-				descBits.iso = (', ISO '+q[1]);
-			    break;
-			case 'Copyright':
-				if (q[1].match(/[0-9]/) && !knownPerson) {
+    var q = info.exif[i];
+    var qName = trim11(q[1]);
+    switch (q[0]) {
+      case 'Make':
+          info.keywords = Set.add(info.keywords, qName);
+          break;
+      case 'Model':
+        cameraID(qName,info,descBits);  // identify specific model of camera
+          break;
+      case 'Date Time':
+      case 'Date Time Original':
+          info.keywords = Set.add(info.keywords,q[1].substr(0,4));
+          break;
+      case 'Focal Length in 35mm Film':
+          FL = parseFloat(q[1]);
+          break;
+      case 'Shutter Speed':
+        descBits.shutter = (' - '+q[1]);
+          break;
+      case 'Focal Length':
+          oFL = parseFloat(q[1]);
+          fls = (Math.floor(oFL+0.49)).toString();
+        descBits.lens = (', '+fls+'mm');
+          break;
+      case 'F-Stop':
+        descBits.aperture = (' '+q[1]);
+          break;
+      case 'ISO Speed Ratings':
+        descBits.iso = (', ISO '+q[1]);
+          break;
+      case 'Copyright':
+        if (q[1].match(/[0-9]/) && !knownPerson) {
                     if (q[1].indexOf(Person.fullName) < 0) {
-    					descBits.alertText += ('\nEXIF Copyright Notice:\n"'+q[1]+'"');
+              descBits.alertText += ('\nEXIF Copyright Notice:\n"'+q[1]+'"');
                     }
-				}
-			    break;
-			case 'Scene Capture Type':
-				if (q[1] !== 'Normal') {
-				    info.keywords = Set.add(info.keywords, q[1]);
-				}
-			    break;
-			case 'Light Source':
-				if (q[1] !== 'Unknown') {
-				    info.keywords = Set.add(info.keywords, q[1]);
-				}
-			    break;
-			case 'Flash':
-			    var flashVal = parseInt(q[1]);
-			    if ((flashVal < 16) && (flashVal > 0)) {
+        }
+          break;
+      case 'Scene Capture Type':
+        if (q[1] !== 'Normal') {
+            info.keywords = Set.add(info.keywords, q[1]);
+        }
+          break;
+      case 'Light Source':
+        if (q[1] !== 'Unknown') {
+            info.keywords = Set.add(info.keywords, q[1]);
+        }
+          break;
+      case 'Flash':
+          var flashVal = parseInt(q[1]);
+          if ((flashVal < 16) && (flashVal > 0)) {
                     descBits.alertText += ('\nflashVal: '+flashVal+'');
-					info.keywords = Set.add(info.keywords, 'Strobe');
-					descBits.flash = '+ Flash';
-			    }
-			    break;
-			case 'Scene Type':
-			    info.source = q[1];
-			    break;
-			case 'Custom Rendered':
-			    if (q[1] === 'Custom Process') {
-					info.keywords = Set.add(info.keywords, 'BW');
-			    }
-			    break;
-			case 'Artist':
-			    knownPerson = (q[1].indexOf(Person.fullname) !== -1);
-			    for (var ip=0; ip<Person.altNames.length; ip+=1) {
-					knownPerson |= (q[1] === Person.altNames[ip]);
-			    }
-			    if (!knownPerson) {
-    			    if (descBits.alertText !== '') {
-    					descBits.alertText += '\n';
-    			    }
-    			    descBits.alertText += ('Artist tag: "'+q[1]+'"');
+          info.keywords = Set.add(info.keywords, 'Strobe');
+          descBits.flash = '+ Flash';
+          }
+          break;
+      case 'Scene Type':
+          info.source = q[1];
+          break;
+      case 'Custom Rendered':
+          if (q[1] === 'Custom Process') {
+          info.keywords = Set.add(info.keywords, 'BW');
+          }
+          break;
+      case 'Artist':
+          knownPerson = (q[1].indexOf(Person.fullname) !== -1);
+          for (var ip=0; ip<Person.altNames.length; ip+=1) {
+          knownPerson |= (q[1] === Person.altNames[ip]);
+          }
+          if (!knownPerson) {
+              if (descBits.alertText !== '') {
+              descBits.alertText += '\n';
+              }
+              descBits.alertText += ('Artist tag: "'+q[1]+'"');
                 }
-			    break;
-			case 'Exposure Program':
-				info.keywords = Set.add(info.keywords, q[1]);
-				break;
-			case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
-				var lens = Lenses[q[1]];
-				if (lens) {
-					addKeys(info,lens.info);
-				} else {
-					descBits.alertText += (q[1]);
-				}
-				knownLens = true;
-				break;
-			case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
-			case 'Orientation': // debugMsg=true;
-			case 'Color Space':
-			case 'GPS Version': // theta s
-			case 'GPS Image Direction Ref': // theta s
-			case 'GPS Image Direction': // theta s
-			case 'Image Description': // theta s single \n char
-			case 'Components Configuration': // theta s
-			case 'Pixel X Dimension':
-			case 'Pixel Y Dimension':
-			case 'Focal Plane X Resolution':
-			case 'Focal Plane Y Resolution':
-			case 'Focal Plane Resolution Unit':
-			case 'Image Width':
-			case 'Image Height':
-			case 'X Resolution':
-			case 'Y Resolution':
-			case 'Resolution Unit':
-			case 'yCbCr Positioning':
-			case 'Exposure Time':
-			case 'Aperture Value':
-			case 'Max Aperture Value':
-			case 'Exposure Bias Value':
-			case 'Exposure Mode': //debugMsg=true;
-			case 'White Balance':
-			case 'Sensing Method':
-			case 'File Source':
-			case 'ExifVersion':
-			case 'FlashPix Version':
-			case 'Date Time Digitized':
-			case 'Software':
-			case 'Digital Zoom Ratio':
-			case 'Compressed Bits Per Pixel':
-			case 'Gain Control':
-			case 'Contrast':
-			case 'Saturation':
-			case 'Sharpness':
-			case 'Brightness Value': // first seen on x100s
-			case 'Subject Distance Range': // first seen on x100s
-			case 'Subject Distance': // first seen on Glass
-			case 'Image Unique ID': // first seen on Glass
-			case 'EXIF tag 258': // '8 8 8' Bits Per Sample
-			case 'EXIF tag 262': // 'RGB' Photometric Interpretation
-			case 'EXIF tag 277': // "3' Samples Per Pixel (channels)
-			case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
-			case 'EXIF tag 42037': // lens ser #
-			case 'EXIF tag 42034': // lens info "rdf:Seq"
-			case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
-			case 'EXIF tag 42033': // X100F serial# (LX7 too?)
-			case 'EXIF tag 41483': // Glass, unknown
+          break;
+      case 'Exposure Program':
+        info.keywords = Set.add(info.keywords, q[1]);
+        break;
+      case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
+        var lens = Lenses[q[1]];
+        if (lens) {
+          addKeys(info,lens.info);
+        } else {
+          descBits.alertText += (q[1]);
+        }
+        knownLens = true;
+        break;
+      case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
+      case 'Orientation': // debugMsg=true;
+      case 'Color Space':
+      case 'GPS Version': // theta s
+      case 'GPS Image Direction Ref': // theta s
+      case 'GPS Image Direction': // theta s
+      case 'Image Description': // theta s single \n char
+      case 'Components Configuration': // theta s
+      case 'Pixel X Dimension':
+      case 'Pixel Y Dimension':
+      case 'Focal Plane X Resolution':
+      case 'Focal Plane Y Resolution':
+      case 'Focal Plane Resolution Unit':
+      case 'Image Width':
+      case 'Image Height':
+      case 'X Resolution':
+      case 'Y Resolution':
+      case 'Resolution Unit':
+      case 'yCbCr Positioning':
+      case 'Exposure Time':
+      case 'Aperture Value':
+      case 'Max Aperture Value':
+      case 'Exposure Bias Value':
+      case 'Exposure Mode': //debugMsg=true;
+      case 'White Balance':
+      case 'Sensing Method':
+      case 'File Source':
+      case 'ExifVersion':
+      case 'FlashPix Version':
+      case 'Date Time Digitized':
+      case 'Software':
+      case 'Digital Zoom Ratio':
+      case 'Compressed Bits Per Pixel':
+      case 'Gain Control':
+      case 'Contrast':
+      case 'Saturation':
+      case 'Sharpness':
+      case 'Brightness Value': // first seen on x100s
+      case 'Subject Distance Range': // first seen on x100s
+      case 'Subject Distance': // first seen on Glass
+      case 'Image Unique ID': // first seen on Glass
+      case 'EXIF tag 258': // '8 8 8' Bits Per Sample
+      case 'EXIF tag 262': // 'RGB' Photometric Interpretation
+      case 'EXIF tag 277': // "3' Samples Per Pixel (channels)
+      case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
+      case 'EXIF tag 42037': // lens ser #
+      case 'EXIF tag 42034': // lens info "rdf:Seq"
+      case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
+      case 'EXIF tag 42033': // X100F serial# (LX7 too?)
+      case 'EXIF tag 41483': // Glass, unknown
                 break;
                 // descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
-				// break;
-			default:
-				debugMsg = true;
-		}
-		if (debugMsg) {
-		    if (descBits.alertText !== '') {
-		    	descBits.alertText += '\n';
-		    }
-		    descBits.alertText += ('EXIF "'+q[0]+'" was "'+q[1]+'"');
-			debugMsg = false;
-		}
+        // break;
+      default:
+        debugMsg = true;
+    }
+    if (debugMsg) {
+        if (descBits.alertText !== '') {
+          descBits.alertText += '\n';
+        }
+        descBits.alertText += ('EXIF "'+q[0]+'" was "'+q[1]+'"');
+      debugMsg = false;
+    }
     }
     //
     //
     if (descBits.brand === Vendor.lumix) {
-    	// used to accomodate the Leica/Panasonic relationship
-    	addKeys(info,['Leica','Lumix','Leicasonic','Panaleica']);
+      // used to accomodate the Leica/Panasonic relationship
+      addKeys(info,['Leica','Lumix','Leicasonic','Panaleica']);
     } else if (descBits.brand === Vendor.fuji) {
-		// Various "Fuji X' cameras
-    	addKeys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-    	var aLens = AdaptedLenses[oFL];
-    	if (aLens && !knownLens) {
-    		addKeys(info,aLens.info);
-    		descBits.minAperture = aLens.minAperture;
-    	}
+    // Various "Fuji X' cameras
+      addKeys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
+      var aLens = AdaptedLenses[oFL];
+      if (aLens && !knownLens) {
+        addKeys(info,aLens.info);
+        descBits.min_aperture = aLens.min_aperture;
+      }
     }
     if (descBits.camera === 'Scanned') { // never saw any camera data - this must have been a film scan
-		addKeys(info,['film','scanned']);
+    addKeys(info,['film','scanned']);
     }
     if (FL <= 0) {
-		FL = oFL * descBits.multiplier;
-		FL = Math.floor(FL+0.49);
-	} else { // equivalent supplied by camera
-		fls = (Math.floor(oFL+0.49)).toString();
+    FL = oFL * descBits.multiplier;
+    FL = Math.floor(FL+0.49);
+  } else { // equivalent supplied by camera
+    fls = (Math.floor(oFL+0.49)).toString();
         if (fls.substr(0,1) === '0') {
            fls = fls.substr (1);
-	    }
-		info.keywords = Set.add(info.keywords, (fls+'mm_orig'));
+      }
+    info.keywords = Set.add(info.keywords, (fls+'mm_orig'));
     }
     if (FL > 0) {
-		if (FL <= 35) {
-		    info.keywords = Set.add(info.keywords, 'Wide Angle');
-		    if (FL < 27) {
-		    	info.keywords = Set.add(info.keywords, 'Ultra Wide Angle');
-		    }
-		} else if (FL >= 85) {
-		    info.keywords = Set.add(info.keywords, 'Telephoto');
-		}
-	    if (descBits.multiplier !== 1.0) {
-	        fls = FL.toString();
-	        if (fls.substr(0,1) === '0') {
-	           fls = fls.substr (1);
-		    }
-	        info.keywords = Set.add(info.keywords, (fls+'mm'));
-	        info.keywords = Set.add(info.keywords, (fls+'mm_equiv'));
-	        //info.keywords = Set.add(info.keywords, ('Mult:'+descBits.multiplier));
-		}
+    if (FL <= 35) {
+        info.keywords = Set.add(info.keywords, 'Wide Angle');
+        if (FL < 27) {
+          info.keywords = Set.add(info.keywords, 'Ultra Wide Angle');
+        }
+    } else if (FL >= 85) {
+        info.keywords = Set.add(info.keywords, 'Telephoto');
     }
-    if ((descBits.aperture === undefined) || (descBits.aperture < descBits.minAperture)) {
-    	descBits.aperture = descBits.minAperture;
+      if (descBits.multiplier !== 1.0) {
+          fls = FL.toString();
+          if (fls.substr(0,1) === '0') {
+             fls = fls.substr (1);
+        }
+          info.keywords = Set.add(info.keywords, (fls+'mm'));
+          info.keywords = Set.add(info.keywords, (fls+'mm_equiv'));
+          //info.keywords = Set.add(info.keywords, ('Mult:'+descBits.multiplier));
+    }
+    }
+    if ((descBits.aperture === undefined) || (descBits.aperture < descBits.min_aperture)) {
+      descBits.aperture = descBits.min_aperture;
     }
     return descBits;
 }
@@ -462,30 +476,30 @@ function scanEXIFstuff(doc)
 
 function aspectDesc(doc)
 {
-	'use strict';
+  'use strict';
     var info = doc.info;
     var l = Math.max(doc.width,doc.height);
     var s = Math.min(doc.width,doc.height);
     var aspect = (l/s);
     var wide = (doc.width > doc.height);
     if (aspect>2.36) {
-    	info.keywords = Set.add(info.keywords, 'Panorama');
-    	if (!wide) {
-	   		info.keywords = Set.add(info.keywords, 'Tall');
-	   	}
+      info.keywords = Set.add(info.keywords, 'Panorama');
+      if (!wide) {
+        info.keywords = Set.add(info.keywords, 'Tall');
+      }
     } else if (aspect>2.3) {
-    	info.keywords = Set.add(info.keywords, (wide?'2.35:1':'1:2.35'));	
+      info.keywords = Set.add(info.keywords, (wide?'2.35:1':'1:2.35')); 
     } else if (aspect>1.97) {
-    	info.keywords = Set.add(info.keywords, (wide?'2:1':'1:2'));	
+      info.keywords = Set.add(info.keywords, (wide?'2:1':'1:2')); 
     } else if (aspect>1.68) {
-	   	info.keywords = Set.add(info.keywords, (wide?'16:9':'9:16'));
+      info.keywords = Set.add(info.keywords, (wide?'16:9':'9:16'));
      } else if (aspect>1.45) {
-    	info.keywords = Set.add(info.keywords, (wide?'3:2':'2:3'));	
+      info.keywords = Set.add(info.keywords, (wide?'3:2':'2:3')); 
     } else if (aspect>1.25) {
-    	info.keywords = Set.add(info.keywords, (wide?'4:3':'3:4'));	
+      info.keywords = Set.add(info.keywords, (wide?'4:3':'3:4')); 
     } else {
-    	info.keywords = Set.add(info.keywords, 'Square');	    	
-    	info.keywords = Set.add(info.keywords, '1:1');	    	
+      info.keywords = Set.add(info.keywords, 'Square');       
+      info.keywords = Set.add(info.keywords, '1:1');        
     }
 }
 
@@ -493,43 +507,43 @@ function aspectDesc(doc)
 
 function main()
 {
-	'use strict';
+  'use strict';
     if (app.documents.length < 1) {    // stop if no document is opened.
-		alert('Sorry, No Current Document');
-		return;
+    alert('Sorry, No Current Document');
+    return;
     }
     var strtRulerUnits = app.preferences.rulerUnits;
     if (strtRulerUnits !== Units.PIXELS) {
-		app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
+    app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
     }
     var info = app.activeDocument.info;
     var msgs = '';
     var initKeys = info.keywords.length;
     // this dialog message temporarily disabled....
     //if (initKeys > 0) {
-	//	msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
+  //  msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
     //}
     var newKeys = [];
     if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
-		newKeys = newKeys.concat(['BW','Black_and_White','Black_&_White','Monochrome']);
+    newKeys = newKeys.concat(['BW','Black_and_White','Black_&_White','Monochrome']);
     }
     var dt = new Date();
     var thisYear = dt.getFullYear();
     var thisYearS = thisYear.toString();
     if (info.CreationDate === '') {
-		info.creationDate = dt.toString();
+    info.creationDate = dt.toString();
     }
     newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname,Person.city,Person.region]));
     //
     // keywords added to doc...
     //
-	newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
+  newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
     addKeys(info,newKeys);
     var descBits = scanEXIFstuff(app.activeDocument);
     aspectDesc(app.activeDocument);
     if (descBits.alertText !== '') {
-		if (msgs !== '') { msgs += '\n'; }
-		msgs += descBits.alertText;
+    if (msgs !== '') { msgs += '\n'; }
+    msgs += descBits.alertText;
     }
     info.author = Person.fullname;
     info.credit = Person.fullname;
@@ -538,38 +552,39 @@ function main()
     info.copyrightNotice = ' © '+thisYearS+' '+Person.fullname;
     info.ownerUrl = Person.url;
     if (info.title === '') {
-		var t = noExtension(app.activeDocument.name);
-		info.title = t.replace(/^bjorke_/,'');
+    var t = noExtension(app.activeDocument.name);
+    info.title = t.replace(/^bjorke_/,'');
     }
     // alert("New Title is ("+info.title+")");
     if (info.headline === '') {
-		info.headline = info.title;
+    info.headline = info.title;
     }
    if (info.caption === '') {
-		info.caption = (descBits.camera+
-						descBits.lens+
-						descBits.shutter+
-						descBits.aperture+
-						descBits.iso+
-						descBits.flash+'\n'+
-						Person.blog+'\n'+
-						noExtension(app.activeDocument.name));
-		info.captionWriter = Person.fullname;
+    info.caption = (descBits.camera+
+            descBits.lens+
+            descBits.shutter+
+            descBits.aperture+
+            descBits.iso+
+            descBits.flash+'\n'+
+            Person.blog+'\n'+
+            noExtension(app.activeDocument.name));
+    info.captionWriter = Person.fullname;
     }
     if (info.city === '') {info.city = Person.city; }
     if (info.provinceState === '') {info.provinceState = Person.region; }
     if (info.country === '') { info.country = Person.country; }
     if (initKeys === 0) {
-		info.keywords = Set.add(info.keywords, Person.reminder);
+    info.keywords = Set.add(info.keywords, Person.reminder);
     }
     if (msgs !== '') {
-		alert (msgs);
+    alert (msgs);
     }
     if (strtRulerUnits !== Units.PIXELS) {
-		app.preferences.rulerUnits = strtRulerUnits;
+    app.preferences.rulerUnits = strtRulerUnits;
     }
 }
 
 main();
 
 // eof
+'''

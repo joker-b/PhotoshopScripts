@@ -58,7 +58,7 @@ class Vendor:
 class CameraInfo:
     'bundler'
     def __init__(self, Info=None, Brand='', Multiplier=1.0, Camera='info'):
-        self.info = Info if Info is not None else ['camera']
+        self.info = Info if Info is not None else ['unknown camera']
         self.brand = Brand
         self.multiplier = Multiplier
         self.camera = Camera
@@ -66,11 +66,11 @@ class CameraInfo:
 class LensInfo:
     'bundler'
     def __init__(self, Info=None, MinAperture=None):
-        self.info = Info if Info is not None else ['lens']
+        self.info = Info if Info is not None else ['unknown lens']
         self.min_aperture = MinAperture
 
 
-Cameras = {
+KNOWN_CAMERAS = {
     'DMC-LX1': CameraInfo(['LX1', 'DMC_LX1'], Vendor.lumix, 4.4, 'LX1'),
     'DMC-LX2': CameraInfo(['LX2', 'DMC_LX2'], Vendor.lumix, 4.4, 'LX2'),
     'DMC-LX3': CameraInfo(['LX3', 'DMC_LX3'], Vendor.lumix, 4.67, 'LX3'),
@@ -91,11 +91,13 @@ Cameras = {
                                 Vendor.ricoh, 1.0, 'Ricoh Theta S'),
     'SM-G920T': CameraInfo(['Samsung', 'Phone', 'Galaxy 6'],
                            Vendor.samsung, 1.0, 'Samsung Galaxy 6'),
+    'SM-N950U': CameraInfo(['Samsung', 'Phone', 'Galaxy Note 8', 'Note 8'],
+                           Vendor.samsung, 1.0, 'Samsung Galaxy Note 8'),
     'Glass1': CameraInfo(['Google', 'Glass', 'Google Glass', 'Android'],
                          Vendor.google, 8.0, 'Google Glass')
 }
 
-Lenses = {
+STANDARD_LENSES = {
     'XF18-55mmF2.8-4 R LM OIS': LensInfo(['18-55mm', 'f/2.8']),
     'XF90mmF2 R LM WR': LensInfo(['f/2.0']),
     'XF56mmF1.2 R': LensInfo(['f/1.2']),
@@ -109,7 +111,7 @@ Lenses = {
     'Leica Summicron-M 50mm f/2 (IV, V)': LensInfo(['Summicron', 'Summicron-M', 'f/2'])
 }
 
-AdaptedLenses = {
+ADAPTED_LENSES = {
     45: LensInfo(['Zeiss', 'Contax', 'Planar', 'f/2', 'Fotodiox', 'planar245', 'carlzeiss'], 2),
     90: LensInfo(['Zeiss', 'Contax', 'Sonnar', 'f/2.8', 'Fotodiox', 'sonnar2890', 'carlzeiss'],
                  2.8),
@@ -119,6 +121,7 @@ AdaptedLenses = {
 }
 
 def get_properties(filename):
+    'call exiftool for JSON info'
     if not os.path.exists(filename):
         print('get_properties({}): no such file')
         return None
@@ -127,81 +130,100 @@ def get_properties(filename):
 
 KEYWORDS = {}
 
-def add_keys(ItemList):
+def add_keys(item_list):
     'add list items to KEYWORDS'
-    for i in ItemList:
+    for i in item_list:
         KEYWORDS[i] = 1
 
-def add_camera_info_keywords(ModelName):
+def add_camera_info_keywords(model_name):
     'look for data about this camera type, add to KEYWORDS'
-    camera = Cameras.get(ModelName)
+    camera = KNOWN_CAMERAS.get(model_name)
     if camera is not None:
         add_keys(camera.info)
         # also add to description?
     else:
-        print('Unknown camera {}'.format(ModelName))
+        print('Unknown camera {}'.format(model_name))
 
 DESC = {}
 INFO = {}
 
-IgnoreTags = [
-      'Metering Mode', # debugMsg=true; # e.g. "Spot"
-      'Orientation', # debugMsg=true;
-      'Color Space',
-      'GPS Version', # theta s
-      'GPS Image Direction Ref', # theta s
-      'GPS Image Direction', # theta s
-      'Image Description', # theta s single \n char
-      'Components Configuration', # theta s
-      'Pixel X Dimension',
-      'Pixel Y Dimension',
-      'Focal Plane X Resolution',
-      'Focal Plane Y Resolution',
-      'Focal Plane Resolution Unit',
-      'Image Width',
-      'Image Height',
-      'X Resolution',
-      'Y Resolution',
-      'Resolution Unit',
-      'yCbCr Positioning',
-      'Exposure Time',
-      'Aperture Value',
-      'Max Aperture Value',
-      'Exposure Bias Value',
-      'Exposure Mode', #debugMsg=true;
-      'White Balance',
-      'Sensing Method',
-      'File Source',
-      'ExifVersion',
-      'FlashPix Version',
-      'Date Time Digitized',
-      'Software',
-      'Digital Zoom Ratio',
-      'Compressed Bits Per Pixel',
-      'Gain Control',
-      'Contrast',
-      'Saturation',
-      'Sharpness',
-      'Brightness Value', # first seen on x100s
-      'Subject Distance Range', # first seen on x100s
-      'Subject Distance', # first seen on Glass
-      'Image Unique ID', # first seen on Glass
-      'EXIF tag 258', # '8 8 8' Bits Per Sample
-      'EXIF tag 262', # 'RGB' Photometric Interpretation
-      'EXIF tag 277', # "3' Samples Per Pixel (channels)
-      'EXIF tag 34864', # "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
-      'EXIF tag 42037', # lens ser #
-      'EXIF tag 42034', # lens info "rdf:Seq"
-      'EXIF tag 42035', # X-T1: "FUJIFILM' - Lens Maker I think
-      'EXIF tag 42033', # X100F serial# (LX7 too?)
-      'EXIF tag 41483', # Glass, unknown
-      ]
+IGNORE_TAGS = [
+    'MeteringMode', # debugMsg=true; # e.g. "Spot"
+    'Orientation', # debugMsg=true;
+    'ColorSpace',
+    'GPSVersion', # theta s
+    'GPSImageDirectionRef', # theta s
+    'GPSImageDirection', # theta s
+    'ImageDescription', # theta s single \n char
+    'ComponentsConfiguration', # theta s
+    'PixelXDimension',
+    'PixelYDimension',
+    'FocalPlaneXResolution',
+    'FocalPlaneYResolution',
+    'FocalPlaneResolutionUnit',
+    'ImageWidth',
+    'ImageHeight',
+    'XResolution',
+    'YResolution',
+    'ResolutionUnit',
+    'yCbCrPositioning',
+    'ExposureTime',
+    'ApertureValue',
+    'MaxApertureValue',
+    'ExposureBiasValue',
+    'ExposureMode', #debugMsg=true;
+    'WhiteBalance',
+    'SensingMethod',
+    'FileSource',
+    'ExifVersion',
+    'FlashPixVersion',
+    'DateTimeDigitized',
+    'Software',
+    'DigitalZoomRatio',
+    'CompressedBitsPerPixel',
+    'GainControl',
+    'Contrast',
+    'Saturation',
+    'Sharpness',
+    'BrightnessValue', # first seen on x100s
+    'SubjectDistanceRange', # first seen on x100s
+    'SubjectDistance', # first seen on Glass
+    'ImageUniqueID', # first seen on Glass
+    'EXIFtag258', # '88 8' Bits Per Sample
+    'EXIFtag262', # 'RGB' Photometric Interpretation
+    'EXIFtag277', # "3' Samples Per Pixel (channels)
+    'EXIFtag34864', # "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
+    'EXIFtag42037', # lens ser #
+    'EXIFtag42034', # lens info "rdf:Seq"
+    'EXIFtag42035', # X-T1: "FUJIFILM' - Lens Maker I think
+    'EXIFtag42033', # X100F serial# (LX7 too?)
+    'EXIFtag41483', # Glass, unknown
+    'SourceFile', # (/home/kevinbjorke/pix/tester.jpg)
+    'ExifToolVersion', # (11.16)
+    'FileName', # (tester.jpg)
+    'Directory', # (/home/kevinbjorke/pix)
+    'FileSize', # (746 kB)
+    'FileModifyDate', # (2020:05:30 15:32:11-07:00)
+    'FileAccessDate', # (2020:06:02 19:27:24-07:00)
+    'FileInodeChangeDate', # (2020:05:30 15:32:11-07:00)
+    'FilePermissions', # (rw-r--r--)
+    'FileType', # (JPEG)
+    'FileTypeExtension', # (jpg)
+    'MIMEType', # (image/jpeg)
+    'JFIFVersion', # (1.01)
+    'ExifByteOrder', # (Little-endian (Intel, II))
+    'ModifyDate', # (2020:04:07 15:57:47)
+    'YCbCrPositioning', # (Centered)
+   ]
 
 def set_fl(q):
-    oFL = float(q[1])
+    'focal length'
+    n = re.sub(r'([0-9.]+).*', r'\1', q)
+    oFL = float(n)
     DESC['lens'] = '{}mm'.format(math.floor(oFL+0.49))
 
 def assign_copyright(q):
+    'image already has a copyright'
     print('EXIF Copyright: {}'.format(q))
     '''
     if (re.match(r'[0-9]') and not knownPerson):
@@ -210,14 +232,17 @@ def assign_copyright(q):
             '''
 
 def capture_type(q):
+    'may be abnormal'
     if q != 'Normal':
         KEYWORDS[q] = 1
 
 def lightsource_type(q):
+    'e.g. flash'
     if q != 'Unknown':
         KEYWORDS[q] = 1
 
 def flash_type(q):
+    'if any'
     if q == 'No Flash':
         return
     flashVal = int(q)
@@ -227,10 +252,12 @@ def flash_type(q):
     DESC['flash'] = '+ Flash';
 
 def custom(q):
+    'e.g., black and white'
     if q == 'Custom Process':
         KEYWORDS['BW'] = 1
 
 def artist(q):
+    'no need to reset for a known person'
     knownPerson = (q[1].indexOf(Person.fullname) != -1)
     for ip in range(len(Person.altNames)):
       knownPerson |= (q[1] == Person.altNames[ip]);
@@ -238,55 +265,106 @@ def artist(q):
       print('Artist tag: "{}"'.format(q));
 
 def lens_id(q):
-    lens = Lenses.get(q)
+    'seek info for known lenses'
+    lens = STANDARD_LENSES.get(q)
     if lens is None:
         print('Unknown lens {}'.format(q))
         return
-    add_keys(info,lens.info)
+    add_keys(info, lens.info)
     knownLens = True
 
 def setk(q):
+    'single keyword'
     KEYWORDS[q] = 1
 
 def setd(v, q):
+    'single item in description'
     DESC[v] = q
 
 def seti(v, q):
+    'single item in INFO'
     INFO[v] = q
 
 def set_focal_length(q):
     FL=float(q)
 
 EXIFHandler = {
-    'Make': lambda q : setk(q),
-    'Model': lambda q : add_camera_info_keywords(q),
-    'Date Time': lambda q : setk(q[0:4]),
-    'Date Time Original': lambda q : setk(q[0:4]),
-    'Focal Length in 35mm Film': lambda q : set_focal_length(q),
-    'Shutter Speed': lambda q : setd('shutter', q),
-    'Focal Length': lambda q : set_fl(q),
-    'F-Stop': lambda q : setd('aperture', q),
-    'ISO Speed Ratings': lambda q : setd('iso', q),
-    'Copyright': lambda q : assign_copyright(q),
-    'Scene Capture Type': lambda q : capture_type(q),
-    'Light Source': lambda q : lightsource_type(q),
-    'Flash': lambda q : flash_type(q),
-    'Scene Type': lambda q : seti('source', q),
-    'Custom Rendered': lambda q : custom(q),
-    'Artist': lambda q : artist(q),
-    'Exposure Program': lambda q : setk(q),
-    'EXIF tag 42036': lambda q : lens_id(q), # X-T1: "XF18-55mmF2.8-4 R LM OIS'
+    'Make': setk,
+    #'Make': lambda q: setk(q),
+    'Model': lambda q: add_camera_info_keywords(q),
+    'DateTime': lambda q: setk(q[0:4]),
+    'DateTimeOriginal': lambda q: setk(q[0:4]),
+    'FocalLengthin35mmFilm': lambda q: set_focal_length(q),
+    'ShutterSpeed': lambda q: setd('shutter', q),
+    'FocalLength': lambda q: set_fl(q),
+    'F-Stop': lambda q: setd('aperture', q),
+    'ISOSpeedRatings': lambda q: setd('iso', q),
+    'Copyright': lambda q: assign_copyright(q),
+    'SceneCaptureType': lambda q: capture_type(q),
+    'LightSource': lambda q: lightsource_type(q),
+    'Flash': lambda q: flash_type(q),
+    'SceneType': lambda q: seti('source', q),
+    'CustomRendered': lambda q: custom(q),
+    'Artist': lambda q: artist(q),
+    'ExposureProgram': lambda q: setk(q),
+    'EXIFtag42036': lambda q: lens_id(q), # X-T1: "XF18-55mmF2.8-4 R LM OIS'
+
+    'FNumber': lambda q: setd('aperture', q), # (1.7)
+    'ISO': lambda q: setd('iso', q), # (160)
+    'CreateDate': lambda q: setk(q[0:4]), # (2020:04:07 15:57:47)
+    'ShutterSpeedValue': setk, # (1/30)
+    'ExposureCompensation': setk, # (0)
+    'UserComment': setk, # (+thing)
+    'FlashpixVersion': setk, # (0100)
+    'ExifImageWidth': setk, # (4032)
+    'ExifImageHeight': setk, # (2268)
+    'InteropIndex': setk, # (R98 - DCF basic file (sRGB))
+    'InteropVersion': setk, # (0100)
+    'FocalLengthIn35mmFormat': setk, # (26 mm)
+    'GPSVersionID': setk, # (2.2.0.0)
+    'GPSLatitudeRef': setk, # (North)
+    'GPSLongitudeRef': setk, # (West)
+    'GPSAltitudeRef': setk, # (Above Sea Level)
+    'GPSTimeStamp': setk, # (22:57:43)
+    'GPSDateStamp': setk, # (2020:04:07)
+    'Compression': setk, # (JPEG (old-style))
+    'ThumbnailOffset': setk, # (1128)
+    'ThumbnailLength': setk, # (5895)
+    'EncodingProcess': setk, # (Baseline DCT, Huffman coding)
+    'BitsPerSample': setk, # (8)
+    'ColorComponents': setk, # (3)
+    'YCbCrSubSampling': setk, # (YCbCr4:2:0 (2 2))
+    'Aperture': setk, # (1.7)
+    'GPSAltitude': setk, # (26.3 m Above Sea Level)
+    'GPSDateTime': setk, # (2020:04:07 22:57:43Z)
+    'GPSLatitude': setk, # (38 deg 14' 38.16" N)
+    'GPSLongitude': setk, # (122 deg 39' 29.00" W)
+    'GPSPosition': setk, # (38 deg 14' 38.16" N, 122 deg 39' 29.00" W)
+    'ImageSize': setk, # (4032x2268)
+    'Megapixels': setk, # (9.1)
+    'ScaleFactor35efl': setk, # (6.0)
+    'ThumbnailImage': setk, # ((Binary data 5895 bytes, use -b option to extract))
+    'CircleOfConfusion': setk, # (0.005 mm)
+    'FOV': setk, # (69.4 deg)
+    'FocalLength35efl': setk, # (4.3 mm (35 mm equivalent: 26.0 mm))
+    'HyperfocalDistance': setk, # (2.19 m)
+    'LightValue': setk, # (5.8)
+
 }
+
+MISSED_TAG = {}
 
 def read_tags(props):
     for t in props:
-        if IgnoreTags.__contains__(t):
+        if IGNORE_TAGS.__contains__(t):
             continue
-        g = EXIFHandler.get(t, None)
-        if not g:
-            print("Didn't parse tag {}".format(t))
+        handler = EXIFHandler.get(t, None)
+        if not handler:
+            print("Didn't parse tag {} ({})".format(t, props[t]))
+            MISSED_TAG[t] = props[t]
             continue
-        g(props[t])
+        print('{}:'.format(t))
+        handler(props[t])
 
 '''
 def read_desc_bits():
@@ -297,7 +375,7 @@ def read_desc_bits():
     } else if (descBits.brand === Vendor.fuji) {
     // Various "Fuji X' cameras
       add_keys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-      var aLens = AdaptedLenses[oFL];
+      var aLens = ADAPTED_LENSES[oFL];
       if (aLens && !knownLens) {
         add_keys(info,aLens.info);
         descBits.min_aperture = aLens.min_aperture;
@@ -460,7 +538,7 @@ function scanEXIFstuff(doc)
         KEYWORDS = Set.add(KEYWORDS, q[1]);
         break;
       case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
-        var lens = Lenses[q[1]];
+        var lens = STANDARD_LENSES[q[1]];
         if (lens) {
           add_keys(info,lens.info);
         } else {
@@ -540,7 +618,7 @@ function scanEXIFstuff(doc)
     } else if (descBits.brand === Vendor.fuji) {
     // Various "Fuji X' cameras
       add_keys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-      var aLens = AdaptedLenses[oFL];
+      var aLens = ADAPTED_LENSES[oFL];
       if (aLens && !knownLens) {
         add_keys(info,aLens.info);
         descBits.min_aperture = aLens.min_aperture;
@@ -704,3 +782,11 @@ image_filename = '/home/kevinbjorke/pix/tester.jpg'
 # TODO(kevin): get name from sys.argv
 
 all_mine(image_filename)
+
+print('\n{}'.format(list(KEYWORDS.keys())))
+print('\n{}'.format(list(DESC.keys())))
+print('\n{}'.format(list(INFO.keys())))
+
+print('\nmissed:')
+for t in MISSED_TAG:
+    print("    '{}': setk, # ({})".format(t, MISSED_TAG[t]))

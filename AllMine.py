@@ -142,6 +142,7 @@ def add_camera_info_keywords(ModelName):
         print('Unknown camera {}'.format(ModelName))
 
 DESC = {}
+INFO = {}
 
 IgnoreTags = [
       'Metering Mode', # debugMsg=true; # e.g. "Spot"
@@ -217,6 +218,8 @@ def lightsource_type(q):
         KEYWORDS[q] = 1
 
 def flash_type(q):
+    if q == 'No Flash':
+        return
     flashVal = int(q)
     if ((flashVal < 16) and (flashVal > 0)):
             print('Flash value was {}'.format(q))
@@ -242,32 +245,44 @@ def lens_id(q):
     add_keys(info,lens.info)
     knownLens = True
 
+def setk(q):
+    KEYWORDS[q] = 1
+
+def setd(v, q):
+    DESC[v] = q
+
+def seti(v, q):
+    INFO[v] = q
+
+def set_focal_length(q):
+    FL=float(q)
+
 EXIFHandler = {
-      'Make': lambda q : KEYWORDS[q] = 1,
-      'Model': lambda q : add_camera_info_KEYWORDS(q),
-      'Date Time': lambda q : KEYWORDS[q[0:4]] = 1,
-      'Date Time Original': lambda q : KEYWORDS[q[0:4]] = 1,
-      'Focal Length in 35mm Film': lambda q : FL = float(q),
-      'Shutter Speed': lambda q : DESC['shutter'] = q,
-      'Focal Length': lambda q : set_fl(q),
-      'F-Stop': lambda q : DESC['aperture'] = q,
-      'ISO Speed Ratings': lambda q : DESC['iso'] = q,
-      'Copyright': lambda q : assign_copyright(q),
-      'Scene Capture Type': lambda q : capture_type(q),
-      'Light Source': lambda q : lightsource_type(q),
-      'Flash': lambda q : flash_type(q),
-      'Scene Type': lambda q : INFO['source'] = q,
-      'Custom Rendered': lambda q : custom(q),
-      'Artist': lambda q : artist(q),
-      'Exposure Program': lambda q : KEYWORDS[q] = 1,
-      'EXIF tag 42036': lambda q : lens_id(q), # X-T1: "XF18-55mmF2.8-4 R LM OIS'
+    'Make': lambda q : setk(q),
+    'Model': lambda q : add_camera_info_keywords(q),
+    'Date Time': lambda q : setk(q[0:4]),
+    'Date Time Original': lambda q : setk(q[0:4]),
+    'Focal Length in 35mm Film': lambda q : set_focal_length(q),
+    'Shutter Speed': lambda q : setd('shutter', q),
+    'Focal Length': lambda q : set_fl(q),
+    'F-Stop': lambda q : setd('aperture', q),
+    'ISO Speed Ratings': lambda q : setd('iso', q),
+    'Copyright': lambda q : assign_copyright(q),
+    'Scene Capture Type': lambda q : capture_type(q),
+    'Light Source': lambda q : lightsource_type(q),
+    'Flash': lambda q : flash_type(q),
+    'Scene Type': lambda q : seti('source', q),
+    'Custom Rendered': lambda q : custom(q),
+    'Artist': lambda q : artist(q),
+    'Exposure Program': lambda q : setk(q),
+    'EXIF tag 42036': lambda q : lens_id(q), # X-T1: "XF18-55mmF2.8-4 R LM OIS'
 }
 
 def read_tags(props):
     for t in props:
         if IgnoreTags.__contains__(t):
             continue
-        g = EXIFHandler.get(t)
+        g = EXIFHandler.get(t, None)
         if not g:
             print("Didn't parse tag {}".format(t))
             continue
@@ -325,7 +340,7 @@ def read_desc_bits():
     }
     return descBits;
 }
-
+'''
 def all_mine(filename):
     props = get_properties(filename)
     if props is None:
@@ -334,8 +349,8 @@ def all_mine(filename):
     basename = os.path.splitext(os.path.split(filename)[-1])[0]
     jobname = re.sub(r'(_[A-Z0-9]{4}\d{4}.*)', '', basename)
     print('{} and {}'.format(basename, jobname))
-    read_tags(props)
-'''
+    read_tags(props[0])
+
 
 
 
@@ -373,7 +388,7 @@ function scanEXIFstuff(doc)
           KEYWORDS = Set.add(KEYWORDS, qName);
           break;
       case 'Model':
-        add_camera_info_KEYWORDS(qName,info,descBits);  // identify specific model of camera
+        add_camera_keys(qName,info,descBits);  // identify specific model of camera
           break;
       case 'Date Time':
       case 'Date Time Original':

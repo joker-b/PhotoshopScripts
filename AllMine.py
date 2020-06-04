@@ -126,20 +126,20 @@ ADAPTED_LENSES = {
 KEYWORDS = {}
 INFO = {}
 DESC = {
-      'camera': 'Digital',
-      'lens': '',
-      'shutter': '',
-      'aperture': '',
-      'iso': '',
-      'flash': '',
-      'alertText': '',
-      'multiplier': 1.6,
-      'brand': 'Ubuntu',
-      'min_aperture': 1.4,
-    }
-FL = 0
-oFL = 0
+    'camera': 'Digital',
+    'lens': '',
+    'shutter': '',
+    'aperture': '',
+    'iso': '',
+    'flash': '',
+    'alertText': '',
+    'multiplier': 1.6,
+    'brand': 'Ubuntu',
+    'min_aperture': 1.4,
+}
 
+EQUIV_FOCAL_LEN = 0
+ORIG_FOCAL_LENGTH = 0
 
 def get_properties(filename):
     'call exiftool for JSON info'
@@ -149,22 +149,34 @@ def get_properties(filename):
     j = subprocess.run(["exiftool", "-json", filename], capture_output=True)
     return json.loads(j.stdout)
 
-def setk(q):
+def setk(tag_value):
     'single keyword'
-    KEYWORDS[q] = 1
+    KEYWORDS[tag_value] = 1
 
-def setd(v, q):
-    'single item in description'
-    DESC[v] = q
+def setk_if(tag_value, special_value):
+    'single keyword'
+    if tag_value == special_value:
+        setk(tag_value)
 
-def seti(v, q):
-    'single item in INFO'
-    INFO[v] = q
+def setk_unless(tag_value, special_value):
+    'single keyword'
+    if tag_value != special_value:
+        setk(tag_value)
 
 def add_keys(item_list):
     'add list items to KEYWORDS'
     for i in item_list:
-        KEYWORDS[i] = 1
+        setk(i)
+
+#
+
+def setd(item_name, tag_value):
+    'single item in description'
+    DESC[item_name] = tag_value
+
+def seti(item_name, tag_value):
+    'single item in INFO'
+    INFO[item_name] = tag_value
 
 #
 
@@ -195,6 +207,7 @@ IGNORE_TAGS = [
     'MaxApertureValue',
     'ExposureBiasValue',
     'ExposureMode', #debugMsg=true;
+    'ExposureProgram',
     'WhiteBalance',
     'SensingMethod',
     'FileSource',
@@ -264,7 +277,74 @@ IGNORE_TAGS = [
     'ThumbnailImage', # ((Binary data 5895 bytes, use -b option to extract))
     'CircleOfConfusion', # (0.005 mm)
     'LightValue', # (5.8)
-    ]
+
+    'Version', # (0130)
+    'InternalSerialNumber', # (FFDT22907438     593530393432 2016:02:15 59302031046F)
+    'Quality', # (NORMAL ) # Fuji
+    'WhiteBalanceFineTune', # (Red +0, Blue +0)
+    'NoiseReduction', # (0 (normal))
+    'FujiFlashMode', # (Manual)
+    'FocusMode', # (Manual)
+    'AFMode', # (No)
+    'FocusPixel', # (3001 2001)
+    'AF-CSetting', # (Set 1 (multi-purpose))
+    'AF-CTrackingSensitivity', # (2)
+    'AF-CSpeedTrackingSensitivity', # (0)
+    'AF-CZoneAreaSwitching', # (Auto)
+    'SlowSync', # (Off)
+    'PictureMode', # (Aperture-priority AE)
+    'ExposureCount', # (1)
+    'ShadowTone', # (0 (normal))
+    'HighlightTone', # (0 (normal))
+    'LensModulationOptimizer', # (On)
+    'GrainEffect', # (Off)
+    'ShutterType', # (Mechanical)
+    'AutoBracketing', # (On)
+    'SequenceNumber', # (1)
+    'BlurWarning', # (None)
+    'FocusWarning', # (Good)
+    'ExposureWarning', # (Good)
+    'DynamicRange', # (Standard)
+    'DynamicRangeSetting', # (Auto (100-400%))
+    'MinFocalLength', # (90)
+    'MaxFocalLength', # (90)
+    'MaxApertureAtMinFocal', # (2)
+    'MaxApertureAtMaxFocal', # (2)
+    'AutoDynamicRange', # (100%)
+    'ImageStabilization', # (None; Off; 0)
+    'ImageCount', # (18996)
+    'FlickerReduction', # (Off (0x00f1))
+    'FacesDetected', # (0)
+    'NumFaceElements', # (0)
+    'LensSerialNumber', # (57A05041)
+    'LensInfo', # (90mm f/2)
+    'LensMake', # (FUJIFILM)
+    'PrintIMVersion', # (0250)
+    'PreviewImageWidth', # (320)
+    'PreviewImageHeight', # (240)
+    'PreviewImage', # ((Binary data 13058 bytes, use -b option to extract))
+    'PreviewImageSize', # (320x240)
+
+    'RawImageFullSize', # (6160x4032)
+    'FujiLayout', # (12 12 12 12)
+    'XTransLayout', # (BGGRGG RGGBGG GBRGRB RGGBGG BGGRGG GRBGBR)
+    'RawExposureBias', # (+0.3)
+    'RawImageWidth', # (6032)
+    'RawImageHeight', # (4032)
+    'RawImageFullWidth', # (6160)
+    'RawImageFullHeight', # (4032)
+    'StripOffsets', # (360448)
+    'StripByteCounts', # (49674240)
+    'BlackLevel', # (1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019 1019)
+    'GeometricDistortionParams', # (327.7272727 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 0 0 0 0 0 0 0 0 0 0 0)
+    'WB_GRBLevelsStandard', # (302 386 833 17 302 680 490 21)
+    'WB_GRBLevelsAuto', # (302 552 594)
+    'WB_GRBLevels', # (302 552 594)
+    'ChromaticAberrationParams', # (360.5 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 5.6e-05 0.000106 0.000141 0.000156 0.000152 0.00015 0.000181 0.000181 0.000198 0.000213 2.3e-05 4.3e-05 5.7e-05 6.2e-05 6.1e-05 6e-05 6.1e-05 6.1e-05 4.8e-05 0)
+    'VignettingParams', # (327.7272727 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 100 99.82 99.67 99.6 99.63 99.6 99.27 98.52 96.68 94.38 91.37)
+    'BlueBalance', # (1.966887)
+    'RedBalance', # (1.827815)
+]
 
 # EXIF Tag handlers
 
@@ -278,65 +358,87 @@ def add_camera_info_keywords(model_name):
         print('Unknown camera {}'.format(model_name))
         setd('camera', None)
 
-def set_fl(q):
+def set_fl(tag_string):
     'focal length'
-    n = re.sub(r'([0-9.]+).*', r'\1', q)
-    oFL = float(n)
-    DESC['lens'] = '{}mm'.format(math.floor(oFL+0.49))
+    global ORIG_FOCAL_LENGTH
+    n = re.sub(r'([0-9.]+).*', r'\1', str(tag_string))
+    ORIG_FOCAL_LENGTH = float(n)
+    mm = '{}mm'.format(math.floor(ORIG_FOCAL_LENGTH+0.49))
+    setd('lens', mm)
+    setk(mm)
 
-def assign_copyright(q):
+def assign_copyright(tag_string):
     'image already has a copyright'
-    print('EXIF Copyright: {}'.format(q))
+    print('EXIF Copyright: {}'.format(tag_string))
     '''
     if (re.match(r'[0-9]') and not KNOWN_PERSON):
-        if (q[1].indexOf(Person.fullName) < 0):
-            DESC['alert'] += ('\nEXIF Copyright Notice:\n"'+q[1]+'"')
+        if (tag_string[1].indexOf(Person.fullName) < 0):
+            DESC['alert'] += ('\nEXIF Copyright Notice:\n"'+tag_string[1]+'"')
             '''
 
-def capture_type(q):
-    'may be abnormal'
-    if q != 'Normal':
-        KEYWORDS[q] = 1
-
-def lightsource_type(q):
-    'e.g. flash'
-    if q != 'Unknown':
-        KEYWORDS[q] = 1
-
-def flash_type(q):
+def flash_type(tag_string):
     'if any'
-    if q == 'No Flash':
+    if tag_string == 'No Flash':
         return
-    flashVal = int(q)
+    flashVal = int(tag_string)
     if ((flashVal < 16) and (flashVal > 0)):
-            print('Flash value was {}'.format(q))
-    KEYWORDS['Strobe'] = 1
+        print('Flash value was {}'.format(tag_string))
+    setk('Strobe')
     DESC['flash'] = '+ Flash';
 
-def custom(q):
+def custom(tag_string):
     'e.g., black and white'
-    if q == 'Custom Process':
-        KEYWORDS['BW'] = 1
+    if tag_string == 'Custom Process':
+        setk('BW')
 
-def artist(q):
+def artist(tag_string):
     'no need to reset for a known person'
-    KNOWN_PERSON = (q[1].indexOf(Person.fullname) != -1)
+    KNOWN_PERSON = True # for not TODO
+    return
+    KNOWN_PERSON = (tag_string.indexOf(Person.fullname) != -1)
     for ip in range(len(Person.altNames)):
-      KNOWN_PERSON |= (q[1] == Person.altNames[ip]);
+      KNOWN_PERSON |= (tag_string[1] == Person.altNames[ip]);
     if (not KNOWN_PERSON):
-      print('Artist tag: "{}"'.format(q));
+      print('Artist tag: "{}"'.format(tag_string));
 
-def lens_id(q):
+def lens_id(tag_string):
     'seek info for known lenses'
-    lens = STANDARD_LENSES.get(q)
+    lens = STANDARD_LENSES.get(tag_string)
     if lens is None:
-        print('Unknown lens {}'.format(q))
+        print('Unknown lens {}'.format(tag_string))
         return
     add_keys(lens.info)
     KNOWN_LENS = True
 
-def set_focal_length(q):
-    FL=float(q)
+def set_focal_length(tag_string):
+    'numeric effective focal length'
+    global EQUIV_FOCAL_LENGTH
+    v = float(tag_string)
+    if v > 0:
+        EQUIV_FOCAL_LENGTH = v
+
+def set_flash_comp(tag_string):
+    'special exceptions'
+    if tag_string == "0" or tag_string == 0:
+        return
+    setk("Flash Comp {}".format(tag_string))
+
+def rate(tag_string):
+    'watch for special ranking'
+    if tag_string == "0" or tag_string == 0:
+        return
+    setk("Rank {}".format(tag_string))
+
+def film_mode(tag_string):
+    film = re.sub(r'.*\((\w+)\).*',r'\1',tag_string)
+    setk(film)
+
+def add_comment(tag_string):
+    setd('COMMENT', tag_string)
+    setk(tag_string)
+
+def raw(tag_string):
+    setk('RAW')
 
 EXIFHandler = {
     'Make': setk,
@@ -350,13 +452,12 @@ EXIFHandler = {
     'F-Stop': lambda q: setd('aperture', q),
     'ISOSpeedRatings': lambda q: setd('iso', q),
     'Copyright': lambda q: assign_copyright(q),
-    'SceneCaptureType': lambda q: capture_type(q),
-    'LightSource': lambda q: lightsource_type(q),
+    'SceneCaptureType': lambda q: setk_unless(q, 'Normal'),
+    'LightSource': lambda q: setk_unless(q, 'Unknown'),
     'Flash': lambda q: flash_type(q),
     'SceneType': lambda q: seti('source', q),
     'CustomRendered': lambda q: custom(q),
     'Artist': lambda q: artist(q),
-    'ExposureProgram': lambda q: setk(q),
     'EXIFtag42036': lambda q: lens_id(q), # X-T1: "XF18-55mmF2.8-4 R LM OIS'
 
     'FNumber': lambda q: setd('aperture', q), # (1.7)
@@ -364,14 +465,23 @@ EXIFHandler = {
     'CreateDate': lambda q: setk(q[0:4]), # (2020:04:07 15:57:47)
     'ShutterSpeedValue': lambda q: setd('shutter_speed', q), # (1/30)
     'ExposureCompensation': lambda q: setd('EV Comp', q), # (0)
-    'UserComment': lambda q: setd('COMMENT', q), # (+thing)
+    'UserComment': add_comment, # (+thing)
     'Aperture': lambda q: setd('aperture', q), # (1.7)
-    'FocalLengthIn35mmFormat': lambda q: setd('FL35', q), # (26 mm)
+    'FocalLengthIn35mmFormat': lambda q: setd('FOCAL_LENGTH35', q), # (26 mm)
     'ScaleFactor35efl': lambda q: setd('multiplier', float(q)), # (6.0)
     'FOV': lambda q: setd('fov', q), # (69.4 deg)
-    'FocalLength35efl': lambda q: setd('FL35', q), # (4.3 mm (35 mm equivalent: 26.0 mm))
+    'FocalLength35efl': lambda q: setd('FOCAL_LENGTH35', q), # (4.3 mm (35 mm equivalent: 26.0 mm))
     'HyperfocalDistance': lambda q: setd('hyper', q), # (2.19 m)
     'FlashpixVersion': lambda q: setd('FlashPixV', q), # (0100)
+
+    'SensitivityType': lambda q: setk_unless(q, 'Standard Output Sensitivity'),
+    'FlashExposureComp': set_flash_comp, # (0)
+    'ImageGeneration': lambda q: setk_unless(q, 'Original Image'),
+    'Rating': rate, # (0)
+    'LensModel': lens_id, # (XF90mmF2 R LM WR) # TODO
+    'FilmMode': film_mode, # (F0/Standard (Provia)) # TODO
+
+    'RAFVersion': raw, # (0500)
 
 }
 
@@ -381,46 +491,50 @@ def read_tags(props):
     for t in props:
         if IGNORE_TAGS.__contains__(t):
             continue
+        if t == '':
+            continue
+        tag_string = props[t]
         handler = EXIFHandler.get(t, None)
         if not handler:
-            print("Didn't parse tag {} ({})".format(t, props[t]))
-            MISSED_TAG[t] = props[t]
+            print("Didn't parse tag {} ({})".format(t, tag_string))
+            MISSED_TAG[t] = tag_string
             continue
         # print('{}:'.format(t))
-        handler(props[t])
+        handler(tag_string)
 
 def read_desc():
+    global EQUIV_FOCAL_LEN, ORIG_FOCAL_LENGTH
     if not DESC.get('camera'):
         print("Unknown camera")
-        if DESC.camera.brand == Vendor.lumix:
+        if DESC['camera'].brand == Vendor.lumix:
             add_keys(['Leica','Lumix','Leicasonic','Panaleica'])
-        elif DESC.camera.brand == Vendor.fuji:
-            add_keys(['Fuji','Fujifilm','Fuji X',('Fujifilm '+DESC.camera)]);
+        elif DESC['camera'].brand == Vendor.fuji:
+            add_keys(['Fuji','Fujifilm','Fuji X',('Fujifilm '+DESC['camera'])]);
             if not KNOWN_LENS:
-              aLens = ADAPTED_LENSES.get(oFL)
+              aLens = ADAPTED_LENSES.get(ORIG_FOCAL_LENGTH)
               if (aLens):
                 add_keys(INFO,aLens.info)
                 DESC.min_aperture = aLens.min_aperture
-        if DESC.camera.brand == 'Scanned': # no actual camera
-            add_keys(['film','scanned'])
-        if FL <= 0:
-            FL = oFL * DESC.multiplier # might still be zero....
-            FL = math.floor(FL + 0.49)
-        else:
-            fl_temp = math.floor(oFL+0.49)
-            setk('{}mm_orig'.format(fls))
-        if FL > 0:
-            if FL <= 35:
-                setk('Wide Angle')
-                if FL < 27:
-                    setk('Ultra Wide Angle')
-            elif FL >= 85:
-                setk('Telephoto')
-                if FL < 110:
-                    setk('Portrait Lens')
-            if DESC.multiplier != 1.0:
-                setk('{}mm'.format(FL))
-                setk('{}mm_equiv'.format(FL))
+    if DESC['camera'].brand == 'Scanned': # no actual camera
+        add_keys(['film','scanned'])
+    if EQUIV_FOCAL_LEN <= 0:
+        EQUIV_FOCAL_LEN = ORIG_FOCAL_LENGTH * DESC['multiplier'] # might still be zero....
+        EQUIV_FOCAL_LEN = math.floor(EQUIV_FOCAL_LEN + 0.49)
+    else:
+        fl_temp = math.floor(ORIG_FOCAL_LENGTH+0.49)
+        setk('{}mm_orig'.format(fls))
+    if EQUIV_FOCAL_LEN > 0:
+        if EQUIV_FOCAL_LEN < 27:
+            setk('Ultra Wide')
+        elif EQUIV_FOCAL_LEN <= 35:
+            setk('Wide Angle')
+        elif EQUIV_FOCAL_LEN >= 110:
+            setk('Telephoto')
+        elif EQUIV_FOCAL_LEN >= 85:
+            setk('Portrait Lens')
+        if DESC['multiplier'] != 1.0:
+            # setk('{}mm'.format(EQUIV_FOCAL_LEN))
+            setk('{}mm_equiv'.format(EQUIV_FOCAL_LEN))
 
 def all_mine(filename):
     props = get_properties(filename)
@@ -430,6 +544,7 @@ def all_mine(filename):
     basename = os.path.splitext(os.path.split(filename)[-1])[0]
     jobname = re.sub(r'(_[A-Z0-9]{4}\d{4}.*)', '', basename)
     print('{} and {}'.format(basename, jobname))
+    add_keys(Person.commonTags)
     read_tags(props[0])
     read_desc()
 
@@ -553,7 +668,10 @@ function main()
 main();
 '''
 
-image_filename = '/home/kevinbjorke/pix/tester.jpg'
+# image_filename = '/home/kevinbjorke/pix/tester.jpg'
+
+image_filename = '/home/kevinbjorke/pix/kbImport/Pix/2020/2020-04-Apr/2020_04_23_Hum/bjorke_Hum_DSCF4589.JPG'
+image_filename = '/home/kevinbjorke/pix/kbImport/Pix/2020/2020-04-Apr/2020_04_23_Hum/bjorke_Hum_DSCF4589.RAF'
 
 # TODO(kevin): get name from sys.argv
 
@@ -561,8 +679,10 @@ all_mine(image_filename)
 
 print('\n{}'.format(list(KEYWORDS.keys())))
 print('\n{}'.format(list(DESC.keys())))
-print('\n{}'.format(list(INFO.keys())))
+print("Focal Length {}, original {}, mult {}".format(EQUIV_FOCAL_LEN, ORIG_FOCAL_LENGTH, DESC['multiplier']))
+# print('\n{}'.format(list(INFO.keys())))
 
-#print('\nmissed:')
-#for t in MISSED_TAG:
-#    print("    '{}': setk, # ({})".format(t, MISSED_TAG[t]))
+if len(list(MISSED_TAG.keys())) > 0:
+    print('\nmissed:')
+    for t in MISSED_TAG:
+        print("    '{}': setk, # ({})".format(t, MISSED_TAG[t]))

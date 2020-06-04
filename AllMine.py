@@ -97,6 +97,9 @@ KNOWN_CAMERAS = {
                          Vendor.google, 8.0, 'Google Glass')
 }
 
+KNOWN_LENS = False
+KNOWN_PERSON = Person.fullname
+
 STANDARD_LENSES = {
     'XF18-55mmF2.8-4 R LM OIS': LensInfo(['18-55mm', 'f/2.8']),
     'XF90mmF2 R LM WR': LensInfo(['f/2.0']),
@@ -120,6 +123,24 @@ ADAPTED_LENSES = {
     16: LensInfo(['Rokinon', 'f/2.8'], 2.8),
 }
 
+KEYWORDS = {}
+INFO = {}
+DESC = {
+      'camera': 'Digital',
+      'lens': '',
+      'shutter': '',
+      'aperture': '',
+      'iso': '',
+      'flash': '',
+      'alertText': '',
+      'multiplier': 1.6,
+      'brand': 'Ubuntu',
+      'min_aperture': 1.4,
+    }
+FL = 0
+oFL = 0
+
+
 def get_properties(filename):
     'call exiftool for JSON info'
     if not os.path.exists(filename):
@@ -128,24 +149,26 @@ def get_properties(filename):
     j = subprocess.run(["exiftool", "-json", filename], capture_output=True)
     return json.loads(j.stdout)
 
-KEYWORDS = {}
+def setk(q):
+    'single keyword'
+    KEYWORDS[q] = 1
+
+def setd(v, q):
+    'single item in description'
+    DESC[v] = q
+
+def seti(v, q):
+    'single item in INFO'
+    INFO[v] = q
 
 def add_keys(item_list):
     'add list items to KEYWORDS'
     for i in item_list:
         KEYWORDS[i] = 1
 
-def add_camera_info_keywords(model_name):
-    'look for data about this camera type, add to KEYWORDS'
-    camera = KNOWN_CAMERAS.get(model_name)
-    if camera is not None:
-        add_keys(camera.info)
-        # also add to description?
-    else:
-        print('Unknown camera {}'.format(model_name))
+#
 
-DESC = {}
-INFO = {}
+#####
 
 IGNORE_TAGS = [
     'MeteringMode', # debugMsg=true; # e.g. "Spot"
@@ -214,7 +237,46 @@ IGNORE_TAGS = [
     'ExifByteOrder', # (Little-endian (Intel, II))
     'ModifyDate', # (2020:04:07 15:57:47)
     'YCbCrPositioning', # (Centered)
-   ]
+    'ExifImageWidth', # (4032)
+    'ExifImageHeight', # (2268)
+    'InteropIndex', # (R98 - DCF basic file (sRGB))
+    'InteropVersion', # (0100)
+    'GPSVersionID', # (2.2.0.0)
+    'GPSLatitudeRef', # (North)
+    'GPSLongitudeRef', # (West)
+    'GPSAltitudeRef', # (Above Sea Level)
+    'GPSTimeStamp', # (22:57:43)
+    'GPSDateStamp', # (2020:04:07)
+    'Compression', # (JPEG (old-style))
+    'ThumbnailOffset', # (1128)
+    'ThumbnailLength', # (5895)
+    'EncodingProcess', # (Baseline DCT, Huffman coding)
+    'BitsPerSample', # (8)
+    'ColorComponents', # (3)
+    'YCbCrSubSampling', # (YCbCr4:2:0 (2 2))
+    'GPSAltitude', # (26.3 m Above Sea Level)
+    'GPSDateTime', # (2020:04:07 22:57:43Z)
+    'GPSLatitude', # (38 deg 14' 38.16" N)
+    'GPSLongitude', # (122 deg 39' 29.00" W)
+    'GPSPosition', # (38 deg 14' 38.16" N, 122 deg 39' 29.00" W)
+    'ImageSize', # (4032x2268)
+    'Megapixels', # (9.1)
+    'ThumbnailImage', # ((Binary data 5895 bytes, use -b option to extract))
+    'CircleOfConfusion', # (0.005 mm)
+    'LightValue', # (5.8)
+    ]
+
+# EXIF Tag handlers
+
+def add_camera_info_keywords(model_name):
+    'look for data about this camera type, add to KEYWORDS'
+    camera = KNOWN_CAMERAS.get(model_name)
+    if camera is not None:
+        add_keys(camera.info)
+        setd('camera', camera)
+    else:
+        print('Unknown camera {}'.format(model_name))
+        setd('camera', None)
 
 def set_fl(q):
     'focal length'
@@ -226,7 +288,7 @@ def assign_copyright(q):
     'image already has a copyright'
     print('EXIF Copyright: {}'.format(q))
     '''
-    if (re.match(r'[0-9]') and not knownPerson):
+    if (re.match(r'[0-9]') and not KNOWN_PERSON):
         if (q[1].indexOf(Person.fullName) < 0):
             DESC['alert'] += ('\nEXIF Copyright Notice:\n"'+q[1]+'"')
             '''
@@ -258,10 +320,10 @@ def custom(q):
 
 def artist(q):
     'no need to reset for a known person'
-    knownPerson = (q[1].indexOf(Person.fullname) != -1)
+    KNOWN_PERSON = (q[1].indexOf(Person.fullname) != -1)
     for ip in range(len(Person.altNames)):
-      knownPerson |= (q[1] == Person.altNames[ip]);
-    if (not knownPerson):
+      KNOWN_PERSON |= (q[1] == Person.altNames[ip]);
+    if (not KNOWN_PERSON):
       print('Artist tag: "{}"'.format(q));
 
 def lens_id(q):
@@ -270,20 +332,8 @@ def lens_id(q):
     if lens is None:
         print('Unknown lens {}'.format(q))
         return
-    add_keys(info, lens.info)
-    knownLens = True
-
-def setk(q):
-    'single keyword'
-    KEYWORDS[q] = 1
-
-def setd(v, q):
-    'single item in description'
-    DESC[v] = q
-
-def seti(v, q):
-    'single item in INFO'
-    INFO[v] = q
+    add_keys(lens.info)
+    KNOWN_LENS = True
 
 def set_focal_length(q):
     FL=float(q)
@@ -312,43 +362,16 @@ EXIFHandler = {
     'FNumber': lambda q: setd('aperture', q), # (1.7)
     'ISO': lambda q: setd('iso', q), # (160)
     'CreateDate': lambda q: setk(q[0:4]), # (2020:04:07 15:57:47)
-    'ShutterSpeedValue': setk, # (1/30)
-    'ExposureCompensation': setk, # (0)
-    'UserComment': setk, # (+thing)
-    'FlashpixVersion': setk, # (0100)
-    'ExifImageWidth': setk, # (4032)
-    'ExifImageHeight': setk, # (2268)
-    'InteropIndex': setk, # (R98 - DCF basic file (sRGB))
-    'InteropVersion': setk, # (0100)
-    'FocalLengthIn35mmFormat': setk, # (26 mm)
-    'GPSVersionID': setk, # (2.2.0.0)
-    'GPSLatitudeRef': setk, # (North)
-    'GPSLongitudeRef': setk, # (West)
-    'GPSAltitudeRef': setk, # (Above Sea Level)
-    'GPSTimeStamp': setk, # (22:57:43)
-    'GPSDateStamp': setk, # (2020:04:07)
-    'Compression': setk, # (JPEG (old-style))
-    'ThumbnailOffset': setk, # (1128)
-    'ThumbnailLength': setk, # (5895)
-    'EncodingProcess': setk, # (Baseline DCT, Huffman coding)
-    'BitsPerSample': setk, # (8)
-    'ColorComponents': setk, # (3)
-    'YCbCrSubSampling': setk, # (YCbCr4:2:0 (2 2))
-    'Aperture': setk, # (1.7)
-    'GPSAltitude': setk, # (26.3 m Above Sea Level)
-    'GPSDateTime': setk, # (2020:04:07 22:57:43Z)
-    'GPSLatitude': setk, # (38 deg 14' 38.16" N)
-    'GPSLongitude': setk, # (122 deg 39' 29.00" W)
-    'GPSPosition': setk, # (38 deg 14' 38.16" N, 122 deg 39' 29.00" W)
-    'ImageSize': setk, # (4032x2268)
-    'Megapixels': setk, # (9.1)
-    'ScaleFactor35efl': setk, # (6.0)
-    'ThumbnailImage': setk, # ((Binary data 5895 bytes, use -b option to extract))
-    'CircleOfConfusion': setk, # (0.005 mm)
-    'FOV': setk, # (69.4 deg)
-    'FocalLength35efl': setk, # (4.3 mm (35 mm equivalent: 26.0 mm))
-    'HyperfocalDistance': setk, # (2.19 m)
-    'LightValue': setk, # (5.8)
+    'ShutterSpeedValue': lambda q: setd('shutter_speed', q), # (1/30)
+    'ExposureCompensation': lambda q: setd('EV Comp', q), # (0)
+    'UserComment': lambda q: setd('COMMENT', q), # (+thing)
+    'Aperture': lambda q: setd('aperture', q), # (1.7)
+    'FocalLengthIn35mmFormat': lambda q: setd('FL35', q), # (26 mm)
+    'ScaleFactor35efl': lambda q: setd('multiplier', float(q)), # (6.0)
+    'FOV': lambda q: setd('fov', q), # (69.4 deg)
+    'FocalLength35efl': lambda q: setd('FL35', q), # (4.3 mm (35 mm equivalent: 26.0 mm))
+    'HyperfocalDistance': lambda q: setd('hyper', q), # (2.19 m)
+    'FlashpixVersion': lambda q: setd('FlashPixV', q), # (0100)
 
 }
 
@@ -363,62 +386,42 @@ def read_tags(props):
             print("Didn't parse tag {} ({})".format(t, props[t]))
             MISSED_TAG[t] = props[t]
             continue
-        print('{}:'.format(t))
+        # print('{}:'.format(t))
         handler(props[t])
 
-'''
-def read_desc_bits():
+def read_desc():
+    if not DESC.get('camera'):
+        print("Unknown camera")
+        if DESC.camera.brand == Vendor.lumix:
+            add_keys(['Leica','Lumix','Leicasonic','Panaleica'])
+        elif DESC.camera.brand == Vendor.fuji:
+            add_keys(['Fuji','Fujifilm','Fuji X',('Fujifilm '+DESC.camera)]);
+            if not KNOWN_LENS:
+              aLens = ADAPTED_LENSES.get(oFL)
+              if (aLens):
+                add_keys(INFO,aLens.info)
+                DESC.min_aperture = aLens.min_aperture
+        if DESC.camera.brand == 'Scanned': # no actual camera
+            add_keys(['film','scanned'])
+        if FL <= 0:
+            FL = oFL * DESC.multiplier # might still be zero....
+            FL = math.floor(FL + 0.49)
+        else:
+            fl_temp = math.floor(oFL+0.49)
+            setk('{}mm_orig'.format(fls))
+        if FL > 0:
+            if FL <= 35:
+                setk('Wide Angle')
+                if FL < 27:
+                    setk('Ultra Wide Angle')
+            elif FL >= 85:
+                setk('Telephoto')
+                if FL < 110:
+                    setk('Portrait Lens')
+            if DESC.multiplier != 1.0:
+                setk('{}mm'.format(FL))
+                setk('{}mm_equiv'.format(FL))
 
-    if (descBits.brand === Vendor.lumix) {
-      // used to accomodate the Leica/Panasonic relationship
-      add_keys(info,['Leica','Lumix','Leicasonic','Panaleica']);
-    } else if (descBits.brand === Vendor.fuji) {
-    // Various "Fuji X' cameras
-      add_keys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-      var aLens = ADAPTED_LENSES[oFL];
-      if (aLens && !knownLens) {
-        add_keys(info,aLens.info);
-        descBits.min_aperture = aLens.min_aperture;
-      }
-    }
-    if (descBits.camera === 'Scanned') { // never saw any camera data - this must have been a film scan
-    add_keys(info,['film','scanned']);
-    }
-    if (FL <= 0) {
-    FL = oFL * descBits.multiplier;
-    FL = Math.floor(FL+0.49);
-  } else { // equivalent supplied by camera
-    fls = (Math.floor(oFL+0.49)).toString();
-        if (fls.substr(0,1) === '0') {
-           fls = fls.substr (1);
-      }
-    KEYWORDS = Set.add(KEYWORDS, (fls+'mm_orig'));
-    }
-    if (FL > 0) {
-    if (FL <= 35) {
-        KEYWORDS = Set.add(KEYWORDS, 'Wide Angle');
-        if (FL < 27) {
-          KEYWORDS = Set.add(KEYWORDS, 'Ultra Wide Angle');
-        }
-    } else if (FL >= 85) {
-        KEYWORDS = Set.add(KEYWORDS, 'Telephoto');
-    }
-      if (descBits.multiplier !== 1.0) {
-          fls = FL.toString();
-          if (fls.substr(0,1) === '0') {
-             fls = fls.substr (1);
-        }
-          KEYWORDS = Set.add(KEYWORDS, (fls+'mm'));
-          KEYWORDS = Set.add(KEYWORDS, (fls+'mm_equiv'));
-          //KEYWORDS = Set.add(KEYWORDS, ('Mult:'+descBits.multiplier));
-    }
-    }
-    if ((descBits.aperture === undefined) || (descBits.aperture < descBits.min_aperture)) {
-      descBits.aperture = descBits.min_aperture;
-    }
-    return descBits;
-}
-'''
 def all_mine(filename):
     props = get_properties(filename)
     if props is None:
@@ -428,6 +431,7 @@ def all_mine(filename):
     jobname = re.sub(r'(_[A-Z0-9]{4}\d{4}.*)', '', basename)
     print('{} and {}'.format(basename, jobname))
     read_tags(props[0])
+    read_desc()
 
 
 
@@ -436,238 +440,10 @@ def all_mine(filename):
 
 ////////////// march through EXIF tags //////////////
 
-function scanEXIFstuff(doc)
-{
-  'use strict';
-    var info = doc.info;
-    var FL = 0;
-    var oFL = 0;
-    var fls;
-    var debugMsg = false;
-    var knownLens = false;
-    var knownPerson = false;
-    var descBits = {
-      'camera': 'Digital',
-      lens: '',
-      shutter: '',
-      aperture: '',
-      iso: '',
-      flash: '',
-      alertText: '',
-      'multiplier': 1.6,
-      'brand': 'Ubuntu',
-      min_aperture: 1.4,
-    };
-    for (var i = 0; i < info.exif.length; i++) {
-    var q = info.exif[i];
-    var qName = trim11(q[1]);
-    switch (q[0]) {
-      case 'Make':
-          KEYWORDS = Set.add(KEYWORDS, qName);
-          break;
-      case 'Model':
-        add_camera_keys(qName,info,descBits);  // identify specific model of camera
-          break;
-      case 'Date Time':
-      case 'Date Time Original':
-          KEYWORDS = Set.add(KEYWORDS,q[1].substr(0,4));
-          break;
-      case 'Focal Length in 35mm Film':
-          FL = parseFloat(q[1]);
-          break;
-      case 'Shutter Speed':
-        descBits.shutter = (' - '+q[1]);
-          break;
-      case 'Focal Length':
-          oFL = parseFloat(q[1]);
-          fls = (Math.floor(oFL+0.49)).toString();
-        descBits.lens = (', '+fls+'mm');
-          break;
-      case 'F-Stop':
-        descBits.aperture = (' '+q[1]);
-          break;
-      case 'ISO Speed Ratings':
-        descBits.iso = (', ISO '+q[1]);
-          break;
-      case 'Copyright':
-        if (q[1].match(/[0-9]/) && !knownPerson) {
-                    if (q[1].indexOf(Person.fullName) < 0) {
-              descBits.alertText += ('\nEXIF Copyright Notice:\n"'+q[1]+'"');
-                    }
-        }
-          break;
-      case 'Scene Capture Type':
-        if (q[1] !== 'Normal') {
-            KEYWORDS = Set.add(KEYWORDS, q[1]);
-        }
-          break;
-      case 'Light Source':
-        if (q[1] !== 'Unknown') {
-            KEYWORDS = Set.add(KEYWORDS, q[1]);
-        }
-          break;
-      case 'Flash':
-          var flashVal = parseInt(q[1]);
-          if ((flashVal < 16) && (flashVal > 0)) {
-                    descBits.alertText += ('\nflashVal: '+flashVal+'');
-          KEYWORDS = Set.add(KEYWORDS, 'Strobe');
-          descBits.flash = '+ Flash';
-          }
-          break;
-      case 'Scene Type':
-          info.source = q[1];
-          break;
-      case 'Custom Rendered':
-          if (q[1] === 'Custom Process') {
-          KEYWORDS = Set.add(KEYWORDS, 'BW');
-          }
-          break;
-      case 'Artist':
-          knownPerson = (q[1].indexOf(Person.fullname) !== -1);
-          for (var ip=0; ip<Person.altNames.length; ip+=1) {
-          knownPerson |= (q[1] === Person.altNames[ip]);
-          }
-          if (!knownPerson) {
-              if (descBits.alertText !== '') {
-              descBits.alertText += '\n';
-              }
-              descBits.alertText += ('Artist tag: "'+q[1]+'"');
-                }
-          break;
-      case 'Exposure Program':
-        KEYWORDS = Set.add(KEYWORDS, q[1]);
-        break;
-      case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
-        var lens = STANDARD_LENSES[q[1]];
-        if (lens) {
-          add_keys(info,lens.info);
-        } else {
-          descBits.alertText += (q[1]);
-        }
-        knownLens = true;
-        break;
-      case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
-      case 'Orientation': // debugMsg=true;
-      case 'Color Space':
-      case 'GPS Version': // theta s
-      case 'GPS Image Direction Ref': // theta s
-      case 'GPS Image Direction': // theta s
-      case 'Image Description': // theta s single \n char
-      case 'Components Configuration': // theta s
-      case 'Pixel X Dimension':
-      case 'Pixel Y Dimension':
-      case 'Focal Plane X Resolution':
-      case 'Focal Plane Y Resolution':
-      case 'Focal Plane Resolution Unit':
-      case 'Image Width':
-      case 'Image Height':
-      case 'X Resolution':
-      case 'Y Resolution':
-      case 'Resolution Unit':
-      case 'yCbCr Positioning':
-      case 'Exposure Time':
-      case 'Aperture Value':
-      case 'Max Aperture Value':
-      case 'Exposure Bias Value':
-      case 'Exposure Mode': //debugMsg=true;
-      case 'White Balance':
-      case 'Sensing Method':
-      case 'File Source':
-      case 'ExifVersion':
-      case 'FlashPix Version':
-      case 'Date Time Digitized':
-      case 'Software':
-      case 'Digital Zoom Ratio':
-      case 'Compressed Bits Per Pixel':
-      case 'Gain Control':
-      case 'Contrast':
-      case 'Saturation':
-      case 'Sharpness':
-      case 'Brightness Value': // first seen on x100s
-      case 'Subject Distance Range': // first seen on x100s
-      case 'Subject Distance': // first seen on Glass
-      case 'Image Unique ID': // first seen on Glass
-      case 'EXIF tag 258': // '8 8 8' Bits Per Sample
-      case 'EXIF tag 262': // 'RGB' Photometric Interpretation
-      case 'EXIF tag 277': // "3' Samples Per Pixel (channels)
-      case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
-      case 'EXIF tag 42037': // lens ser #
-      case 'EXIF tag 42034': // lens info "rdf:Seq"
-      case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
-      case 'EXIF tag 42033': // X100F serial# (LX7 too?)
-      case 'EXIF tag 41483': // Glass, unknown
-                break;
-                // descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
-        // break;
-      default:
-        debugMsg = true;
-    }
-    if (debugMsg) {
-        if (descBits.alertText !== '') {
-          descBits.alertText += '\n';
-        }
-        descBits.alertText += ('EXIF "'+q[0]+'" was "'+q[1]+'"');
-      debugMsg = false;
-    }
-    }
-    //
-    //
-    if (descBits.brand === Vendor.lumix) {
-      // used to accomodate the Leica/Panasonic relationship
-      add_keys(info,['Leica','Lumix','Leicasonic','Panaleica']);
-    } else if (descBits.brand === Vendor.fuji) {
-    // Various "Fuji X' cameras
-      add_keys(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-      var aLens = ADAPTED_LENSES[oFL];
-      if (aLens && !knownLens) {
-        add_keys(info,aLens.info);
-        descBits.min_aperture = aLens.min_aperture;
-      }
-    }
-    if (descBits.camera === 'Scanned') { // never saw any camera data - this must have been a film scan
-    add_keys(info,['film','scanned']);
-    }
-    if (FL <= 0) {
-    FL = oFL * descBits.multiplier;
-    FL = Math.floor(FL+0.49);
-  } else { // equivalent supplied by camera
-    fls = (Math.floor(oFL+0.49)).toString();
-        if (fls.substr(0,1) === '0') {
-           fls = fls.substr (1);
-      }
-    KEYWORDS = Set.add(KEYWORDS, (fls+'mm_orig'));
-    }
-    if (FL > 0) {
-    if (FL <= 35) {
-        KEYWORDS = Set.add(KEYWORDS, 'Wide Angle');
-        if (FL < 27) {
-          KEYWORDS = Set.add(KEYWORDS, 'Ultra Wide Angle');
-        }
-    } else if (FL >= 85) {
-        KEYWORDS = Set.add(KEYWORDS, 'Telephoto');
-    }
-      if (descBits.multiplier !== 1.0) {
-          fls = FL.toString();
-          if (fls.substr(0,1) === '0') {
-             fls = fls.substr (1);
-        }
-          KEYWORDS = Set.add(KEYWORDS, (fls+'mm'));
-          KEYWORDS = Set.add(KEYWORDS, (fls+'mm_equiv'));
-          //KEYWORDS = Set.add(KEYWORDS, ('Mult:'+descBits.multiplier));
-    }
-    }
-    if ((descBits.aperture === undefined) || (descBits.aperture < descBits.min_aperture)) {
-      descBits.aperture = descBits.min_aperture;
-    }
-    return descBits;
-}
-
-/////////////////////////////////////////////////////////////
-
 function aspectDesc(doc)
 {
   'use strict';
-    var info = doc.info;
+    var INFO = doc.info;
     var l = Math.max(doc.width,doc.height);
     var s = Math.min(doc.width,doc.height);
     var aspect = (l/s);
@@ -729,11 +505,11 @@ function main()
     //
   newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
     add_keys(info,newKeys);
-    var descBits = scanEXIFstuff(app.activeDocument);
+    var DESC = scanEXIFstuff(app.activeDocument);
     aspectDesc(app.activeDocument);
-    if (descBits.alertText !== '') {
+    if (DESC.alertText !== '') {
     if (msgs !== '') { msgs += '\n'; }
-    msgs += descBits.alertText;
+    msgs += DESC.alertText;
     }
     info.author = Person.fullname;
     info.credit = Person.fullname;
@@ -750,12 +526,12 @@ function main()
     info.headline = info.title;
     }
    if (info.caption === '') {
-    info.caption = (descBits.camera+
-            descBits.lens+
-            descBits.shutter+
-            descBits.aperture+
-            descBits.iso+
-            descBits.flash+'\n'+
+    info.caption = (DESC.camera+
+            DESC.lens+
+            DESC.shutter+
+            DESC.aperture+
+            DESC.iso+
+            DESC.flash+'\n'+
             Person.blog+'\n'+
             noExtension(app.activeDocument.name));
     info.captionWriter = Person.fullname;
@@ -787,6 +563,6 @@ print('\n{}'.format(list(KEYWORDS.keys())))
 print('\n{}'.format(list(DESC.keys())))
 print('\n{}'.format(list(INFO.keys())))
 
-print('\nmissed:')
-for t in MISSED_TAG:
-    print("    '{}': setk, # ({})".format(t, MISSED_TAG[t]))
+#print('\nmissed:')
+#for t in MISSED_TAG:
+#    print("    '{}': setk, # ({})".format(t, MISSED_TAG[t]))

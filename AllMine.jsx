@@ -11,6 +11,8 @@
 app.bringToFront();
 /* jshint ignore: end */
 
+// TODO -- look for jobname_xxx_###.ext pattern in name, insert jobname into info if found
+
 // User Personalization //////////////////////////
 //
 // This is not 'designed' code I'm afraid -- it's grown from my own practical use and has a few warts.
@@ -141,6 +143,12 @@ var Cameras = {
         brand: Vendor.canon,
         multiplier: 1.6,
         camera: '300D',
+    },
+    'Canon VIXIA HF S11': {
+        info: ['Camcorder','VIXIA'],
+        brand: Vendor.canon,
+        multiplier: (435.0/64.0),
+        camera: 'HFS11',
     },
     'RICOH THETA S': {
         info: ['Ricoh','Theta S','Theta','Panorama', 'Spherical'],

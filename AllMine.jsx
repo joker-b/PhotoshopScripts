@@ -12,6 +12,7 @@ app.bringToFront();
 /* jshint ignore: end */
 
 // TODO -- look for jobname_xxx_###.ext pattern in name, insert jobname into info if found
+// TODO - identify scanner type via ICC Profile
 
 // User Personalization //////////////////////////
 //
@@ -366,8 +367,9 @@ function scanEXIFstuff(doc)
     var debugMsg = false;
     var knownLens = false;
     var knownPerson = false;
+    var SCANNED = 'Scanned';
     var descBits = {
-        camera: 'Digital',
+        camera: SCANNED,
         lens: '',
         shutter: '',
         aperture: '',
@@ -375,7 +377,7 @@ function scanEXIFstuff(doc)
         flash: '',
         alertText: '',
         multiplier: 1.6,
-        brand: 'Ubuntu',
+        brand: 'Bjorke',
         minAperture: 1.4,
     };
     for (var i = 0; i < info.exif.length; i++) {
@@ -499,6 +501,7 @@ function scanEXIFstuff(doc)
             case 'Software':
             case 'Digital Zoom Ratio':
             case 'Compressed Bits Per Pixel':
+            case 'Compression': // eg TIFF type
             case 'Gain Control':
             case 'Contrast':
             case 'Saturation':
@@ -510,6 +513,7 @@ function scanEXIFstuff(doc)
             case 'EXIF tag 258': // '8 8 8' Bits Per Sample
             case 'EXIF tag 262': // 'RGB' Photometric Interpretation
             case 'EXIF tag 277': // "3' Samples Per Pixel (channels)
+            case 'EXIF tag 284': // TIFF compression type, e.g. "Chunky"
             case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
             case 'EXIF tag 42037': // lens ser #
             case 'EXIF tag 42034': // lens info "rdf:Seq"
@@ -544,8 +548,8 @@ function scanEXIFstuff(doc)
             descBits.minAperture = aLens.minAperture;
         }
     }
-    if (descBits.camera === 'Scanned') { // never saw any camera data - this must have been a film scan
-        addKeys(info,['film','scanned']);
+    if (descBits.camera === SCANNED) { // never saw any camera data - this must have been a film scan
+        addKeys(info,['Film', SCANNED]);
     }
     if (FL <= 0) {
         FL = oFL * descBits.multiplier;

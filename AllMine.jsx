@@ -42,8 +42,6 @@ var Person = {
     reminder: 'needs_tags' // added only if the image has NO tags before being processed...
 };
 
-var Overrides = {}; // any contents assigned by parse_initial_keys()
-
 var Vendor = { // an enum
     lumix: 'Lumix',
     fuji: 'Fuji',
@@ -212,12 +210,18 @@ var Cameras = {
         multiplier: 50.0/65.0,
         camera: 'RF645',
     },
-    'Yachicamat 124G': {
+    'Yashicamat 124G': {
         info: ['Yashica','Yashicamt', '124', '124G', 'Film'],
         brand: Vendor.yashica,
         multiplier: 50.0/80.0,
         camera: '124G',
     },
+    'EZ Controller': {
+        info: ['Scanner', 'Film'],
+        brand: 'Noritsu',
+        multiplier: 1.0,
+        camera: 'Noritsu'
+    }
 };
 
 var Lenses = {
@@ -461,6 +465,7 @@ function scanEXIFstuff(doc)
         brand: 'Bjorke',
         minAperture: 1.4,
     };
+    var Overrides = parse_initial_keys(info.keywords, descBits);
     for (var i = 0; i < info.exif.length; i++) {
         var q = info.exif[i];
         var qName = trim11(q[1]);
@@ -541,20 +546,32 @@ function scanEXIFstuff(doc)
                 info.keywords = Set.add(info.keywords, q[1]);
                 break;
             case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
-                var lens = Lenses[q[1]];
-                if (lens) {
-                    addKeys(info,lens.info);
-                } else {
-                    descBits.alertText += (q[1]);
+                var lensID = Lenses[q[1]];
+                if (! lensID) {
+                    descBits.alertText += ('Lens? ' + q[1]);
                 }
                 knownLens = true;
                 break;
             case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
             case 'Orientation': // debugMsg=true;
             case 'Color Space':
+            //
             case 'GPS Version': // theta s
             case 'GPS Image Direction Ref': // theta s
             case 'GPS Image Direction': // theta s
+            //
+            case 'GPS Latitude Ref': // Fuji
+            case 'GPS Latitude': // Fuji
+            case 'GPS Longitude Ref': // Fuji
+            case 'GPS Longitude': // Fuji
+            case 'GPS Altitude Ref': // Fuji
+            case 'GPS Altitude': // Fuji
+            case 'GPS Time Stamp': // Fuji
+            case 'GPS Speed Ref': // Fuji
+            case 'GPS Speed': // Fuji
+            case 'GPS Map Datum': // Fuji
+            case 'GPS Date Stamp': // Fuji
+            //
             case 'Image Description': // theta s single \n char
             case 'Components Configuration': // theta s
             case 'Pixel X Dimension':
@@ -615,6 +632,17 @@ function scanEXIFstuff(doc)
             debugMsg = false;
         }
     }
+    if (Overrides.focal_length) {
+        knownLens = false;
+        oFL = Overrides.focal_length;
+        descBits.lens = (', '+oFL+'mm');
+        // descBits.alertText += ('oFL is '+oFL);
+    }
+    if (knownLens) {
+        if (lensID) {
+            addKeys(info,lensID.info);
+        }
+    }
     //
     //
     if (descBits.brand === Vendor.lumix) {
@@ -631,9 +659,14 @@ function scanEXIFstuff(doc)
     }
     if (descBits.camera === SCANNED) { // never saw any camera data - this must have been a film scan
         addKeys(info,['Film', SCANNED]);
+        var aLens = AdaptedLenses[oFL];
+        if (aLens && !knownLens) {
+            addKeys(info,aLens.info);
+            descBits.minAperture = aLens.minAperture;
+        }
     }
     //
-    apply_user_overrides(); // descBits? TODO
+    apply_user_overrides(info, descBits, Overrides);
     //
     if (FL <= 0) {
         FL = oFL * descBits.multiplier;
@@ -692,10 +725,10 @@ function aspectDesc(doc)
     } else if (aspect>1.68) {
         info.keywords = Set.add(info.keywords, (wide?'16:9':'9:16'));
      } else if (aspect>1.45) {
-        info.keywords = Set.add(info.keywords, '35mm aspect';
+        info.keywords = Set.add(info.keywords, '35mm aspect');
         info.keywords = Set.add(info.keywords, (wide?'3:2':'2:3'));
     } else if (aspect>1.25) {
-        info.keywords = Set.add(info.keywords, '645 aspect';
+        info.keywords = Set.add(info.keywords, '645 aspect');
         info.keywords = Set.add(info.keywords, (wide?'4:3':'3:4')); 
     } else {
         info.keywords = Set.add(info.keywords, 'Square');           
@@ -705,12 +738,19 @@ function aspectDesc(doc)
 
 ///////////////////////////////////
 
-function parse_initial_keys(keys)
+function parse_initial_keys(keys, descBits, Overrides)
 {
+    var Overrides = {};
     for (var k in keys) {
-        var m = keys[k].match(/^([A-Za-z]+):(.+)/)
-        if (!m)
+        var m = keys[k].match(/^([A-Za-z]+):(.+)/);
+        if (!m) {
+            m = keys[k].match(/^(\d+) *mm/);
+            if (m) {
+                // descBits.alertText += ('\nFound mm value: "'+keys[k]+'" - '+m[0]);  // TODO this is wrong, no descBits
+                Overrides.focal_length = Number(m[1]);                
+            }
             continue;
+        }
         var subkey = m[1];
         var val = m[2];
         switch(subkey) {
@@ -725,28 +765,34 @@ function parse_initial_keys(keys)
             case 'lens': {
                 m = val.match(/^\d+/);
                 if (m) {
-                    Overrides.focal_length = Number(m[0]);
+                    // descBits.alertText += ('\nFound lens value: "'+val+'" - '+m);  // TODO this is wrong, no descBits
+                    Overrides.focal_length = Number(m[1]);
                 } else {
-                    descBits.alertText += ('Odd lens value: "'+keys[k]+'"');  // TODO this is wrong, no descBits
+                    descBits.alertText += ('\nOdd lens value: "'+keys[k]+'"');  // TODO this is wrong, no descBits
                 }
                 break;
             }
             default:
-            descBits.alertText += ('Unknown key pair: "'+keys[k]+'"'); // TODO this is wrong, no descBits
+                descBits.alertText += ('\nUnknown key pair: "'+keys[k]+'"'); // TODO this is wrong, no descBits
         }
     }
+    return Overrides;
 }
 
 ////
 
-function apply_user_overrides()
+function apply_user_overrides(info, descBits, Overrides)
 {
     // TODO: if there are values in Overrides, use them to adjust
     //   camera name, focal_length, multiplier, etc before assigning the final
     //   exported keyword list
-    if (Object.keys(Overrides).length < 1)
-        return;
-    descBits.alertText += ('Overrides not yet applied... TODO');  // TODO this is wrong, no descBits
+    //if (Object.keys(Overrides).length < 1)
+    //    return;
+    for (var k in Overrides) {
+        descBits[k] = Overrides[k];
+        // info.keywords = Set.add(info.keywords, Overrides[k]);
+        // descBits.alertText += ('\noverride '+k+' = '+Overrides[k]);
+    }
 }
 
 ////////////////////////////////////////////
@@ -766,11 +812,6 @@ function main()
     var info = app.activeDocument.info;
     var msgs = '';
     var initKeys = info.keywords.length;
-    if (initKeys > 0) {
-        parse_initial_keys(info.keywords);
-        // this dialog message temporarily disabled....
-        //  msgs = (msgs + initKeys.toString() + ' key'+((initKeys>1)?'s':'')+' already defined');
-    }
     var newKeys = [];
     if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
         newKeys = newKeys.concat(['BW','Black_and_White','Black_&_White','Monochrome']);
@@ -808,7 +849,7 @@ function main()
         info.headline = info.title;
     }
    if (info.caption === '') {
-        info.caption = (descBits.camera+
+        info.caption = (descBits.camera+' '+
                         descBits.lens+
                         descBits.shutter+
                         descBits.aperture+

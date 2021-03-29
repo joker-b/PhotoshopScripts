@@ -183,9 +183,9 @@
 			"file": "AllMine.jsx",
 			"settings":
 			{
-				"buffer_size": 16555,
+				"buffer_size": 25336,
 				"encoding": "Western (Windows 1252)",
-				"line_ending": "Unix"
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -242,7 +242,7 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/kevinbjorke/src/PhotoshopScripts"
+		"/C/Users/kevin/Documents/src/PhotoshopScripts"
 	],
 	"file_history":
 	[
@@ -611,20 +611,22 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16555,
+						"buffer_size": 25336,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4054,
-								4054
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 2603.0,
@@ -638,7 +640,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 25.0
+		"height": 27.0
 	},
 	"input":
 	{

@@ -173,6 +173,11 @@ var Cameras = {
         brand: Vendor.samsung,
         camera: 'Samsung Galaxy 6',
     },
+    'Pixel 3': {
+        info: ['Google','Phone','Pixel'],
+        brand: Vendor.google,
+        camera: 'Google Pixel 3',
+    },
     'Glass1': {
         info: ['Google','Glass','Google Glass','Android'],
         brand: Vendor.google,
@@ -618,6 +623,14 @@ function scanEXIFstuff(doc)
             case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
             case 'EXIF tag 42033': // X100F serial# (LX7 too?)
             case 'EXIF tag 41483': // Glass, unknown
+            // pixel 3
+            case 'EXIF tag 36880': // Pixel3, unknown
+            case 'EXIF tag 36881': // Pixel3, unknown
+            case 'EXIF tag 36882': // Pixel3, unknown
+            case 'EXIF tag 37520': // Pixel3, unknown
+            case 'EXIF tag 37521': // Pixel3, unknown
+            case 'EXIF tag 37522': // Pixel3, unknown
+
                 break;
                 // descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
                 // break;

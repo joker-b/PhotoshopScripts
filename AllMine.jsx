@@ -55,6 +55,25 @@ var Vendor = { // an enum
     olympus: 'Olympus',
     samsung: 'Samsung',
     ricoh: 'Ricoh',
+    zeiss: 'Zeiss',
+};
+
+var LensName = { // various typical keywords for adapted lenses - hints
+    'Voigtlander': { keywords: [ 'Cosina'] },
+    'Nikkor': {
+        keywords: [Vendor.nikon],
+    },
+    'Summicron': { keywords: [Vendor.leica], },
+    'Summilux': { keywords: [Vendor.leica], },
+    'Summitar': { keywords: [Vendor.leica], },
+    'Elmar': { keywords: [Vendor.leica], },
+    'Rokkor': { keywords: [Vendor.minolta], },
+    'M-Rokkor': { keywords: [Vendor.leica, Vendor.minolta], },
+    'Ultron': { keywords: ['Voigtlander'], },
+    'TTArtisans': { keywords: ['TT'] },
+    'Planar': { keywords: [Vendor.zeiss] },
+    'Biogon': { keywords: [Vendor.zeiss] },
+    'Sonnar': { keywords: [Vendor.zeiss] },
 };
 
 var Cameras = {
@@ -237,7 +256,7 @@ var Cameras = {
     'EZ Controller': {
         keywords: ['Scanner', 'Film'],
         brand: 'Noritsu',
-        camera: 'Noritsu'
+        camera: 'Noritsu',
         film: true,
     }
 };
@@ -478,7 +497,7 @@ function scanEXIFstuff(doc)
         multiplier: 1.0,
         brand: 'Bjorke',
     };
-    var Overrides = parse_initial_keys(info.keywords, descBits);
+    var Overrides = parse_initial_keys(info.keywords, descBits, info);
     for (var i = 0; i < info.exif.length; i++) {
         var q = info.exif[i];
         var qName = trim11(q[1]);
@@ -661,7 +680,7 @@ function scanEXIFstuff(doc)
     }
     if (knownLens) {
         if (lensID) {
-            addKeywordList(info,lensID.keywords);
+            addKeywordList(info, lensID.keywords);
         }
     }
     //
@@ -672,18 +691,22 @@ function scanEXIFstuff(doc)
     } else if (descBits.brand === Vendor.fuji) {
         // Various "Fuji X' cameras
         addKeywordList(info,['Fuji','Fujifilm','Fuji X',('Fujifilm '+descBits.camera)]);
-        var aLens = AdaptedLenses[originalFocalLength];
-        if (aLens && !knownLens) {
-            addKeywordList(info,aLens.keywords);
-            descBits.minAperture = aLens.minAperture;
+        if (!Overrides.knownLens) {
+            var aLens = AdaptedLenses[originalFocalLength];
+            if (aLens && !knownLens) {
+                addKeywordList(info, aLens.keywords);
+                descBits.minAperture = aLens.minAperture;
+            }
         }
     }
     if ((descBits.camera === SCANNED) || descBits.film) { // no camera data - this must have been a film scan
         addKeywordList(info,['Film', SCANNED]);
-        var aLens = AdaptedLenses[originalFocalLength];
-        if (aLens && !knownLens) {
-            addKeywordList(info,aLens.keywords);
-            descBits.minAperture = aLens.minAperture;
+        if (!Overrides.knownLens) {
+            var aLens = AdaptedLenses[originalFocalLength];
+            if (aLens && !knownLens) {
+                addKeywordList(info, aLens.keywords);
+                descBits.minAperture = aLens.minAperture;
+            }
         }
     }
     //
@@ -764,10 +787,46 @@ function aspectDesc(doc)
 
 ///////////////////////////////////
 
-function parse_initial_keys(keys, descBits, Overrides)
+function spot_known_lens(keyword, info)
 {
-    var Overrides = {};
+    for (lens in LensName) {
+        if (lens == keyword) {
+            //alert(lens);
+            //alert(LensName[lens].keywords);
+            addKeywordList(info, LensName[lens].keywords);
+            return true;
+        }
+    }
+    return false;
+}
+
+function spot_film_camera(keyword, info)
+{
+    for (lens in Cameras) {
+        if (lens == keyword) {
+            addKeywordList(info, Cameras[lens].keywords);
+            return true;
+        }
+    }
+    return false;
+}
+
+function parse_initial_keys(keys, descBits, info)
+{
+    var Overrides = {
+        knownLens: false,
+    };
     for (var k in keys) {
+        if (! Overrides.knownLens) {
+            var lensMatch = spot_known_lens(keys[k], info);
+            if (lensMatch) {
+                Overrides.knownLens = true;
+                continue;
+            }
+        }
+        if (spot_film_camera(keys[k], info)) {
+            continue;
+        }
         var m = keys[k].match(/^([A-Za-z]+):(.+)/);
         if (!m) {
             m = keys[k].match(/^(\d+) *mm/);

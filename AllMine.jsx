@@ -1,5 +1,5 @@
 // $Id$
-// rev 21 feb 2020
+// rev 12 may 2021
 //
 // Intended usage:
 // Label Pix
@@ -32,7 +32,7 @@ var Person = {
     fullname: 'Kevin Bjorke',
     altNames: ["K.Bjorke botzilla.com","K. Bjorke", 'K BJORKE', 'KEVIN BJORKE'],
     url: 'http://www.kevin-bjorke.com/',
-    blog: 'http://www.botzilla.com/',
+    blog: 'http://bjorke.photo/',
     relation: 'Owner',
     city: 'San Francisco',
     region: 'California',
@@ -923,7 +923,9 @@ function main()
     info.credit = Person.fullname;
     info.authorPosition = Person.relation;
     info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
-    info.copyrightNotice = '© '+thisYearS+' '+Person.fullname;
+    if (!(info.copyrightNotice.length > 2)) {
+        info.copyrightNotice = ('(C) ' + thisYearS + ' ' + Person.fullname);
+    }
     info.ownerUrl = Person.url;
     if (info.title === '') {
         var t = noExtension(app.activeDocument.name);
@@ -934,18 +936,14 @@ function main()
         info.headline = info.title;
     }
     if (info.caption === '') {
-        info.caption = (descBits.camera);
+        info.caption = (Person.blog + '\n' +
+                        noExtension(app.activeDocument.name) + '\n\n');
+        info.caption = info.caption + (descBits.camera);
         if (descBits.lens) info.caption = (info.caption + ' ' + descBits.lens);
         if (descBits.shutter) info.caption = (info.caption + ' ' + descBits.shutter);
         if (descBits.aperture) info.caption = (info.caption + ' ' + descBits.aperture);
         if (descBits.iso) info.caption = (info.caption + ' ' + descBits.iso);
         if (descBits.flash) info.caption = (info.caption + ' ' + descBits.flash);
-        if (descBits.lens) info.caption = (info.caption + ' ' + descBits.lens);
-        if (descBits.lens) info.caption = (info.caption + ' ' + descBits.lens);
-        if (descBits.lens) info.caption = (info.caption + ' ' + descBits.lens);
-        info.caption = (info.caption + '\n' +
-                        Person.blog+'\n'+
-                        noExtension(app.activeDocument.name));
         info.captionWriter = Person.fullname;
     }
     if (info.city === '') {info.city = Person.city; }

@@ -32,7 +32,7 @@ var Person = {
     fullname: 'Kevin Bjorke',
     altNames: ["K.Bjorke botzilla.com","K. Bjorke", 'K BJORKE', 'KEVIN BJORKE'],
     url: 'http://www.kevin-bjorke.com/',
-    blog: 'http://bjorke.photo/',
+    blog: 'http://photorant.com',
     relation: 'Owner',
     city: 'San Francisco',
     region: 'California',
@@ -936,14 +936,15 @@ function main()
         info.headline = info.title;
     }
     if (info.caption === '') {
-        info.caption = (Person.blog + '\n' +
-                        noExtension(app.activeDocument.name) + '\n\n');
-        info.caption = info.caption + (descBits.camera);
-        if (descBits.lens) info.caption = (info.caption + ' ' + descBits.lens);
+        // TODO - nope! We need the camera if it's been tagged... "Scanned" is not a camera
+        info.caption = (Person.blog + ' * ' + descBits.camera);
+        if (descBits.lens) info.caption = (info.caption + ' + ' + descBits.lens);
+        info.caption = (info.caption + '\n');
         if (descBits.shutter) info.caption = (info.caption + ' ' + descBits.shutter);
         if (descBits.aperture) info.caption = (info.caption + ' ' + descBits.aperture);
         if (descBits.iso) info.caption = (info.caption + ' ' + descBits.iso);
         if (descBits.flash) info.caption = (info.caption + ' ' + descBits.flash);
+        info.caption = (info.caption + '\n\n' + noExtension(app.activeDocument.name));
         info.captionWriter = Person.fullname;
     }
     if (info.city === '') {info.city = Person.city; }

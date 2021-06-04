@@ -868,6 +868,7 @@ function parse_initial_keys(keys, descBits, info)
             }
         }
         if (spot_film_camera(keys[k], info)) {
+            descBits.camera = keys[k];
             continue;
         }
         var m = keys[k].match(/^([A-Za-z]+):(.+)/);

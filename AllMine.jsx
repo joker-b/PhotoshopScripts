@@ -1,5 +1,3 @@
-// $Id$
-// rev 12 may 2021
 //
 // Intended usage:
 // Label Pix
@@ -68,7 +66,7 @@ var LensName = { // various typical keywords for adapted lenses - hints
     'Summitar': { keywords: [Vendor.leica], },
     'Elmar': { keywords: [Vendor.leica], },
     'Elmarit': { keywords: [Vendor.leica], },
-    'Rokkor': { keywords: [Vendor.minolta], },
+     'Rokkor', 'Minolta': { keywords: [Vendor.minolta], },
     'M-Rokkor': { keywords: [Vendor.leica, Vendor.minolta], },
     'Ultron': { keywords: ['Voigtlander'], },
     'TTArtisans': { keywords: ['TT'] },
@@ -311,41 +309,46 @@ var Lenses = {
         keywords: ['f/1.4'],
         minAperture: 'f/1.4',
     },
+    'Leica Summilux-M 1:1.4/50 ASPH': {
+        // keywords: ['Summilux', 'f/1.4', 'Asph', 'Manual Focus'],
+        keywords: ['TTArtisans', 'f/1.4', 'Asph', 'Manual Focus'], // fake coded!
+        minAperture: 'f/2.0',
+    },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron', 'f/2', 'Manual Focus'],
         minAperture: 'f/2.0',
     },
     'Summicron-M 1:2/35': {
         // keywords: ['Summicron', 'f/2'],
-        keywords: ['Ultron','Voigtlander','f/2', 'Aspherical', 'Asph', 'Manual Focus'], // fake-coded!
+        keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
         minAperture: 'f/2.0',
     },
-    'Summicron-M 1:2/35 ': {
+    'Summicron-M 1:2/35 ': { // TODO - stray space needed... SOMEtimes?
         // keywords: ['Summicron', 'f/2'],
-        keywords: ['Ultron','Voigtlander','f/2', 'Aspherical', 'Asph', 'Manual Focus'], // fake-coded!
+        keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
         minAperture: 'f/2.0',
     },
     'Elmarit-M 1:2.8/28': {
-        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2', 'Manual Focus'],
+        keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
         minAperture: 'f/2.8',
     },
-    'Rokkor-M 40mm': {
-        keywords: ['Elmarit','Rokkor', 'Rokkor-M', 'f/2', 'Manual Focus'],
+    'M-Rokkor 40mm': {
+        keywords: ['Elmarit', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
         minAperture: 'f/2.0',
     },
-    'Rokkor-M 28mm': {
-        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2', 'Manual Focus'],
+    'M-Rokkor 28mm': {
+        keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
         minAperture: 'f/2.8',
     },
 };
 
 var AdaptedLenses = {
     28: {
-        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2', 'Leica', 'Minolta'],
+        keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Leica', 'Minolta'],
         minAperture: 2
     },
     40: {
-        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2', 'Leica', 'Minolta'],
+        keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Leica', 'Minolta'],
         minAperture: 2
     },
     45: {

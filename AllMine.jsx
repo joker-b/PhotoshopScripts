@@ -67,6 +67,7 @@ var LensName = { // various typical keywords for adapted lenses - hints
     'Summilux': { keywords: [Vendor.leica], },
     'Summitar': { keywords: [Vendor.leica], },
     'Elmar': { keywords: [Vendor.leica], },
+    'Elmarit': { keywords: [Vendor.leica], },
     'Rokkor': { keywords: [Vendor.minolta], },
     'M-Rokkor': { keywords: [Vendor.leica, Vendor.minolta], },
     'Ultron': { keywords: ['Voigtlander'], },
@@ -150,10 +151,18 @@ var Cameras = {
         camera: 'X-E3',
     },
     'M Monochrom': {
-        keywords: ['Leica','Leica M','M Monochrom','Monochrom','M','Monochrome'],
+        keywords: ['Leica', 'Leica M', 'M Monochrom', 'Monochrom',
+           'Leica Mono', 'Mono', 'Black and White', 'MM'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'M Monochrom',
+    },
+    'LEICA M MONOCHROM (Typ 246)': {
+        keywords: ['Leica', 'Leica M', 'Monochrom 246', 'Monochrom', 'M246',
+           'Leica Monochrom Typ 246', 'Leica Mono', 'Mono', 'Black and White', 'MM'],
+        brand: Vendor.leica,
+        multiplier: 1.0,
+        camera: 'Leica M246',
     },
     'Canon EOS 5D': {
         keywords: ['5D','EOS','Canon 5D'],
@@ -264,44 +273,70 @@ var Cameras = {
 var Lenses = {
     'XF18-55mmF2.8-4 R LM OIS': {
         keywords: ['18-55mm','f/2.8'],
+        minAperture: 'f/2.8-4',
     },
     'XF90mmF2 R LM WR': {
         keywords: ['f/2.0'],
+        minAperture: 'f/2.0',
     },
     'XF56mmF1.2 R': {
         keywords: ['f/1.2'],
+        minAperture: 'f/1.2',
     },
     'XF35mmF1.4 R': {
         keywords: ['f/1.4'],
+        minAperture: 'f/1.4',
     },
     'XF35mmF2 R WR': {
         keywords: ['f/2.0'],
+        minAperture: 'f/2.0',
     },
     'XF23mmF1.4 R': {
         keywords: ['f/1.4'],
+        minAperture: 'f/1.4',
     },
     'XF23mmF2 R WR': {
         keywords: ['f/2.0'],
+        minAperture: 'f/2.0',
     },
     'XF18mmF2 R': {
         keywords: ['f/2.0'],
+        minAperture: 'f/2.0',
     },
     'XF16mmF1.4 R WR': {
         keywords: ['f/1.4'],
+        minAperture: 'f/1.4',
     },
     'XF14mmF2.8 R': {
         keywords: ['f/1.4'],
+        minAperture: 'f/1.4',
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
-        keywords: ['Summicron','Summicron-M','f/2'],
+        keywords: ['Summicron', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2.0',
+    },
+    'Summicron-M 1:2/35': {
+        // keywords: ['Summicron', 'f/2'],
+        keywords: ['Ultron','Voigtlander','f/2', 'Aspherical', 'Asph', 'Manual Focus'], // fake-coded!
+        minAperture: 'f/2.0',
+    },
+    'Summicron-M 1:2/35 ': {
+        // keywords: ['Summicron', 'f/2'],
+        keywords: ['Ultron','Voigtlander','f/2', 'Aspherical', 'Asph', 'Manual Focus'], // fake-coded!
+        minAperture: 'f/2.0',
+    },
+    'Elmarit-M 1:2.8/28': {
+        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2.8',
     },
     'Rokkor-M 40mm': {
-        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2'],
+        keywords: ['Elmarit','Rokkor', 'Rokkor-M', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2.0',
     },
     'Rokkor-M 28mm': {
-        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2'],
+        keywords: ['Summicron','Summicron-C','Rokkor', 'Rokkor-M', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2.8',
     },
-
 };
 
 var AdaptedLenses = {
@@ -516,12 +551,12 @@ function scanEXIFstuff(doc)
                 equivalentFocalLength = parseFloat(q[1]);
                 break;
             case 'Shutter Speed':
-                descBits.shutter = (' - '+q[1]);
+                descBits.shutter = q[1];
                 break;
             case 'Focal Length':
                 originalFocalLength = parseFloat(q[1]);
                 fls = (Math.floor(originalFocalLength+0.49)).toString();
-                descBits.lens = (', '+fls+'mm');
+                descBits.lens = (fls+'mm');
                 break;
             case 'F-Stop':
                 descBits.aperture = (' '+q[1]);
@@ -580,7 +615,9 @@ function scanEXIFstuff(doc)
             case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
                 var lensID = Lenses[q[1]];
                 if (! lensID) {
-                    descBits.alertText += ('Lens? ' + q[1]);
+                    descBits.alertText += ('Lens? {' + q[1] + '}');
+                } else {
+                    if (lensID.minAperture) descBits.minAperture = lensID.minAperture;
                 }
                 knownLens = true;
                 break;
@@ -603,6 +640,9 @@ function scanEXIFstuff(doc)
             case 'GPS Speed': // Fuji
             case 'GPS Map Datum': // Fuji
             case 'GPS Date Stamp': // Fuji
+            case 'GPS DOP': // Leica
+            case 'GPS Track': // Leica
+            case 'GPS Status': // Leica
             //
             case 'Image Description': // theta s single \n char
             case 'Components Configuration': // theta s
@@ -657,6 +697,8 @@ function scanEXIFstuff(doc)
             case 'EXIF tag 37520': // Pixel3, unknown
             case 'EXIF tag 37521': // Pixel3, unknown
             case 'EXIF tag 37522': // Pixel3, unknown
+            // Leica Monochrom
+            case 'EXIF tag 530': // Leica -- "2 1" (contrast, sharpness?)
 
                 break;
                 // descBits.alertText += ('\nTag '+q[0]+': "'+qName+'"');
@@ -675,7 +717,7 @@ function scanEXIFstuff(doc)
     if (Overrides.focal_length) {
         knownLens = false;
         originalFocalLength = Overrides.focal_length;
-        descBits.lens = (', '+originalFocalLength+'mm');
+        descBits.lens = (originalFocalLength+'mm');
         // descBits.alertText += ('originalFocalLength is '+originalFocalLength);
     }
     if (knownLens) {
@@ -683,6 +725,7 @@ function scanEXIFstuff(doc)
             addKeywordList(info, lensID.keywords);
         }
     }
+    if (descBits.lens) addKeywordList(info, [descBits.lens]);
     //
     //
     if (descBits.brand === Vendor.lumix) {
@@ -774,10 +817,10 @@ function aspectDesc(doc)
     } else if (aspect>1.68) {
         info.keywords = Set.add(info.keywords, (wide?'16:9':'9:16'));
      } else if (aspect>1.45) {
-        info.keywords = Set.add(info.keywords, '35mm aspect');
+        // info.keywords = Set.add(info.keywords, '35mm aspect');
         info.keywords = Set.add(info.keywords, (wide?'3:2':'2:3'));
     } else if (aspect>1.25) {
-        info.keywords = Set.add(info.keywords, '645 aspect');
+        // info.keywords = Set.add(info.keywords, '645 aspect');
         info.keywords = Set.add(info.keywords, (wide?'4:3':'3:4')); 
     } else {
         info.keywords = Set.add(info.keywords, 'Square');           
@@ -899,7 +942,7 @@ function main()
     var initKeys = info.keywords.length;
     var newKeys = [];
     if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
-        newKeys = newKeys.concat(['BW','Black_and_White','Black_&_White','Monochrome']);
+        newKeys = newKeys.concat(['BW','Black and White','Black & White','B&W', 'Monochrome']);
     }
     var dt = new Date();
     var thisYear = dt.getFullYear();
@@ -939,12 +982,14 @@ function main()
         // TODO - nope! We need the camera if it's been tagged... "Scanned" is not a camera
         info.caption = (Person.blog + ' * ' + descBits.camera);
         if (descBits.lens) info.caption = (info.caption + ' + ' + descBits.lens);
+        if (descBits.minAperture) info.caption = (info.caption + ' ' + descBits.minAperture);
         info.caption = (info.caption + '\n');
-        if (descBits.shutter) info.caption = (info.caption + ' ' + descBits.shutter);
-        if (descBits.aperture) info.caption = (info.caption + ' ' + descBits.aperture);
-        if (descBits.iso) info.caption = (info.caption + ' ' + descBits.iso);
-        if (descBits.flash) info.caption = (info.caption + ' ' + descBits.flash);
-        info.caption = (info.caption + '\n\n' + noExtension(app.activeDocument.name));
+        // if (descBits.shutter) info.caption = (info.caption + ' ' + descBits.shutter);
+        // if (descBits.aperture) info.caption = (info.caption + ' ' + descBits.aperture);
+        // if (descBits.iso) info.caption = (info.caption + ' ' + descBits.iso);
+        // if (descBits.flash) info.caption = (info.caption + ' ' + descBits.flash);
+        //info.caption = (info.caption + '\n\n' + noExtension(app.activeDocument.name));
+        info.caption = (info.caption + noExtension(app.activeDocument.name));
         info.captionWriter = Person.fullname;
     }
     if (info.city === '') {info.city = Person.city; }

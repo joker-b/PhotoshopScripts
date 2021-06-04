@@ -66,7 +66,7 @@ var LensName = { // various typical keywords for adapted lenses - hints
     'Summitar': { keywords: [Vendor.leica], },
     'Elmar': { keywords: [Vendor.leica], },
     'Elmarit': { keywords: [Vendor.leica], },
-     'Rokkor', 'Minolta': { keywords: [Vendor.minolta], },
+    'Rokkor': { keywords: [Vendor.minolta], },
     'M-Rokkor': { keywords: [Vendor.leica, Vendor.minolta], },
     'Ultron': { keywords: ['Voigtlander'], },
     'TTArtisans': { keywords: ['TT'] },
@@ -309,10 +309,10 @@ var Lenses = {
         keywords: ['f/1.4'],
         minAperture: 'f/1.4',
     },
-    'Leica Summilux-M 1:1.4/50 ASPH': {
+    'Summilux-M 1:1.4/50 ASPH.': {
         // keywords: ['Summilux', 'f/1.4', 'Asph', 'Manual Focus'],
         keywords: ['TTArtisans', 'f/1.4', 'Asph', 'Manual Focus'], // fake coded!
-        minAperture: 'f/2.0',
+        minAperture: 'f/1.4 ASPH',
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron', 'f/2', 'Manual Focus'],
@@ -321,7 +321,7 @@ var Lenses = {
     'Summicron-M 1:2/35': {
         // keywords: ['Summicron', 'f/2'],
         keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
-        minAperture: 'f/2.0',
+        minAperture: 'f/2.0 Asph.',
     },
     'Summicron-M 1:2/35 ': { // TODO - stray space needed... SOMEtimes?
         // keywords: ['Summicron', 'f/2'],

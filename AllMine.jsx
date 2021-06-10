@@ -35,8 +35,8 @@ var Person = {
     city: 'San Francisco',
     region: 'California',
     country: 'USA',
-    commonTags: ['Bjorke', 'Botzilla.com', 'SF', 'Bay Area',
-            'Petaluma', 'Sonoma County'], // added to every pic
+    commonTags: ['Bjorke', 'Botzilla.com'], // 'SF', 'Bay Area',
+            //'Petaluma', 'Sonoma County'], // added to every pic
     reminder: 'needs_tags' // added only if the image has NO tags before being processed...
 };
 
@@ -959,7 +959,8 @@ function main()
     if (info.CreationDate === '') {
         info.creationDate = dt.toString();
     }
-    newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname,Person.city,Person.region]));
+    //newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname, Person.city, Person.region]));
+    newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname]));
     //
     // keywords added to doc...
     //

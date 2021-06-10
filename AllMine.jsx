@@ -212,7 +212,7 @@ var Cameras = {
     },
     // ////// FILM CAMERAS //////
     'Contax G2': {
-        keywords: ['Contax','G2', 'Zeiss', 'Film'],
+        keywords: ['Contax','G2', Vendor.zeiss, 'Film'],
         brand: Vendor.contax,
         multiplier: 1.0,
         camera: 'G2',
@@ -316,17 +316,22 @@ var Lenses = {
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron', 'f/2', 'Manual Focus'],
-        minAperture: 'f/2.0',
+        minAperture: 'f/2',
+    },
+    'Summicron-M 1:2/50': {
+        //keywords: ['Summicron', 'f/2', 'Manual Focus'],
+        keywords: [Vendor.zeiss, 'Planar', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2',
     },
     'Summicron-M 1:2/35': {
         // keywords: ['Summicron', 'f/2'],
         keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
-        minAperture: 'f/2.0 Asph.',
+        minAperture: 'f/2 Asph.',
     },
     'Summicron-M 1:2/35 ': { // TODO - stray space needed... SOMEtimes?
         // keywords: ['Summicron', 'f/2'],
         keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
-        minAperture: 'f/2.0',
+        minAperture: 'f/2',
     },
     'Elmarit-M 1:2.8/28': {
         keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
@@ -334,7 +339,7 @@ var Lenses = {
     },
     'M-Rokkor 40mm': {
         keywords: ['Elmarit', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
-        minAperture: 'f/2.0',
+        minAperture: 'f/2',
     },
     'M-Rokkor 28mm': {
         keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
@@ -352,7 +357,7 @@ var AdaptedLenses = {
         minAperture: 2
     },
     45: {
-        keywords: ['Zeiss','Contax','Planar','f/2','Fotodiox','planar245','carlzeiss'],
+        keywords: [Vendor.zeiss, 'Contax','Planar','f/2','Fotodiox','planar245','carlzeiss'],
         minAperture: 2
     },
     35: {
@@ -372,7 +377,7 @@ var AdaptedLenses = {
         minAperture: 4
     },
     90: {
-        keywords: ['Zeiss','Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss'],
+        keywords: [Vendor.zeiss, 'Contax','Sonnar','f/2.8','Fotodiox','sonnar2890','carlzeiss'],
         minAperture: 2.8
     },
     49: { // hack

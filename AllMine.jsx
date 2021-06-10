@@ -149,15 +149,15 @@ var Cameras = {
         camera: 'X-E3',
     },
     'M Monochrom': {
-        keywords: ['Leica', 'Leica M', 'M Monochrom', 'Monochrom',
+        keywords: [Vendor.leica, 'Leica M', 'M Monochrom', 'Monochrom',
            'Leica Mono', 'Mono', 'Black and White', 'MM'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'M Monochrom',
     },
     'LEICA M MONOCHROM (Typ 246)': {
-        keywords: ['Leica', 'Leica M', 'Monochrom 246', 'Monochrom', 'M246',
-           'Leica Monochrom Typ 246', 'Leica Mono', 'Mono', 'Black and White', 'MM'],
+        keywords: [Vendor.leica, 'Leica M', 'Monochrom 246', 'Monochrom', 'M246',
+           'Leica Monochrom Typ 246'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'Leica M246',
@@ -309,10 +309,20 @@ var Lenses = {
         keywords: ['f/1.4'],
         minAperture: 'f/1.4',
     },
+    //
+    'TTArtisans-M 1:1.4/50 ASPH.': {
+        keywords: ['TTArtisans', 'f/1.4', 'Asph', 'Manual Focus'], // fake coded!
+        minAperture: 'f/1.4 ASPH',
+    },
+    'Planar-ZM 1:2/50': {
+        keywords: [Vendor.zeiss, 'Planar', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2',
+    },
     'Summilux-M 1:1.4/50 ASPH.': {
         // keywords: ['Summilux', 'f/1.4', 'Asph', 'Manual Focus'],
         keywords: ['TTArtisans', 'f/1.4', 'Asph', 'Manual Focus'], // fake coded!
         minAperture: 'f/1.4 ASPH',
+        remap: 'TTArtisans-M 1:1.4/50 ASPH.',
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron', 'f/2', 'Manual Focus'],
@@ -322,27 +332,39 @@ var Lenses = {
         //keywords: ['Summicron', 'f/2', 'Manual Focus'],
         keywords: [Vendor.zeiss, 'Planar', 'f/2', 'Manual Focus'],
         minAperture: 'f/2',
+        remap: 'Planar-ZM 1:2/50',
     },
+    //
     'Summicron-M 1:2/35': {
         // keywords: ['Summicron', 'f/2'],
         keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
         minAperture: 'f/2 Asph.',
+        remap: 'Ultron-M 1:2/35 Asph',
     },
     'Summicron-M 1:2/35 ': { // TODO - stray space needed... SOMEtimes?
         // keywords: ['Summicron', 'f/2'],
         keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
         minAperture: 'f/2',
+        remap: 'Ultron-M 1:2/35 Asph',
     },
-    'Elmarit-M 1:2.8/28': {
-        keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
-        minAperture: 'f/2.8',
-    },
-    'M-Rokkor 40mm': {
-        keywords: ['Elmarit', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
+    'Ultron-M 1:2/35 Asph': { 
+        keywords: ['Ultron', 'Voigtlander','f/2', 'Asph', 'Manual Focus'], // fake-coded!
         minAperture: 'f/2',
     },
+    //
+    'M-Rokkor 40mm': {
+        keywords: ['Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
+        minAperture: 'f/2',
+    },
+    //
+    'Elmarit-M 1:2.8/28': {
+        //keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2.8', 'Manual Focus'],
+        keywords: ['Rokkor', 'Minolta', 'M-Rokkor', 'f/2.8', 'Manual Focus'],
+        minAperture: 'f/2.8',
+        remap: 'M-Rokkor 28mm'
+    },
     'M-Rokkor 28mm': {
-        keywords: ['Summicron','Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor', 'f/2', 'Manual Focus'],
+        keywords: ['Rokkor', 'Minolta', 'M-Rokkor', 'f/2.8', 'Manual Focus'],
         minAperture: 'f/2.8',
     },
 };

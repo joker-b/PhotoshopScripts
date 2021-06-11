@@ -270,44 +270,53 @@ var Cameras = {
 
 var LensCatalog = {
     'XF18-55mmF2.8-4 R LM OIS': {
-        keywords: ['kit lens'],
+        keywords: ['kit lens', 'zoom'],
         minAperture: 'f/2.8-4',
     },
     'XF90mmF2 R LM WR': {
         keywords: [],
         minAperture: 'f/2.0',
+        primeLength: 90,
     },
     'XF56mmF1.2 R': {
         keywords: [],
         minAperture: 'f/1.2',
+        primeLength: 56,
     },
     'XF35mmF1.4 R': {
         keywords: [],
         minAperture: 'f/1.4',
+        primeLength: 35,
     },
     'XF35mmF2 R WR': {
         keywords: [],
         minAperture: 'f/2.0',
+        primeLength: 35,
     },
     'XF23mmF1.4 R': {
         keywords: [],
         minAperture: 'f/1.4',
+        primeLength: 23,
     },
     'XF23mmF2 R WR': {
         keywords: [],
         minAperture: 'f/2.0',
+        primeLength: 23,
     },
     'XF18mmF2 R': {
         keywords: [],
         minAperture: 'f/2.0',
+        primeLength: 18,
     },
     'XF16mmF1.4 R WR': {
         keywords: [],
         minAperture: 'f/1.4',
+        primeLength: 16,
     },
     'XF14mmF2.8 R': {
         keywords: [],
         minAperture: 'f/1.4',
+        primeLength: 14,
     },
     //
     // Lenses Possibly without Digital Coupling
@@ -317,23 +326,33 @@ var LensCatalog = {
     'Ultron-M 1:2/35 Asph': { 
         keywords: ['Ultron', 'Voigtlander', 'Asph', 'Manual Focus'], // fake-coded!
         minAperture: 'f/2',
+        primeLength: 35,
+        family: 'Ultron',
     },
     //
     'M-Rokkor 1:2/40': {
         keywords: ['Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor',  'Manual Focus'],
         minAperture: 'f/2',
+        primeLength: 40,
+        family: 'M-Rokkor',
     },
     'TTArtisans-M 1:1.4/50 ASPH.': {
         keywords: ['TTArtisans', 'Asph', 'Manual Focus'], // fake coded!
         minAperture: 'f/1.4 ASPH',
+        primeLength: 50,
+        family: 'TTArtisans',
     },
     'Planar-ZM 1:2/50': {
         keywords: [Vendor.zeiss, 'Planar', 'Manual Focus'],
         minAperture: 'f/2',
+        primeLength: 50,
+        family: 'Zeiss',
     },
     'M-Rokkor 1:2.8/28': {
         keywords: ['Rokkor', 'Minolta', 'M-Rokkor', 'Manual Focus'],
         minAperture: 'f/2.8',
+        primeLength: 28,
+        family: 'M-Rokkor',
     },
     //
     // Leica
@@ -345,6 +364,8 @@ var LensCatalog = {
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron', 'Manual Focus'],
         minAperture: 'f/2',
+        primeLength: 50,
+        family: 'Summicron',
     },
     'Summicron-M 1:2/50': {
         //keywords: ['Summicron'],
@@ -355,7 +376,7 @@ var LensCatalog = {
         // keywords: ['Summicron'],
         remap: 'Ultron-M 1:2/35 Asph',
     },
-    'Summicron-M 1:2/35 ': { // TODO - stray space needed... SOMEtimes?
+    'Summicron-M 1:2/35 ASPH.': { // TODO - stray space needed... SOMEtimes?
         // keywords: ['Summicron'],
         remap: 'Ultron-M 1:2/35 Asph',
     },
@@ -370,53 +391,74 @@ var LensCatalog = {
     'Contax Biogon 2.8/21': {
         keywords: [Vendor.zeiss, 'Contax','Biogon'],
         minAperture: 'f/2.8',
+        primeLength: 21,
+        family: 'Biogon',
     },
     'Contax Biogon 2.8/28': {
         keywords: [Vendor.zeiss, 'Contax','Biogon'],
         minAperture: 'f/2.8',
+        primeLength: 28,
+        family: 'Biogon',
     },
     'Contax Planar 2/35': {
         keywords: [Vendor.zeiss, 'Contax','Planar'],
         minAperture: 'f/2',
+        primeLength: 35,
+        family: 'Planar',
     },
     'Contax Planar 2/45': {
         keywords: [Vendor.zeiss, 'Contax','Planar'],
         minAperture: 'f/2',
+        primeLength: 45,
+        family: 'Planar',
     },
     'Contax Sonnar 2.8/90': {
         keywords: [Vendor.zeiss, 'Contax','Sonnar'],
         minAperture: 'f/2.8',
+        primeLength: 90,
+        family: 'Sonnar',
     },
     // Nikon
     'Micro-Nikkor 55mm f/3.5': {
         keywords: [Vendor.nikon, 'Micro-Nikkor'],
         minAperture: 'f/3.5',
+        primeLength: 55,
+        family: 'Micro-Nikkor',
     },
     'Nikkor 50mm f/1.4': {
         keywords: [Vendor.nikon, 'Nikkor'],
         minAperture: 'f/1.4',
+        primeLength: 50,
+        family: 'Nikkor',
     },
     'Nikkor-O 35mm f/2': {
         keywords: [Vendor.nikon, 'Nikkor'],
         minAperture: 'f/2',
+        primeLength: 35,
+        family: 'Nikkor-O',
     },
     'Nikkor-ED 300mm f/4.5': {
         keywords: [Vendor.nikon, 'Nikkor'],
         minAperture: 'f/4.5',
+        primeLength: 300,
+        family: 'ED',
     },
     // "cold" Fuji X
     'Meike-X 2/50': {
         keywords: ['Meike'],
-        minAperture: 'f/2'
+        minAperture: 'f/2',
+        primeLength: 50,
     },
     'Rokinon-X 2.8/16': {
         keywords: ['Rokinon'],
-        minAperture: 'f/2.8'
+        minAperture: 'f/2.8',
+        primeLength: 16,
     },
-    // Canon
+    // Canon FD
     'Canon-FD 50mm f1.8': {
         keywords: [Vendor.canon, 'FD'],
         minAperture: 'f/1.8',
+        primeLength: 50,
     },
 };
 
@@ -782,15 +824,25 @@ function scanEXIFstuff(doc)
             debugMsg = false;
         }
     }
+    if (Overrides.knownLens) {
+        knownLens = false;
+    }
     if (Overrides.focal_length) {
         knownLens = false;
         originalFocalLength = Overrides.focal_length;
-        descBits.lens = (originalFocalLength+'mm');
+        descBits.lens = (originalFocalLength + 'mm');
         // descBits.alertText += ('originalFocalLength is '+originalFocalLength);
     }
     var lensID = findLens(lensName);
     if (lensID) {
         if (lensID.minAperture) descBits.minAperture = lensID.minAperture;
+        if (lensID.primeLength) {
+            originalFocalLength = lensID.primeLength;
+            descBits.lens = (originalFocalLength + 'mm');
+        }
+        if (lensID.family) {
+            descBits.lensFamily = lensID.family;
+        }
     }
     if (knownLens) {
         if (lensID) {
@@ -1057,7 +1109,13 @@ function main()
     if (info.caption === '') {
         // TODO - nope! We need the camera if it's been tagged... "Scanned" is not a camera
         info.caption = (Person.blog + ' * ' + descBits.camera);
-        if (descBits.lens) info.caption = (info.caption + ' + ' + descBits.lens);
+        if (descBits.lens) {
+            info.caption = (info.caption + ' + ');
+            if (descBits.lensFamily) {
+                info.caption = (info.caption + descBits.lensFamily + ' ');
+            }
+            info.caption = (info.caption + descBits.lens);
+        }
         if (descBits.minAperture) info.caption = (info.caption + ' ' + descBits.minAperture);
         info.caption = (info.caption + '\n');
         // if (descBits.shutter) info.caption = (info.caption + ' ' + descBits.shutter);

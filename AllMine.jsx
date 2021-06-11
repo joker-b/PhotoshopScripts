@@ -56,7 +56,7 @@ var Vendor = { // an enum
     zeiss: 'Zeiss',
 };
 
-var LensName = { // various typical keywords for adapted lenses - hints
+var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Voigtlander': { keywords: [ 'Cosina'] },
     'Nikkor': {
         keywords: [Vendor.nikon],
@@ -149,15 +149,14 @@ var Cameras = {
         camera: 'X-E3',
     },
     'M Monochrom': {
-        keywords: [Vendor.leica, 'Leica M', 'M Monochrom', 'Monochrom',
+        keywords: [Vendor.leica, 'M Monochrom', 'Monochrom',
            'Leica Mono', 'Mono', 'Black and White', 'MM'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'M Monochrom',
     },
     'LEICA M MONOCHROM (Typ 246)': {
-        keywords: [Vendor.leica, 'Leica M', 'Monochrom 246', 'Monochrom', 'M246',
-           'Leica Monochrom Typ 246'],
+        keywords: [Vendor.leica, 'Monochrom 246', 'Monochrom', 'M246'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'Leica M246',
@@ -233,7 +232,7 @@ var Cameras = {
         film: true,
     },
     'Leica M5': {
-        keywords: ['Leica', 'Leica M5', 'Leitz', 'M', 'Film'],
+        keywords: ['Leica', 'Leica M5', 'Leitz', 'Leica M', 'Film'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'Leica M5',
@@ -324,32 +323,32 @@ var LensCatalog = {
     // Leica Mount
     //
     'Ultron-M 1:2/35 Asph': { 
-        keywords: ['Ultron', 'Voigtlander', 'Asph', 'Manual Focus'], // fake-coded!
-        minAperture: 'f/2',
+        keywords: ['Ultron', 'Voigtlander', 'Asph'], // fake-coded!
+        minAperture: 'f/2 Asph',
         primeLength: 35,
         family: 'Ultron',
     },
     //
     'M-Rokkor 1:2/40': {
-        keywords: ['Summicron-C', 'Rokkor', 'Minolta', 'M-Rokkor',  'Manual Focus'],
+        keywords: ['Summicron-C', 'Rokkor', 'M-Rokkor'],
         minAperture: 'f/2',
         primeLength: 40,
         family: 'M-Rokkor',
     },
     'TTArtisans-M 1:1.4/50 ASPH.': {
-        keywords: ['TTArtisans', 'Asph', 'Manual Focus'], // fake coded!
+        keywords: ['TTArtisans', 'Asph'], // fake coded!
         minAperture: 'f/1.4 ASPH',
         primeLength: 50,
         family: 'TTArtisans',
     },
     'Planar-ZM 1:2/50': {
-        keywords: [Vendor.zeiss, 'Planar', 'Manual Focus'],
+        keywords: [Vendor.zeiss, 'Planar'],
         minAperture: 'f/2',
         primeLength: 50,
         family: 'Zeiss',
     },
     'M-Rokkor 1:2.8/28': {
-        keywords: ['Rokkor', 'Minolta', 'M-Rokkor', 'Manual Focus'],
+        keywords: ['Rokkor', 'Minolta', 'M-Rokkor'],
         minAperture: 'f/2.8',
         primeLength: 28,
         family: 'M-Rokkor',
@@ -362,7 +361,7 @@ var LensCatalog = {
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
-        keywords: ['Summicron', 'Manual Focus'],
+        keywords: ['Summicron'],
         minAperture: 'f/2',
         primeLength: 50,
         family: 'Summicron',
@@ -668,6 +667,7 @@ function scanEXIFstuff(doc)
                 originalFocalLength = parseFloat(q[1]);
                 fls = (Math.floor(originalFocalLength+0.49)).toString();
                 descBits.lens = (fls+'mm');
+                // alert('EXIF focal length is '+fls);
                 break;
             case 'F-Stop':
                 descBits.aperture = (' '+q[1]);
@@ -831,16 +831,25 @@ function scanEXIFstuff(doc)
         knownLens = false;
         originalFocalLength = Overrides.focal_length;
         descBits.lens = (originalFocalLength + 'mm');
-        // descBits.alertText += ('originalFocalLength is '+originalFocalLength);
+        //alert('Overrides.focal_length is '+Overrides.focal_length);
+    }
+    if (Overrides.lensFamily) {
+        descBits.lensFamily = Overrides.lensFamily;
+    }
+    if (Overrides.minAperture) {
+        descBits.minAperture = Overrides.minAperture;
     }
     var lensID = findLens(lensName);
     if (lensID) {
-        if (lensID.minAperture) descBits.minAperture = lensID.minAperture;
-        if (lensID.primeLength) {
+        if (lensID.minAperture && (Overrides.minAperture === undefined)) {
+            descBits.minAperture = lensID.minAperture;
+        }
+        if (lensID.primeLength && (Overrides.focal_length === undefined)) {
             originalFocalLength = lensID.primeLength;
             descBits.lens = (originalFocalLength + 'mm');
+            // alert('lensID.primeLength is '+lensID.primeLength);
         }
-        if (lensID.family) {
+        if (lensID.family && (Overrides.lensFamily === undefined)) {
             descBits.lensFamily = lensID.family;
         }
     }
@@ -849,7 +858,9 @@ function scanEXIFstuff(doc)
             addKeywordList(info, lensID.keywords);
         }
     }
-    if (descBits.lens) addKeywordList(info, [descBits.lens]);
+    if (descBits.lens) {
+        addKeywordList(info, [descBits.lens]);
+    }
     //
     //
     if (descBits.brand === Vendor.lumix) {
@@ -959,11 +970,15 @@ function spot_known_lens(keyword, info)
     var L = findLens(keyword);
     if (L !== undefined) {
         addKeywordList(info, L.keywords);
-        return true;
     }
-    for (lens in LensName) {
-        if (lens == keyword) {
-            addKeywordList(info, LensName[lens].keywords);
+    return L;
+}
+
+function spot_known_lens_family(keyword, info)
+{
+    for (lensFam in LensFamilyNames) {
+        if (lensFam == keyword) {
+            addKeywordList(info, LensFamilyNames[lensFam].keywords);
             return true;
         }
     }
@@ -988,7 +1003,21 @@ function parse_initial_keys(keys, descBits, info)
     };
     for (var k in keys) {
         if (! Overrides.knownLens) {
-            if (spot_known_lens(keys[k], info)) {
+            L = spot_known_lens(keys[k], info);
+            if (L) {
+                Overrides.knownLens = true;
+                if (L.primeLength) {
+                    Overrides.focal_length = L.primeLength;
+                }
+                if (L.family) {
+                    Overrides.lensFamily = L.family;
+                }
+                if (L.minAperture) {
+                    Overrides.minAperture = L.minAperture;
+                }
+                continue;
+            }
+            if (spot_known_lens_family(keys[k], info)) {
                 Overrides.knownLens = true;
                 continue;
             }

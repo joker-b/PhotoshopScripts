@@ -35,8 +35,7 @@ var Person = {
     city: 'San Francisco',
     region: 'California',
     country: 'USA',
-    commonTags: ['Bjorke', 'Botzilla.com'], // 'SF', 'Bay Area',
-            //'Petaluma', 'Sonoma County'], // added to every pic
+    commonTags: ['Bjorke', 'Botzilla.com'],
     reminder: 'needs_tags' // added only if the image has NO tags before being processed...
 };
 
@@ -58,9 +57,7 @@ var Vendor = { // an enum
 
 var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Voigtlander': { keywords: [ 'Cosina'] },
-    'Nikkor': {
-        keywords: [Vendor.nikon],
-    },
+    'Nikkor': { keywords: [Vendor.nikon], },
     'Summicron': { keywords: [Vendor.leica], },
     'Summilux': { keywords: [Vendor.leica], },
     'Summitar': { keywords: [Vendor.leica], },
@@ -73,6 +70,7 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Planar': { keywords: [Vendor.zeiss] },
     'Biogon': { keywords: [Vendor.zeiss] },
     'Sonnar': { keywords: [Vendor.zeiss] },
+    'FD': { keywords: [Vendor.canon] },
 };
 
 var Cameras = {
@@ -352,6 +350,13 @@ var LensCatalog = {
         minAperture: 'f/2.8',
         primeLength: 28,
         family: 'M-Rokkor',
+    },
+    // shortcuts
+    'TTArtisans': {
+        remap: 'TTArtisans-M 1:1.4/50 ASPH.',
+    },
+    'Ultron': {
+        remap: 'Ultron-M 1:2/35 Asph',
     },
     //
     // Leica
@@ -976,22 +981,20 @@ function spot_known_lens(keyword, info)
 
 function spot_known_lens_family(keyword, info)
 {
-    for (lensFam in LensFamilyNames) {
-        if (lensFam == keyword) {
-            addKeywordList(info, LensFamilyNames[lensFam].keywords);
-            return true;
-        }
+    var K = LensFamilyNames[keyword];
+    if (K !== undefined) {
+        addKeywordList(info, K.keywords);
+        return true;
     }
     return false;
 }
 
 function spot_film_camera(keyword, info)
 {
-    for (body in Cameras) {
-        if (body == keyword) {
-            addKeywordList(info, Cameras[body].keywords);
-            return true;
-        }
+    var B = Cameras[keyword];
+    if (B !== undefined) {
+        addKeywordList(info, B.keywords);
+        return true;
     }
     return false;
 }

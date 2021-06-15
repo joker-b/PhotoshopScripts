@@ -688,8 +688,8 @@ function scanEXIFstuff(doc)
                 }
                 break;
             case 'Scene Capture Type':
-                if (q[1] !== 'Normal') {
-                    info.keywords = Set.add(info.keywords, q[1]);
+                if (q[1] !== 'Standard') {
+                    info.keywords = Set.add(info.keywords, ('Capture: '+q[1]));
                 }
                 break;
             case 'Light Source':
@@ -725,8 +725,8 @@ function scanEXIFstuff(doc)
                     descBits.alertText += ('Artist tag: "'+q[1]+'"');
                 }
                 break;
-            case 'Exposure Program':
-                info.keywords = Set.add(info.keywords, q[1]);
+            case 'Exposure Program': // manual, AE... ignore for now
+                // info.keywords = Set.add(info.keywords, ('Exp: '+q[1]));
                 break;
             case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
                 if (findLens(q[1]) === undefined) {

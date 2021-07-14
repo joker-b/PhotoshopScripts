@@ -58,7 +58,13 @@ async function skinToner() {
       await applyAverageToSelected();
       origTone = await fetchAveragedColorViaHistogram();
       skinTone = adjust_skintone(origTone);
-      showAlert('Color '+origTone+' maps to '+skinTone);
+      // now, delete average layer
+      // and remove selection
+      // showAlert('Color '+origTone+' maps to '+skinTone);
+        await create_new_curves_layer("SkinTonerX");
+        await set_skin_adjustments(origTone, skinTone);
+        showAlert("curves ready");
+        // restore selection?
     }
     catch(e) {
       showAlert("oops "+e);
@@ -410,153 +416,150 @@ function adjust_skintone(C) // C is an array for 24-bit rgb
   return skinrgb;
 }
 
-/////////////////////////////////////////////////////////////////////////
-//// OLD METHODS ///////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
 
 
-function adjust_skin(C) // C is a SolidColor
+async function create_new_curves_layer(layerName)
 {
-  // desired: m=2*c; y=1.25*m;
-  var skc, skm, sky;
-  var cmyk = [C.cmyk.cyan,C.cmyk.magenta,C.cmyk.yellow,C.cmyk.black];
-  var L = C.gray.gray;
-  if (L==0) {
-      return C;
-  }
-  var skin = new SolidColor();
-  if (cmyk[0]*2.5 < 100) { // otherwise too bright to scale up
-      skm = cmyk[0]*2;
-      sky = skm*1.25;
-      skin.cmyk.cyan = C.cmyk.cyan;
-      skin.cmyk.magenta = skm;
-      skin.cmyk.yellow = sky;
-      skin.cmyk.black = C.cmyk.black;
-  } else {
-      skm = cmyk[2]/1.25;
-      skc = skm/2;
-      skin.cmyk.cyan = skc;
-      skin.cmyk.magenta = skm;
-      skin.cmyk.yellow = C.cmyk.yellow;
-      skin.cmyk.black = C.cmyk.black;
-  }
-  return skin;
+  const batchPlay = require("photoshop").action.batchPlay;
+
+  const result = await batchPlay(
+  [
+     {
+        "_obj": "make",
+        "_target": [
+           {
+              "_ref": "adjustmentLayer"
+           }
+        ],
+        "using": {
+           "_obj": "adjustmentLayer",
+           "type": {
+              "_obj": "curves",
+              "presetKind": {
+                 "_enum": "presetKindType",
+                 "_value": "presetKindDefault"
+              }
+           }
+        },
+        "_isCommand": true,
+        "_options": {
+           "dialogOptions": "dontDisplay"
+        }
+     }
+  ],{
+     "synchronousExecution": false,
+     "modalBehavior": "fail"
+  });
+  
 }
 
-////
+async function set_skin_adjustments(OldColor, NewColor) {
+  const batchPlay = require("photoshop").action.batchPlay;
 
-function set_single_curve_layer_channel(ChannelIndex,HorzValue,VertValue)
-{
-  // we will set a channel list for the already-active curves layer
-  // we only know three index values: 0 1 2 for R G B
-  // values are in the range 0-255
-  var knownChannels = ['Rd  ','Grn ','Bl  '];
-  var channelID = knownChannels[ChannelIndex];
-  var idsetd = charIDToTypeID( "setd" );
-  var desc398 = new ActionDescriptor();
-  var idnull = charIDToTypeID( "null" );
-      var ref163 = new ActionReference();
-      var idAdjL = charIDToTypeID( "AdjL" );
-      var idOrdn = charIDToTypeID( "Ordn" );
-      var idTrgt = charIDToTypeID( "Trgt" );
-      ref163.putEnumerated( idAdjL, idOrdn, idTrgt );
-  desc398.putReference( idnull, ref163 );
-  var idT = charIDToTypeID( "T   " );
-      var desc399 = new ActionDescriptor();
-      var idAdjs = charIDToTypeID( "Adjs" );
-          var list121 = new ActionList();
-              var desc400 = new ActionDescriptor();
-              var idChnl = charIDToTypeID( "Chnl" );
-                  var ref164 = new ActionReference();
-                  var idChnl = charIDToTypeID( "Chnl" );
-                  var idChnl = charIDToTypeID( "Chnl" );
-                  var idBl = charIDToTypeID( channelID );
-                  ref164.putEnumerated( idChnl, idChnl, idBl );
-              desc400.putReference( idChnl, ref164 );
-              var idCrv = charIDToTypeID( "Crv " );
-                  var list122 = new ActionList();
-                      var desc401 = new ActionDescriptor();
-                      var idHrzn = charIDToTypeID( "Hrzn" );
-                      desc401.putDouble( idHrzn, 0.000000 );
-                      var idVrtc = charIDToTypeID( "Vrtc" );
-                      desc401.putDouble( idVrtc, 0.000000 );
-                  var idPnt = charIDToTypeID( "Pnt " );
-                  list122.putObject( idPnt, desc401 );
-                      var desc402 = new ActionDescriptor();
-                      var idHrzn = charIDToTypeID( "Hrzn" );
-                      desc402.putDouble( idHrzn, HorzValue );
-                      var idVrtc = charIDToTypeID( "Vrtc" );
-                      desc402.putDouble( idVrtc, VertValue );
-                  var idPnt = charIDToTypeID( "Pnt " );
-                  list122.putObject( idPnt, desc402 );
-                      var desc403 = new ActionDescriptor();
-                      var idHrzn = charIDToTypeID( "Hrzn" );
-                      desc403.putDouble( idHrzn, 255.000000 );
-                      var idVrtc = charIDToTypeID( "Vrtc" );
-                      desc403.putDouble( idVrtc, 255.000000 );
-                  var idPnt = charIDToTypeID( "Pnt " );
-                  list122.putObject( idPnt, desc403 );
-              desc400.putList( idCrv, list122 );
-          var idCrvA = charIDToTypeID( "CrvA" );
-          list121.putObject( idCrvA, desc400 );
-      desc399.putList( idAdjs, list121 );
-  var idCrvs = charIDToTypeID( "Crvs" );
-  desc398.putObject( idT, idCrvs, desc399 );
-  executeAction( idsetd, desc398, DialogModes.NO );
+  const result = await batchPlay(
+  [
+    {
+        "_obj": "set",
+        "_target": [
+          {
+              "_ref": "adjustmentLayer",
+              "_enum": "ordinal",
+              "_value": "targetEnum"
+          }
+        ],
+        "to": {
+          "_obj": "curves",
+          "presetKind": {
+              "_enum": "presetKindType",
+              "_value": "presetKindCustom"
+          },
+          "adjustment": [
+              {
+                "_obj": "curvesAdjustment",
+                "channel": {
+                    "_ref": "channel",
+                    "_enum": "channel",
+                    "_value": "red"
+                },
+                "curve": [
+                    {
+                      "_obj": "paint",
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    {
+                      "_obj": "paint",
+                      "horizontal": OldColor[0],
+                      "vertical": NewColor[0]
+                    },
+                    {
+                      "_obj": "paint",
+                      "horizontal": 255,
+                      "vertical": 255
+                    }
+                ]
+              },
+              {
+                "_obj": "curvesAdjustment",
+                "channel": {
+                    "_ref": "channel",
+                    "_enum": "channel",
+                    "_value": "green"
+                },
+                "curve": [
+                    {
+                      "_obj": "paint",
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    {
+                      "_obj": "paint",
+                      "horizontal": OldColor[1],
+                      "vertical": NewColor[1]
+                    },
+                    {
+                      "_obj": "paint",
+                      "horizontal": 255,
+                      "vertical": 255
+                    }
+                ]
+              },
+              {
+                "_obj": "curvesAdjustment",
+                "channel": {
+                    "_ref": "channel",
+                    "_enum": "channel",
+                    "_value": "blue"
+                },
+                "curve": [
+                    {
+                      "_obj": "paint",
+                      "horizontal": 0,
+                      "vertical": 0
+                    },
+                    {
+                      "_obj": "paint",
+                      "horizontal": OldColor[2],
+                      "vertical": NewColor[2]
+                    },
+                    {
+                      "_obj": "paint",
+                      "horizontal": 255,
+                      "vertical": 255
+                    }
+                ]
+              }
+          ]
+        },
+        "_isCommand": true,
+        "_options": {
+          "dialogOptions": "dontDisplay"
+        }
+    }
+  ],{
+    "synchronousExecution": false,
+    "modalBehavior": "fail"
+  });
 }
 
-function map_color_curves_to_match_color(OldColor, NewColor)
-{
-  // both arguments are SolidColors
-  // curves layer is already active
-  set_single_curve_layer_channel(0, OldColor.rgb.red, NewColor.rgb.red);
-  set_single_curve_layer_channel(1, OldColor.rgb.green, NewColor.rgb.green);
-  set_single_curve_layer_channel(2, OldColor.rgb.blue, NewColor.rgb.blue);
-}
 
-
-function create_rgb_curves_layer(LayerName) {
-  // create curves layer (simpler?)
-  var idMk = charIDToTypeID( "Mk  " );
-      var desc380 = new ActionDescriptor();
-      var idnull = charIDToTypeID( "null" );
-          var ref156 = new ActionReference();
-          var idAdjL = charIDToTypeID( "AdjL" );
-          ref156.putClass( idAdjL );
-      desc380.putReference( idnull, ref156 );
-      var idUsng = charIDToTypeID( "Usng" );
-          var desc381 = new ActionDescriptor();
-          var idType = charIDToTypeID( "Type" );
-              var desc382 = new ActionDescriptor();
-              var idpresetKind = stringIDToTypeID( "presetKind" );
-              var idpresetKindType = stringIDToTypeID( "presetKindType" );
-              var idpresetKindDefault = stringIDToTypeID( "presetKindDefault" );
-              desc382.putEnumerated( idpresetKind, idpresetKindType, idpresetKindDefault );
-          var idCrvs = charIDToTypeID( "Crvs" );
-          desc381.putObject( idType, idCrvs, desc382 );
-      var idAdjL = charIDToTypeID( "AdjL" );
-      desc380.putObject( idUsng, idAdjL, desc381 );
-  executeAction( idMk, desc380, DialogModes.NO );
-  // =======================================================
-  var idslct = charIDToTypeID( "slct" );
-      var desc383 = new ActionDescriptor();
-      var idnull = charIDToTypeID( "null" );
-          var ref157 = new ActionReference();
-          var idChnl = charIDToTypeID( "Chnl" );
-          var idChnl = charIDToTypeID( "Chnl" );
-          var idRGB = charIDToTypeID( "RGB " );
-          ref157.putEnumerated( idChnl, idChnl, idRGB );
-      desc383.putReference( idnull, ref157 );
-      var idMkVs = charIDToTypeID( "MkVs" );
-      desc383.putBoolean( idMkVs, false );
-  executeAction( idslct, desc383, DialogModes.NO );
-  app.activeDocument.activeLayer.name = LayerName;
-  return  app.activeDocument.activeLayer;
-}
-
-function map_color_via_curves_layer(OldColor,NewColor,LayerName)
-{
-  var lName = LayerName ? LayerName : "groovy";
-  var lyr = create_rgb_curves_layer(lName);
-  map_color_curves_to_match_color(OldColor,NewColor);
-}

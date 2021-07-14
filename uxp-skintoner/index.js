@@ -51,9 +51,15 @@ async function skinToner() {
       showAlert("Please select a pixel-based layer, & try again");
       return;
     }
-    workLayer = await origLayer.duplicate();
+    var workLayer, origTone, skinTone;
+    try {
+      workLayer = await origLayer.duplicate();
     // activelayer will now be the workLayer
-    try { await applyAverageToSelected(); }
+      await applyAverageToSelected();
+      origTone = await fetchAveragedColorViaHistogram();
+      skinTone = adjust_skintone(origTone);
+      showAlert('Color '+origTone+' maps to '+skinTone);
+    }
     catch(e) {
       showAlert("oops "+e);
       return;
@@ -68,8 +74,12 @@ async function skinToner() {
     var savedSelection = app.activeDocument.channels.add();
     sel.store(savedSelection);
     app.activeDocument.activeChannels = origChannels;
-    var origTone = getColorFromAveragedSelection(app.activeDocument);
-    var skinTone = adjust_skin(origTone);
+    */
+
+    //var origTone = getColorFromAveragedSelection(app.activeDocument);
+    //var skinTone = adjust_skin(origTone);
+    
+    /*
     app.activeDocument.activeLayer = origLayer;
     workLayer.remove();
     sel.deselect();
@@ -206,7 +216,7 @@ async function isRGB() {
 async function getSelectionBounds(){
   const app = require("photoshop").app;
 
-  const idDoc=await app.activeDocument._id;
+  const idDoc = await app.activeDocument._id;
   
   const result = await require("photoshop").action.batchPlay(
   [
@@ -237,59 +247,175 @@ async function getSelectionBounds(){
   return [left,top,right,bottom];    
 }
 
-async function fetchChannelHistogram(channelName)) {
+async function fetchAveragedColorViaHistogram() {
+  const app = require("photoshop").app;
   const batchPlay = require("photoshop").action.batchPlay;
-  const idDoc=await app.activeDocument._id;
+  const idDoc = await app.activeDocument._id;
 
   const result = await batchPlay(
   [
-     {
+    {
+      "_obj": "get",
+      "_target": [
+         {
+            "_property": "histogram"
+         },
+         {
+            "_enum": "channel",
+            "_ref": "channel",
+            "_value": "red",
+         },
+         {
+            "_ref": "document",
+            "_id": idDoc
+         }
+      ],
+      "_options": {
+         "dialogOptions": "dontDisplay"
+      }
+    },
+    {
         "_obj": "get",
         "_target": [
-           {
+          {
               "_property": "histogram"
-           },
-           {
+          },
+          {
               "_enum": "channel",
               "_ref": "channel",
-              "_value": channelName
-           },
-           {
+              "_value": "green",
+          },
+          {
               "_ref": "document",
               "_id": idDoc
-           }
+          }
         ],
         "_options": {
-           "dialogOptions": "dontDisplay"
+          "dialogOptions": "dontDisplay"
         }
-     }
+    },
+    {
+      "_obj": "get",
+      "_target": [
+        {
+            "_property": "histogram"
+        },
+        {
+            "_enum": "channel",
+            "_ref": "channel",
+            "_value": "blue",
+        },
+        {
+            "_ref": "document",
+            "_id": idDoc
+        }
+      ],
+      "_options": {
+        "dialogOptions": "dontDisplay"
+      }
+    }
   ],{
      "synchronousExecution": false,
      "modalBehavior": "fail"
   });
-  return result[0].histogram;
+  function findPV(h) {
+    for (var i = 0; i <= 255; i++ ) {
+        if (h[i]) { return i; }
+    }
+    return 0;
+  }
+  var pColour = [0,0,0];
+  pColour[0] = findPV(result[0].histogram);
+  pColour[1] = findPV(result[1].histogram);
+  pColour[2] = findPV(result[2].histogram);
+  // doc.selection.deselect(); // or, even better, undo
+  return pColour;
+}
+
+// variant of https://www.standardabweichung.de/code/javascript/cmyk-rgb-conversion-javascript
+
+var rgb2cmyk = function(rgb, normalized){
+  var c = 1 - (rgb[0] / 255);
+  var m = 1 - (rgb[1] / 255);
+  var y = 1 - (rgb[2] / 255);
+  var k = Math.min(c, Math.min(m, y));
+  
+  c = (c - k) / (1 - k);
+  m = (m - k) / (1 - k);
+  y = (y - k) / (1 - k);
+  
+  if(!normalized){
+      c = Math.round(c * 10000) / 100;
+      m = Math.round(m * 10000) / 100;
+      y = Math.round(y * 10000) / 100;
+      k = Math.round(k * 10000) / 100;
+  }
+  
+  c = isNaN(c) ? 0 : c;
+  m = isNaN(m) ? 0 : m;
+  y = isNaN(y) ? 0 : y;
+  k = isNaN(k) ? 0 : k;
+  
+  return [c, m, y, k];
+};
+
+var cmyk2rgb = function(c, m, y, k, normalized){
+  c = (c / 100);
+  m = (m / 100);
+  y = (y / 100);
+  k = (k / 100);
+  
+  c = c * (1 - k) + k;
+  m = m * (1 - k) + k;
+  y = y * (1 - k) + k;
+  
+  var r = 1 - c;
+  var g = 1 - m;
+  var b = 1 - y;
+  
+  if(!normalized){
+      r = Math.round(255 * r);
+      g = Math.round(255 * g);
+      b = Math.round(255 * b);
+  }
+  
+  return [r, g, b];
+};
+
+function adjust_skintone(C) // C is an array for 24-bit rgb
+{
+  if (C[0]+C[1]+C[3] < 5) {
+    return C; // basically: it's black
+  }
+  // desired: m=2*c; y=1.25*m;
+  var skc, skm, sky;
+  var cmyk = rgb2cmyk(C, false); //  [C.cmyk.cyan,C.cmyk.magenta,C.cmyk.yellow,C.cmyk.black];
+  var cyan, magenta, yellow, black;
+  if (cmyk[0]*2.5 < 100) { // otherwise too bright to scale up
+      skm = cmyk[0]*2;
+      sky = skm*1.25;
+      cyan = cmyk[0];
+      magenta = skm;
+      yellow = sky;
+      black = cmyk[3];
+  } else {
+      skm = cmyk[2]/1.25;
+      skc = skm/2;
+      cyan = skc;
+      magenta = skm;
+      yellow = cmyk[2];
+      black = cmyk[3];
+  }
+  var skinrgb = cmyk2rgb(cyan, magenta, yellow, black, false);
+  return skinrgb;
 }
 
 /////////////////////////////////////////////////////////////////////////
 //// OLD METHODS ///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-var getColorFromAveragedSelection = function(doc) {
-  function findPV(h) {
-      for (var i = 0; i <= 255; i++ ) {
-          if (h[i]) { return i; }
-      }
-      return 0;
-  }
-  var pColour = new SolidColor();
-  pColour.rgb.red   = findPV(doc.channels[0].histogram);
-  pColour.rgb.green = findPV(doc.channels[1].histogram);
-  pColour.rgb.blue  = findPV(doc.channels[2].histogram);
-  doc.selection.deselect(); // or, even better, undo
-  return pColour;
-};
 
-function adjust_skin(C) // origTone is a SolidColor
+function adjust_skin(C) // C is a SolidColor
 {
   // desired: m=2*c; y=1.25*m;
   var skc, skm, sky;

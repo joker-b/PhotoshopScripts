@@ -16,6 +16,8 @@ entrypoints.setup({
   }
 });
 
+// globals are almost bad
+
 async function showAlert(message) {
   const app = require('photoshop').app;
   await app.showAlert(message);
@@ -51,9 +53,14 @@ async function skinToner() {
     }
     workLayer = await origLayer.duplicate();
     // activelayer will now be the workLayer
+    try { await applyAverageToSelected(); }
+    catch(e) {
+      showAlert("oops "+e);
+      return;
+    }
 
+    var nChans = getChannelCount();
     /* // ORIGINAL MAIN FUNCTION 
-    workLayer.applyAverage();
     var origChannels = [];
     for (var i=0; i<3; i+=1) { // some hand-waving on image mode here....
         origChannels[i] = app.activeDocument.channels[i];
@@ -114,6 +121,56 @@ async function writeLayersToDisk(activeDocName, layerNames) {
 //////////////////////////////////////
 //////////////////////////////////////
 //////////////////////////////////////
+
+async function applyAverageToSelected() {
+  const batchPlay = require("photoshop").action.batchPlay;
+  const result = await batchPlay(
+  [
+     {
+        "_obj": "$Avrg",
+        "_isCommand": true,
+        "_options": {
+           "dialogOptions": "dontDisplay"
+        }
+     }
+  ],{
+     "synchronousExecution": false,
+     "modalBehavior": "fail"
+  });
+}
+
+function getChannelCount() {
+  const batchPlay = require("photoshop").action.batchPlay;
+  try {
+    const result = batchPlay(
+    [
+      {
+          "_obj": "get",
+          "_target": [
+            {
+                "_property": "numberOfChannels"
+            },
+            {
+                "_ref": "document",
+                "_enum": "ordinal",
+                "_value": "targetEnum"
+            }
+          ],
+          "_options": {
+            "dialogOptions": "dontDisplay"
+          }
+      }
+    ],{
+      "synchronousExecution": true,
+      "modalBehavior": "fail"
+    });
+    return result[0].numberOfChannels;
+  }
+  catch(e) {
+    return 0;
+  }
+  return 0;
+}
 
 async function isRGB() {
   try {
@@ -180,10 +237,42 @@ async function getSelectionBounds(){
   return [left,top,right,bottom];    
 }
 
+async function fetchChannelHistogram(channelName)) {
+  const batchPlay = require("photoshop").action.batchPlay;
+  const idDoc=await app.activeDocument._id;
 
-//////////////////////
-//// OLD METHODS /////////
-////////////
+  const result = await batchPlay(
+  [
+     {
+        "_obj": "get",
+        "_target": [
+           {
+              "_property": "histogram"
+           },
+           {
+              "_enum": "channel",
+              "_ref": "channel",
+              "_value": channelName
+           },
+           {
+              "_ref": "document",
+              "_id": idDoc
+           }
+        ],
+        "_options": {
+           "dialogOptions": "dontDisplay"
+        }
+     }
+  ],{
+     "synchronousExecution": false,
+     "modalBehavior": "fail"
+  });
+  return result[0].histogram;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//// OLD METHODS ///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 var getColorFromAveragedSelection = function(doc) {
   function findPV(h) {

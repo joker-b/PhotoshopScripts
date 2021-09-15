@@ -63,6 +63,7 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Summitar': { keywords: [Vendor.leica], },
     'Elmar': { keywords: [Vendor.leica], },
     'Elmarit': { keywords: [Vendor.leica], },
+    'Tele-Elmarit': { keywords: [Vendor.leica], },
     'Rokkor': { keywords: [Vendor.minolta], },
     'M-Rokkor': { keywords: [Vendor.leica, Vendor.minolta], },
     'Ultron': { keywords: ['Voigtlander'], },
@@ -320,6 +321,12 @@ var LensCatalog = {
     //
     // Leica Mount
     //
+    'Tele-Elmarit 1:2.8/90': { 
+        keywords: ['Tele-Elmarit', 'Elmarit', Vendor.leica],
+        minAperture: 'f/2.8',
+        primeLength: 90,
+        family: 'Elmarit',
+    },
     'Ultron-M 1:2/35 Asph': { 
         keywords: ['Ultron', 'Voigtlander', 'Asph'], // fake-coded!
         minAperture: 'f/2 Asph',

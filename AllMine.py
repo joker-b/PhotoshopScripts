@@ -144,7 +144,7 @@ ORIG_FOCAL_LENGTH = 0
 def get_properties(filename):
     'call exiftool for JSON info'
     if not os.path.exists(filename):
-        print('get_properties({}): no such file')
+        print('get_properties({}): no such file'.format(filename))
         return None
     j = subprocess.run(["exiftool", "-json", filename], capture_output=True)
     return json.loads(j.stdout)
@@ -729,7 +729,6 @@ bjorke_Green_KBXF7882)
 
 
 MISSED_TAG = {}
-WRITE_MISSED_TAGS = False
 
 def read_tags(props):
     for t in props:
@@ -750,6 +749,7 @@ def read_desc():
     global EQUIV_FOCAL_LEN, ORIG_FOCAL_LENGTH
     if not DESC.get('camera'):
         print("Unknown camera")
+    else:
         if DESC['camera'].brand == Vendor.lumix:
             add_keys(['Leica','Lumix','Leicasonic','Panaleica'])
         elif DESC['camera'].brand == Vendor.fuji:
@@ -759,8 +759,8 @@ def read_desc():
               if (aLens):
                 add_keys(INFO,aLens.info)
                 DESC.min_aperture = aLens.min_aperture
-    if DESC['camera'].brand == 'Scanned': # no actual camera
-        add_keys(['film','scanned'])
+        elif DESC['camera'].brand == 'Scanned': # no actual camera
+            add_keys(['film','scanned'])
     if EQUIV_FOCAL_LEN <= 0:
         EQUIV_FOCAL_LEN = ORIG_FOCAL_LENGTH * DESC['multiplier'] # might still be zero....
         EQUIV_FOCAL_LEN = math.floor(EQUIV_FOCAL_LEN + 0.49)
@@ -922,6 +922,7 @@ image_filename = '/home/kevinbjorke/pix/kbImport/Pix/2020/2020-04-Apr/2020_04_23
 image_filename = '/home/kevinbjorke/pix/kbImport/Pix/2020/2020-04-Apr/2020_04_23_Hum/bjorke_Hum_DSCF4589.RAF'
 image_filename = '/Users/kevinbjorke/Pictures/kbImport/Pix/2020/2020-01-Jan/2020_01_04_Putnam/bjorke_Putnam_DSCF2277.JPG'
 image_filename = '/Users/kevinbjorke/Google Drive/kbImport/Pix/2020/Work2020/pix2020/bjorke_Green_KBXF7882.jpg'
+image_filename = '/home/kevinbjorke/pix/kbImport/Pix/2020/2020-06-Jun/2020_06_13_XE/bjorke_XE_ESCF4060.JPG'
 # TODO(kevin): get name from sys.argv
 
 all_mine(image_filename)
@@ -930,6 +931,8 @@ print('\n{}'.format(list(KEYWORDS.keys())))
 print('\n{}'.format(list(DESC.keys())))
 print("Focal Length {}, original {}, mult {}".format(EQUIV_FOCAL_LEN, ORIG_FOCAL_LENGTH, DESC['multiplier']))
 # print('\n{}'.format(list(INFO.keys())))
+
+WRITE_MISSED_TAGS = True
 
 if WRITE_MISSED_TAGS:
     if len(list(MISSED_TAG.keys())) > 0:

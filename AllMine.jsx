@@ -507,6 +507,31 @@ function findAdaptedLens(focal_length) {
     return findLens[a];
 }
 
+/// from AdobeSupport "SuperMerlin" //////////////////////////////////
+
+function _getXmpArrayItems(ns, prop, Xmp){
+    var arrItem=[];
+    var items = Xmp.countArrayItems(ns, prop);
+    for(var i = 1; i <= items; i++){
+            arrItem.push(Xmp.getArrayItem(ns, prop, i));
+    }
+    return arrItem;
+};
+
+function scanned_or_made(info) {
+    if (ExternalObject.AdobeXMPScript == undefined) {
+        ExternalObject.AdobeXMPScript = new ExternalObject('lib:AdobeXMPScript');
+    }
+    var xmp = new XMPMeta(activeDocument.xmpMetadata. rawData);
+    var keys = _getXmpArrayItems(XMPConst.NS_DC, 'seed', xmp); // watching for generated pix
+    /////////////////// Do with as you wish
+    if (keys.length < 1) return 'Scanned';
+    info.keywords = Set.add(info.keywords, ("Generator Seed "+keys[0]));
+    var keys = _getXmpArrayItems(XMPConst.NS_DC, 'i', xmp);
+    if (keys.length > 0) info.keywords = Set.add(info.keywords, ("Generator Iteration "+keys[0]));
+    info.keywords = Set.add(info.keywords, "Generative Art");
+    return 'Generative';
+}
 
 /// from xlib ///////////////////////////////////////
 
@@ -646,7 +671,7 @@ function scanEXIFstuff(doc)
     var debugMsg = false;
     var knownLens = false;
     var knownPerson = false;
-    var SCANNED = 'Scanned';
+    var SCANNED = scanned_or_made(info);
     var lensName = '';
     var descBits = {
         camera: SCANNED,
@@ -1067,7 +1092,8 @@ function parse_initial_keys(keys, descBits, info)
                 break;
             }
             default:
-                descBits.alertText += ('\nUnknown key pair: "'+keys[k]+'"'); // TODO this is wrong, no descBits
+                // descBits.alertText += ('\Found key pair: "'+keys[k]+'"'); // TODO this is wrong, no descBits
+                continue;
         }
     }
     return Overrides;

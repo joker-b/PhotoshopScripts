@@ -23,8 +23,6 @@ async function showAlert(message) {
   await app.showAlert(message);
 }
 
-
-
 async function skinToner() {
   // showAlert("here we go");
   try {
@@ -54,17 +52,17 @@ async function skinToner() {
     var workLayer, origTone, skinTone;
     try {
       workLayer = await origLayer.duplicate();
-    // activelayer will now be the workLayer
+      // activelayer will now be the workLayer
       await applyAverageToSelected();
       origTone = await fetchAveragedColorViaHistogram();
       skinTone = adjust_skintone(origTone);
       // now, delete average layer
       // and remove selection
       // showAlert('Color '+origTone+' maps to '+skinTone);
-        await create_new_curves_layer("SkinTonerX");
-        await set_skin_adjustments(origTone, skinTone);
-        showAlert("curves ready");
-        // restore selection?
+      await create_new_curves_layer("SkinTonerX");
+      await set_skin_adjustments(origTone, skinTone);
+      showAlert("curves ready");
+      // restore selection?
     }
     catch(e) {
       showAlert("oops "+e);
@@ -131,8 +129,6 @@ async function writeLayersToDisk(activeDocName, layerNames) {
   }
   const result = await file.write(`Layers for document ${activeDocName}\n\n${layerNames.join('\n')}`);
 }
-
-
 
 //////////////////////////////////////
 //////////////////////////////////////
@@ -416,8 +412,6 @@ function adjust_skintone(C) // C is an array for 24-bit rgb
   return skinrgb;
 }
 
-
-
 async function create_new_curves_layer(layerName)
 {
   const batchPlay = require("photoshop").action.batchPlay;
@@ -562,4 +556,4 @@ async function set_skin_adjustments(OldColor, NewColor) {
   });
 }
 
-
+/// eof

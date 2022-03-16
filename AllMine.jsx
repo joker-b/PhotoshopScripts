@@ -471,6 +471,10 @@ var LensCatalog = {
         minAperture: 'f/1.8',
         primeLength: 50,
     },
+    'not selected' : {
+        keywords: ['lens unknown'],
+        minAperture: 'f/?',
+    },
 };
 
 var AdaptedFocalLengths = {
@@ -494,6 +498,15 @@ function findLens(lens_name) {
             var name2 = L.remap;
             //alert('remapped "'+lens_name+'" to "'+name2+'"');
             L = LensCatalog[name2];
+        } else {
+            guess = /([0-9.])*\s?mm/.exec(lens_name);
+            if (guess) {
+                L = {
+                    keywords: ['Adapted '+guess[0]],
+                    primeLength: Number(guess[1]),
+                    minAperture: 'f/?'
+                }
+            }
         }
     //} else {
     //    alert('nope: "'+lens_name+'" to "'+L+'"');

@@ -396,6 +396,9 @@ var LensCatalog = {
         //keywords: ['Elmarit'],
         remap: 'M-Rokkor 1:2.8/28'
     },
+    'Elmarit-M 1:2.8/90': {
+        remap: 'Tele-Elmarit 1:2.8/90'
+    },
     //
     // Contax
     //

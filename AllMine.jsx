@@ -67,6 +67,7 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Rokkor': { keywords: [Vendor.minolta], },
     'M-Rokkor': { keywords: [Vendor.leica, Vendor.minolta], },
     'Ultron': { keywords: ['Voigtlander'], },
+    'Nokton': { keywords: ['Voigtlander'], },
     'TTArtisans': { keywords: ['TT'] },
     'Planar': { keywords: [Vendor.zeiss] },
     'Biogon': { keywords: [Vendor.zeiss] },
@@ -321,6 +322,12 @@ var LensCatalog = {
         minAperture: 'f/2.8',
         primeLength: 40,
         family: 'TTArtisans',
+    },
+    'Nokton-X 23/1.2': {
+        keywords: ['Nokton', 'Voigtlander', Vendor.fuji],
+        minAperture: 'f/1.2',
+        primeLength: 23,
+        family: 'Nokton',
     },
     //
     // Lenses Possibly without Digital Coupling

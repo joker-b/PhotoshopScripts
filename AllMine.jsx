@@ -58,6 +58,7 @@ var Vendor = { // an enum
 var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Voigtlander': { keywords: [ 'Cosina'] },
     'Nikkor': { keywords: [Vendor.nikon], },
+    'Fujinon': { keywords: [Vendor.fuji], },
     'Summicron': { keywords: [Vendor.leica], },
     'Summilux': { keywords: [Vendor.leica], },
     'Summitar': { keywords: [Vendor.leica], },
@@ -299,6 +300,11 @@ var LensCatalog = {
     },
     'XF23mmF2 R WR': {
         keywords: [],
+        minAperture: 'f/2.0',
+        primeLength: 23,
+    },
+    'Fujinon 23/2': { // for X100 series
+        keywords: ['X100'],
         minAperture: 'f/2.0',
         primeLength: 23,
     },
@@ -734,6 +740,7 @@ function scan_EXIF_tags(doc)
     var knownLens = false;
     var knownPerson = false;
     var lensName = '';
+    const bjorkeType = /Bjorke/;
     var Overrides = parse_initial_keys();
     for (var i = 0; i < Info.exif.length; i++) {
         var q = Info.exif[i];
@@ -742,8 +749,13 @@ function scan_EXIF_tags(doc)
             case 'Make':
                 addKey(qName);
                 break;
-            case 'Model':
-                addAnyCameraInfo(qName);  // identify specific model of camera
+                case 'Model':
+                    addAnyCameraInfo(qName);  // identify specific model of camera
+                    const x100Types = /^X100/;
+                    if (x100Types.test(qName)) {
+                        lensName = 'Fujinon 23/2'; // not in EXIF for these cameras
+                        knownLens = true
+                    }
                 break;
             case 'Date Time':
             case 'Date Time Original':
@@ -768,9 +780,12 @@ function scan_EXIF_tags(doc)
                 DescBits.iso = (', ISO '+q[1]);
                 break;
             case 'Copyright':
+            case 'Copyright Notice':
                 if (q[1].match(/[0-9]/) && !knownPerson) {
                     if (q[1].indexOf(Person.fullName) < 0) {
-                        DescBits.alert('\nEXIF Copyright Notice:\n"'+q[1]+'"');
+                        if (!bjorkeType.test(q[1])) {
+                            DescBits.alert('\nEXIF Copyright Notice:\n"'+q[1]+'"');
+                        }
                     }
                 }
                 break;
@@ -805,6 +820,7 @@ function scan_EXIF_tags(doc)
                 for (var ip=0; ip<Person.altNames.length; ip+=1) {
                     knownPerson |= (q[1].indexOf(Person.altNames[ip]) !== -1);
                 }
+                knownPerson |= bjorkeType.test(q[1]);
                 if (!knownPerson) {
                     DescBits.alert('Artist tag: "'+q[1]+'"');
                 }

@@ -876,6 +876,9 @@ function scan_EXIF_tags(doc)
             case 'Contrast':
             case 'Saturation':
             case 'Sharpness':
+            case 'White Point': // XPro2 as of July 2022 (updated by FPS?)
+            case 'Primary Chromaticities': // XPro2 as of July 2022 (updated by FPS?)
+            case 'YCbCr Coefficients': // XPro2 as of July 2022 (updated by FPS?)
             case 'Brightness Value': // first seen on x100s
             case 'Subject Distance Range': // first seen on x100s
             case 'Subject Distance': // first seen on Glass
@@ -889,6 +892,7 @@ function scan_EXIF_tags(doc)
             case 'EXIF tag 42034': // lens info "rdf:Seq"
             case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
             case 'EXIF tag 42033': // X100F serial# (LX7 too?)
+            case 'EXIF tag 42240': // XPro2 "22/10"?
             case 'EXIF tag 41483': // Glass, unknown
             // pixel 3
             case 'EXIF tag 36880': // Pixel3, unknown
@@ -914,20 +918,27 @@ function scan_EXIF_tags(doc)
     //
     // Apply any overrides found in the keywords
     //
+    var lensOverride = false;
     if (Overrides.knownLens) {
         knownLens = false;
+        lensOverride = true;
     }
     if (Overrides.focal_length) {
         knownLens = false;
         originalFocalLength = Overrides.focal_length;
         DescBits.lens = (originalFocalLength + 'mm');
         //alert('Overrides.focal_length is '+Overrides.focal_length);
+        lensOverride = true;
     }
     if (Overrides.lensFamily) {
         DescBits.lensFamily = Overrides.lensFamily;
     }
     if (Overrides.minAperture) {
         DescBits.minAperture = Overrides.minAperture;
+    }
+    if (!knownLens && !lensOverride && (originalFocalLength == 23)) {
+        lensName = 'Nokton-X 23/1.2';
+        knownLens = true;
     }
     var lensID = findLens(lensName);
     if (lensID) {

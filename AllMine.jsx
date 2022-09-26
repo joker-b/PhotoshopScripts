@@ -415,6 +415,10 @@ var LensCatalog = {
         //keywords: ['Elmarit'],
         remap: 'M-Rokkor 1:2.8/28'
     },
+    'Elmarit-M 1:2.8/28 Leitz': { // both versions
+        //keywords: ['Elmarit'],
+        remap: 'M-Rokkor 1:2.8/28'
+    },
     'Elmarit-M 1:2.8/90': {
         remap: 'Tele-Elmarit 1:2.8/90'
     },
@@ -557,7 +561,7 @@ function findLens(lens_name) {
     }
     if (lens_obj) {
         if (lens_obj.remap !== undefined) {
-            alert('remapping "'+lens_name+'" to "'+lens_obj.remap+'"');
+            // alert('remapping "'+lens_name+'" to "'+lens_obj.remap+'"');
             return findLens(lens_obj.remap);
         }
     } else {
@@ -1245,6 +1249,12 @@ function main()
     Info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
     if (!(Info.copyrightNotice.length > 2)) {
         Info.copyrightNotice = ('(C) ' + thisYearS + ' ' + Person.fullname);
+    } else {
+        // catch minimal notices
+        m = Info.copyrightNotice.match(/\[[cC]\] *(\d\d\d\d)$/);
+        if (m) {
+            Info.copyrightNotice = ('(C) ' + m[1] + ' ' + Person.fullname);
+        }
     }
     Info.ownerUrl = Person.url;
     if (Info.title === '') {

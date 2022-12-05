@@ -269,6 +269,9 @@ var Cameras = {
 };
 
 var LensCatalog = {
+    //
+    // Fuji Lenses
+    //
     'XF18-55mmF2.8-4 R LM OIS': {
         keywords: ['kit lens', 'zoom'],
         minAperture: 'f/2.8-4',
@@ -352,6 +355,12 @@ var LensCatalog = {
         primeLength: 35,
         family: 'Ultron',
     },
+    'Biogon-ZM 1:1.4/35': {
+        keywords: [Vendor.zeiss, 'Biogon'],
+        minAperture: 'f/1.4',
+        primeLength: 35,
+        family: 'Zeiss',
+    },
     //
     'M-Rokkor 1:2/40': {
         keywords: ['Summicron-C', 'Rokkor', 'M-Rokkor'],
@@ -391,6 +400,10 @@ var LensCatalog = {
         // keywords: ['Summilux', 'Asph'],
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
     },
+    'Summilux-M 1:1.4/35 ASPH.': {
+        // keywords: ['Summilux', 'Asph'],
+        remap: 'Biogon-ZM 1:1.4/35',
+    },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron'],
         minAperture: 'f/2',
@@ -426,31 +439,31 @@ var LensCatalog = {
     // Contax
     //
     'Contax Biogon 2.8/21': {
-        keywords: [Vendor.zeiss, 'Contax','Biogon'],
+        keywords: [Vendor.zeiss, 'Contax', 'Biogon'],
         minAperture: 'f/2.8',
         primeLength: 21,
         family: 'Biogon',
     },
     'Contax Biogon 2.8/28': {
-        keywords: [Vendor.zeiss, 'Contax','Biogon'],
+        keywords: [Vendor.zeiss, 'Contax', 'Biogon'],
         minAperture: 'f/2.8',
         primeLength: 28,
         family: 'Biogon',
     },
     'Contax Planar 2/35': {
-        keywords: [Vendor.zeiss, 'Contax','Planar'],
+        keywords: [Vendor.zeiss, 'Contax', 'Planar'],
         minAperture: 'f/2',
         primeLength: 35,
         family: 'Planar',
     },
     'Contax Planar 2/45': {
-        keywords: [Vendor.zeiss, 'Contax','Planar'],
+        keywords: [Vendor.zeiss, 'Contax', 'Planar'],
         minAperture: 'f/2',
         primeLength: 45,
         family: 'Planar',
     },
     'Contax Sonnar 2.8/90': {
-        keywords: [Vendor.zeiss, 'Contax','Sonnar'],
+        keywords: [Vendor.zeiss, 'Contax', 'Sonnar'],
         minAperture: 'f/2.8',
         primeLength: 90,
         family: 'Sonnar',

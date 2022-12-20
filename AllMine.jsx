@@ -361,6 +361,12 @@ var LensCatalog = {
         primeLength: 35,
         family: 'Zeiss',
     },
+    'Biogon-ZM 1:2.8/28': {
+        keywords: [Vendor.zeiss, 'Biogon'],
+        minAperture: 'f/2.8',
+        primeLength: 28,
+        family: 'Zeiss',
+    },
     //
     'M-Rokkor 1:2/40': {
         keywords: ['Summicron-C', 'Rokkor', 'M-Rokkor'],
@@ -426,11 +432,16 @@ var LensCatalog = {
     //
     'Elmarit-M 1:2.8/28': {
         //keywords: ['Elmarit'],
-        remap: 'M-Rokkor 1:2.8/28'
+        remap: 'Biogon-ZM 1:2.8/28'
+    },
+    //
+    'Elmarit-M 1:2.8/28 ASPH.': {
+        //keywords: ['Elmarit'],
+        remap: 'Biogon-ZM 1:2.8/28'
     },
     'Elmarit-M 1:2.8/28 Leitz': { // both versions
         //keywords: ['Elmarit'],
-        remap: 'M-Rokkor 1:2.8/28'
+        remap: 'Biogon-ZM 1:2.8/28'
     },
     'Elmarit-M 1:2.8/90': {
         remap: 'Tele-Elmarit 1:2.8/90'

@@ -349,25 +349,25 @@ var LensCatalog = {
         primeLength: 90,
         family: 'Elmarit',
     },
-    'Ultron-M 1:2/35 Asph': { 
+    'Voigtlander VM 35mm f/2 Ultron Aspherical': { 
         keywords: ['Ultron', 'Voigtlander', 'Asph'], // fake-coded!
         minAperture: 'f/2 Asph',
         primeLength: 35,
         family: 'Ultron',
     },
-    'Biogon-ZM 1:1.4/35': {
+    'Zeiss Distagon T* 1,4/35 ZM': {
         keywords: [Vendor.zeiss, 'Biogon'],
         minAperture: 'f/1.4',
         primeLength: 35,
         family: 'Zeiss',
     },
-    'Biogon-ZM 1:2.8/28': {
+    'Zeiss Biogon T* 2,8/28 ZM': {
         keywords: [Vendor.zeiss, 'Biogon'],
         minAperture: 'f/2.8',
         primeLength: 28,
         family: 'Zeiss',
     },
-    //
+    // additional M-mount lenses
     'M-Rokkor 1:2/40': {
         keywords: ['Summicron-C', 'Rokkor', 'M-Rokkor'],
         minAperture: 'f/2',
@@ -380,9 +380,15 @@ var LensCatalog = {
         primeLength: 50,
         family: 'TTArtisans',
     },
-    'Planar-ZM 1:2/50': {
+    'Zeiss Planar T* 2/50 ZM': {
         keywords: [Vendor.zeiss, 'Planar'],
         minAperture: 'f/2',
+        primeLength: 50,
+        family: 'Zeiss',
+    },
+    'Zeiss C Sonnar T* 1,5/50 ZM': {
+        keywords: [Vendor.zeiss, 'Sonnar'],
+        minAperture: 'f/1.5',
         primeLength: 50,
         family: 'Zeiss',
     },
@@ -397,18 +403,19 @@ var LensCatalog = {
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
     },
     'Ultron': {
-        remap: 'Ultron-M 1:2/35 Asph',
+        remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
     //
     // Leica
     //
     'Summilux-M 1:1.4/50 ASPH.': {
-        // keywords: ['Summilux', 'Asph'],
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
     },
+    'Summilux-M 1:1.4/50': {
+        remap: 'Zeiss C Sonnar T* 1,5/50 ZM',
+    },
     'Summilux-M 1:1.4/35 ASPH.': {
-        // keywords: ['Summilux', 'Asph'],
-        remap: 'Biogon-ZM 1:1.4/35',
+        remap: 'Zeiss Distagon T* 1,4/35 ZM',
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron'],
@@ -417,31 +424,30 @@ var LensCatalog = {
         family: 'Summicron',
     },
     'Summicron-M 1:2/50': {
-        //keywords: ['Summicron'],
-        remap: 'Planar-ZM 1:2/50',
+        remap: 'Zeiss Planar T* 2/50 ZM',
     },
     //
     'Summicron-M 1:2/35': {
         // keywords: ['Summicron'],
-        remap: 'Ultron-M 1:2/35 Asph',
+        remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
     'Summicron-M 1:2/35 ASPH.': { // TODO - stray space needed... SOMEtimes?
         // keywords: ['Summicron'],
-        remap: 'Ultron-M 1:2/35 Asph',
+        remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
     //
     'Elmarit-M 1:2.8/28': {
         //keywords: ['Elmarit'],
-        remap: 'Biogon-ZM 1:2.8/28'
+        remap: 'Zeiss Biogon T* 2,8/28 ZM'
     },
     //
     'Elmarit-M 1:2.8/28 ASPH.': {
         //keywords: ['Elmarit'],
-        remap: 'Biogon-ZM 1:2.8/28'
+        remap: 'Zeiss Biogon T* 2,8/28 ZM'
     },
     'Elmarit-M 1:2.8/28 Leitz': { // both versions
         //keywords: ['Elmarit'],
-        remap: 'Biogon-ZM 1:2.8/28'
+        remap: 'Zeiss Biogon T* 2,8/28 ZM'
     },
     'Elmarit-M 1:2.8/90': {
         remap: 'Tele-Elmarit 1:2.8/90'
@@ -497,6 +503,12 @@ var LensCatalog = {
         minAperture: 'f/2',
         primeLength: 35,
         family: 'Nikkor-O',
+    },
+    'Nikkor-P 10.5cm f/2.5': {
+        keywords: [Vendor.nikon, 'Nikkor'],
+        minAperture: 'f/2.5',
+        primeLength: 105,
+        family: 'Nikkor-P',
     },
     'Nikkor-ED 300mm f/4.5': {
         keywords: [Vendor.nikon, 'Nikkor'],

@@ -194,6 +194,11 @@ var Cameras = {
         camera: 'Ricoh Theta S',
     },
     // ///////////// PHONES/ANDROID //////////////
+    'SM-SM-S918U1': {
+        keywords: ['Samsung','Phone','S23 Ultra'],
+        brand: Vendor.samsung,
+        camera: 'Samsung S23 Ultra',
+    },
     'SM-G920T': {
         keywords: ['Samsung','Phone','Galaxy 6'],
         brand: Vendor.samsung,

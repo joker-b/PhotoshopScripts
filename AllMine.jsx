@@ -199,6 +199,11 @@ var Cameras = {
         brand: Vendor.samsung,
         camera: 'Samsung S23 Ultra',
     },
+    'Galaxy S23 Ultra': {
+        keywords: ['Samsung','Galaxy', 'Phone', 'S23 Ultra'],
+        brand: Vendor.samsung,
+        camera: 'Samsung S23 Ultra',
+    },
     'SM-G920T': {
         keywords: ['Samsung','Phone','Galaxy 6'],
         brand: Vendor.samsung,
@@ -346,7 +351,7 @@ var LensCatalog = {
     //
     // Lenses Possibly without Digital Coupling
     //
-    // Leica Mount
+    // Leica M-Mount
     //
     'Tele-Elmarit 1:2.8/90': { 
         keywords: ['Tele-Elmarit', 'Elmarit', Vendor.leica],
@@ -354,30 +359,11 @@ var LensCatalog = {
         primeLength: 90,
         family: 'Elmarit',
     },
-    'Voigtlander VM 35mm f/2 Ultron Aspherical': { 
-        keywords: ['Ultron', 'Voigtlander', 'Asph'], // fake-coded!
-        minAperture: 'f/2 Asph',
-        primeLength: 35,
-        family: 'Ultron',
-    },
-    'Zeiss Distagon T* 1,4/35 ZM': {
-        keywords: [Vendor.zeiss, 'Biogon'],
-        minAperture: 'f/1.4',
-        primeLength: 35,
-        family: 'Zeiss',
-    },
-    'Zeiss Biogon T* 2,8/28 ZM': {
-        keywords: [Vendor.zeiss, 'Biogon'],
-        minAperture: 'f/2.8',
-        primeLength: 28,
-        family: 'Zeiss',
-    },
-    // additional M-mount lenses
-    'M-Rokkor 1:2/40': {
-        keywords: ['Summicron-C', 'Rokkor', 'M-Rokkor'],
+    'Leica Summicron-M 50mm f/2 (IV, V)': {
+        keywords: ['Summicron'],
         minAperture: 'f/2',
-        primeLength: 40,
-        family: 'M-Rokkor',
+        primeLength: 50,
+        family: 'Summicron',
     },
     'TTArtisans-M 1:1.4/50 ASPH.': {
         keywords: ['TTArtisans', 'Asph'], // fake coded!
@@ -397,6 +383,30 @@ var LensCatalog = {
         primeLength: 50,
         family: 'Zeiss',
     },
+    'M-Rokkor 1:2/40': {
+        keywords: ['Summicron-C', 'Rokkor', 'M-Rokkor'],
+        minAperture: 'f/2',
+        primeLength: 40,
+        family: 'M-Rokkor',
+    },
+    'Voigtlander VM 35mm f/2 Ultron Aspherical': { 
+        keywords: ['Ultron', 'Voigtlander', 'Asph'], // fake-coded!
+        minAperture: 'f/2 Asph',
+        primeLength: 35,
+        family: 'Ultron',
+    },
+    'Zeiss Distagon T* 1,4/35 ZM': {
+        keywords: [Vendor.zeiss, 'Biogon'],
+        minAperture: 'f/1.4',
+        primeLength: 35,
+        family: 'Zeiss',
+    },
+    'Zeiss Biogon T* 2,8/28 ZM': {
+        keywords: [Vendor.zeiss, 'Biogon'],
+        minAperture: 'f/2.8',
+        primeLength: 28,
+        family: 'Zeiss',
+    },
     'M-Rokkor 1:2.8/28': {
         keywords: ['Rokkor', 'Minolta', 'M-Rokkor'],
         minAperture: 'f/2.8',
@@ -411,8 +421,11 @@ var LensCatalog = {
         remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
     //
-    // Leica
+    // Leica Remaps
     //
+    'Elmarit-M 1:2.8/90': {
+        remap: 'Tele-Elmarit 1:2.8/90'
+    },
     'Summilux-M 1:1.4/50 ASPH.': {
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
     },
@@ -422,40 +435,24 @@ var LensCatalog = {
     'Summilux-M 1:1.4/35 ASPH.': {
         remap: 'Zeiss Distagon T* 1,4/35 ZM',
     },
-    'Leica Summicron-M 50mm f/2 (IV, V)': {
-        keywords: ['Summicron'],
-        minAperture: 'f/2',
-        primeLength: 50,
-        family: 'Summicron',
-    },
     'Summicron-M 1:2/50': {
         remap: 'Zeiss Planar T* 2/50 ZM',
     },
-    //
     'Summicron-M 1:2/35': {
-        // keywords: ['Summicron'],
         remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
     'Summicron-M 1:2/35 ASPH.': { // TODO - stray space needed... SOMEtimes?
-        // keywords: ['Summicron'],
         remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
-    //
+    // TODO: how to best map 28mm?
     'Elmarit-M 1:2.8/28': {
-        //keywords: ['Elmarit'],
         remap: 'Zeiss Biogon T* 2,8/28 ZM'
     },
-    //
     'Elmarit-M 1:2.8/28 ASPH.': {
-        //keywords: ['Elmarit'],
         remap: 'Zeiss Biogon T* 2,8/28 ZM'
     },
     'Elmarit-M 1:2.8/28 Leitz': { // both versions
-        //keywords: ['Elmarit'],
         remap: 'Zeiss Biogon T* 2,8/28 ZM'
-    },
-    'Elmarit-M 1:2.8/90': {
-        remap: 'Tele-Elmarit 1:2.8/90'
     },
     //
     // Contax

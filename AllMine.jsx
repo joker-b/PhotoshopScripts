@@ -76,36 +76,45 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'FD': { keywords: [Vendor.canon] },
 };
 
+//
+// "Cameras" here can also include scanners, renderers, or programs like Midjourney
+//
 var Cameras = {
     'DMC-LX1': {
-        keywords: ['LX1','DMC_LX1'],
+        keywords: ['LX1','DMC_LX1','Leica','Lumix'],
         brand: Vendor.lumix,
         multiplier: 4.4,
         camera: 'LX1',
     },
     'DMC-LX2': {
-        keywords: ['LX2','DMC_LX2'],
+        keywords: ['LX2','DMC_LX2','Leica','Lumix'],
         brand: Vendor.lumix,
         multiplier: 4.4,
         camera: 'LX2',
     },
     'DMC-LX3': {
-        keywords: ['LX3','DMC_LX3'],
+        keywords: ['LX3','DMC_LX3','Leica','Lumix'],
         brand: Vendor.lumix,
         multiplier: 4.67,
         camera: 'LX3',
     },
     'DMC-LX5': {
-        keywords: ['LX5','DMC_LX5'],
+        keywords: ['LX5','DMC_LX5','Leica','Lumix'],
         brand: Vendor.lumix,
         multiplier: 4.67,
         camera: 'LX5',
     },
     'DMC-LX7': {
-        keywords: ['LX7','DMC_LX7'],
+        keywords: ['LX7','DMC_LX7','Leica','Lumix'],
         brand: Vendor.lumix,
         multiplier: 4.67,
         camera: 'LX7',
+    },
+    'DC-S5M2': {
+        keywords: ['S5ii','L-Mount','Lumix','S5M2'],
+        brand: Vendor.lumix,
+        multiplier: 1.0,
+        camera: 'S5ii',
     },
     'X100S': {
         keywords: ['Fuji X100s','X100s'],
@@ -270,11 +279,18 @@ var Cameras = {
         camera: '124G',
         film: true,
     },
+    // Scanners etc
     'EZ Controller': {
         keywords: ['Scanner', 'Film'],
         brand: 'Noritsu',
         camera: 'Noritsu',
         film: true,
+    },
+    'MJ': {
+        keywords: ['Generative', 'Midjourney'],
+        brand: 'Midjourney',
+        camera: 'Midjourney',
+        film: true, // sort of
     }
 };
 
@@ -413,6 +429,15 @@ var LensCatalog = {
         primeLength: 28,
         family: 'M-Rokkor',
     },
+    //
+    // L-Mount
+    //
+    'LUMIX S 50/F1.8': {
+        keywords: [Vendor.lumix, 'Normal'],
+        minAperture: 'f/1.8',
+        primeLength: 50,
+        family: 'Lumix',
+    },
     // shortcuts
     'TTArtisans': {
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
@@ -423,37 +448,25 @@ var LensCatalog = {
     //
     // Leica Remaps
     //
-    'Elmarit-M 1:2.8/90': {
-        remap: 'Tele-Elmarit 1:2.8/90'
-    },
-    'Summilux-M 1:1.4/50 ASPH.': {
-        remap: 'TTArtisans-M 1:1.4/50 ASPH.',
-    },
-    'Summilux-M 1:1.4/50': {
-        remap: 'Zeiss C Sonnar T* 1,5/50 ZM',
-    },
-    'Summilux-M 1:1.4/35 ASPH.': {
-        remap: 'Zeiss Distagon T* 1,4/35 ZM',
-    },
-    'Summicron-M 1:2/50': {
-        remap: 'Zeiss Planar T* 2/50 ZM',
-    },
-    'Summicron-M 1:2/35': {
-        remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
-    },
-    'Summicron-M 1:2/35 ASPH.': { // TODO - stray space needed... SOMEtimes?
-        remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
-    },
+    'Elmarit-M 1:2.8/90': { remap: 'Tele-Elmarit 1:2.8/90' },
+    'Summilux-M 1:1.4/50 ASPH.': { remap: 'TTArtisans-M 1:1.4/50 ASPH.', },
+    'Summilux-M 1:1.4/50': { remap: 'Zeiss C Sonnar T* 1,5/50 ZM', },
+    'Summilux-M 1:1.4/35 ASPH.': { remap: 'Zeiss Distagon T* 1,4/35 ZM', },
+    'Summicron-M 1:2/50': { remap: 'Zeiss Planar T* 2/50 ZM', },
+    'Summicron-M 1:2/35': { remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical', },
+    'Summicron-M 1:2/35 ASPH.': { remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical', },
     // TODO: how to best map 28mm?
-    'Elmarit-M 1:2.8/28': {
-        remap: 'Zeiss Biogon T* 2,8/28 ZM'
-    },
-    'Elmarit-M 1:2.8/28 ASPH.': {
-        remap: 'Zeiss Biogon T* 2,8/28 ZM'
-    },
-    'Elmarit-M 1:2.8/28 Leitz': { // both versions
-        remap: 'Zeiss Biogon T* 2,8/28 ZM'
-    },
+    'Elmarit-M 1:2.8/28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
+    'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
+    'Elmarit-M 1:2.8/28 Leitz': { remap: 'Zeiss Biogon T* 2,8/28 ZM' }, // both editions
+    // Shorthand names
+    'Biogon 28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
+    'Distagon 35': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
+    'Sonnar 50': { remap: 'Zeiss C Sonnar T* 1,5/50 ZM' },
+    'Planar 50': { remap: 'Zeiss Planar T* 2/50 ZM' },
+    'Elmarit 90': { remap: 'Tele-Elmarit 1:2.8/90' },
+    'TT 50': { remap: 'TTArtisans-M 1:1.4/50 ASPH.' },
+
     //
     // Contax
     //
@@ -489,7 +502,7 @@ var LensCatalog = {
     },
     // Nikon
     'Micro-Nikkor 55mm f/3.5': {
-        keywords: [Vendor.nikon, 'Micro-Nikkor'],
+        keywords: [Vendor.nikon, 'Micro-Nikkor', 'Nikkor'],
         minAperture: 'f/3.5',
         primeLength: 55,
         family: 'Micro-Nikkor',
@@ -576,27 +589,27 @@ function guess_lens(lens_name) {
     guess = /([0-9.])*\s?mm/.exec(lens_name);
     if (guess) {
         return {
-            keywords: ['Adapted '+guess[0]],
+            keywords: ['Adapted '+guess[0], lens_name],
             primeLength: Number(guess[1]),
             minAperture: 'f/?'
         }
     } else {
         // lt = typeof(lens_name);
         // alert('no good guess for "'+lens_name+'" ('+lt+')');
-        return null;
+        return null
     }
 }
 
 function findLens(lens_name) {
     var lens_obj, LN;
+    // alert('looking for "'+lens_name+'"');
     if (typeof(lens_name) == 'string') {
-        lens_obj = LensCatalog[lens_name];
-        LN = lens_name;
+        LN = lens_name.replace(/\s*$/, '');
     } else {
         LN = toString(lens_name);
-        LN = LN.replace('\s*$', '');
-        lens_obj = LensCatalog[LN];
+        LN = LN.replace(/\s*$/, '');
     }
+    lens_obj = LensCatalog[LN];
     if (lens_obj) {
         if (lens_obj.remap !== undefined) {
             // alert('remapping "'+lens_name+'" to "'+lens_obj.remap+'"');
@@ -614,7 +627,7 @@ function findLens(lens_name) {
 function findAdaptedLens(focal_length) {
     a = AdaptedFocalLengths[focal_length];
     if (!a) return(undefined);
-    alert('adapted name for '+focal_length+'mm is "'+a+'"');
+    //alert('adapted name for '+focal_length+'mm is "'+a+'"');
     return findLens(a);
 }
 
@@ -776,6 +789,7 @@ function trim11 (str) {
 function scan_EXIF_tags(doc)
 {
     'use strict';
+    // see https://exiv2.org/tags.html
     var originalFocalLength = 0;
     var fls;
     var debugMsg = false;
@@ -821,7 +835,16 @@ function scan_EXIF_tags(doc)
             case 'ISO Speed Ratings':
                 DescBits.iso = (', ISO '+q[1]);
                 break;
-            case 'Copyright':
+            case 'Lens Type': 
+                if (findLens(q[1]) === undefined) {
+                    DescBits.alert('Lens Type? {' + q[1] + '}');
+                } else {
+                    lensName = q[1];
+                    //DescBits.alert('Lens Type: '+lensName+'\n');
+                }
+                knownLens = true;
+                break;
+             case 'Copyright':
             case 'Copyright Notice':
                 if (q[1].match(/[0-9]/) && !knownPerson) {
                     if (q[1].indexOf(Person.fullName) < 0) {
@@ -870,12 +893,12 @@ function scan_EXIF_tags(doc)
             case 'Exposure Program': // manual, AE... ignore for now
                 // addKey(('Exp: '+q[1]));
                 break;
-            case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS'
+            case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS' - EXIF Photo.LensModel
                 if (findLens(q[1]) === undefined) {
                     DescBits.alert('Lens? {' + q[1] + '}');
                 } else {
                     lensName = q[1];
-                    // DescBits.alert('EXIF tag 42036 lens: '+lensName+'\n');
+                    //DescBits.alert('EXIF tag 42036 lens: '+lensName+'\n');
                 }
                 knownLens = true;
                 break;
@@ -947,9 +970,9 @@ function scan_EXIF_tags(doc)
             case 'EXIF tag 284': // TIFF compression type, e.g. "Chunky"
             case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
             case 'EXIF tag 42037': // lens ser #
-            case 'EXIF tag 42034': // lens info "rdf:Seq"
-            case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Lens Maker I think
-            case 'EXIF tag 42033': // X100F serial# (LX7 too?)
+            case 'EXIF tag 42034': // lens info "rdf:Seq" Photo.LensSpecification
+            case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Photo.LensMake
+            case 'EXIF tag 42033': // Photo.LensSerialNumber
             case 'EXIF tag 42240': // XPro2 "22/10"?
             case 'EXIF tag 41483': // Glass, unknown
             // pixel 3
@@ -959,6 +982,8 @@ function scan_EXIF_tags(doc)
             case 'EXIF tag 37520': // Pixel3, unknown
             case 'EXIF tag 37521': // Pixel3, unknown
             case 'EXIF tag 37522': // Pixel3, unknown
+            // S5ii
+            case 'EXIF tag 34865': // S5ii, unknown, value 2000?
             // Leica Monochrom
             case 'EXIF tag 530': // Leica -- "2 1" (contrast, sharpness?)
 
@@ -1002,13 +1027,16 @@ function scan_EXIF_tags(doc)
     if (lensID) {
         if (lensID.minAperture && (Overrides.minAperture === undefined)) {
             DescBits.minAperture = lensID.minAperture;
+            // alert('lensID('+lensName+').minAperture is '+lensID.minAperture);
         }
         if (lensID.primeLength && (Overrides.focal_length === undefined)) {
+            alert('lensID('+lensName+').primeLength is '+lensID.primeLength);
             originalFocalLength = lensID.primeLength;
             DescBits.lens = (originalFocalLength + 'mm');
             // alert('lensID.primeLength is '+lensID.primeLength);
         }
         if (lensID.family && (Overrides.lensFamily === undefined)) {
+            // alert('lensID('+lensName+').family is '+lensID.family);
             DescBits.lensFamily = lensID.family;
         }
     }
@@ -1024,7 +1052,7 @@ function scan_EXIF_tags(doc)
     //
     if (DescBits.brand === Vendor.lumix) {
         // used to accomodate the Leica/Panasonic relationship
-        addKeywordList(['Leica','Lumix','Leicasonic','Panaleica']);
+        addKeywordList(['Panasonic','Lumix']);
     } else if (DescBits.brand === Vendor.fuji) {
         // Various "Fuji X' cameras
         addKeywordList(['Fuji','Fujifilm','Fuji X',('Fujifilm '+DescBits.camera)]);
@@ -1126,7 +1154,7 @@ function spot_known_lens(keyword)
 {
     var known_lens = findLens(keyword);
     if (known_lens) {
-        // alert('known lens '+keyword);
+        // alert('spotted known lens '+keyword);
         addKeywordList(known_lens.keywords);
     }
     return known_lens;

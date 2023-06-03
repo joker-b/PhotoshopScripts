@@ -1030,7 +1030,7 @@ function scan_EXIF_tags(doc)
             // alert('lensID('+lensName+').minAperture is '+lensID.minAperture);
         }
         if (lensID.primeLength && (Overrides.focal_length === undefined)) {
-            alert('lensID('+lensName+').primeLength is '+lensID.primeLength);
+            //alert('lensID('+lensName+').primeLength is '+lensID.primeLength);
             originalFocalLength = lensID.primeLength;
             DescBits.lens = (originalFocalLength + 'mm');
             // alert('lensID.primeLength is '+lensID.primeLength);

@@ -828,7 +828,7 @@ function scan_EXIF_tags(doc)
                 const x100Types = /^X100/;
                 if (x100Types.test(qName)) {
                     lensName = 'Fujinon 23/2'; // not in EXIF for these cameras
-                    knownLens = true
+                    knownLens = true;
                 }
                 break;
             case 'Date Time':
@@ -1038,37 +1038,29 @@ function scan_EXIF_tags(doc)
         DescBits.minAperture = Overrides.minAperture;
     }
     if (!knownLens && !lensOverride && (originalFocalLength == 23)) {
-        lensName = 'Nokton-X 23/1.2';
+        lensName = 'Nokton-X 23/1.2'; //Special Case!
         knownLens = true;
     }
     var lensID = findLens(lensName);
     if (lensID) {
         if (lensID.minAperture && (Overrides.minAperture === undefined)) {
             DescBits.minAperture = lensID.minAperture;
-            // alert('lensID('+lensName+').minAperture is '+lensID.minAperture);
         }
         if (lensID.primeLength && (Overrides.focal_length === undefined)) {
-            //alert('lensID('+lensName+').primeLength is '+lensID.primeLength);
             originalFocalLength = lensID.primeLength;
             DescBits.lens = (originalFocalLength + 'mm');
-            // alert('lensID.primeLength is '+lensID.primeLength);
         }
         if (lensID.family && (Overrides.lensFamily === undefined)) {
-            // alert('lensID('+lensName+').family is '+lensID.family);
             DescBits.lensFamily = lensID.family;
         }
     }
     if (knownLens) {
         if (lensID) {
-            if (!addKeywordList(lensID.keywords, lensName)) {
-                DescBits.alert('LensID "'+lensName+'" keywords issue');
-            }
+            addKeywordList(lensID.keywords, 'ID:'+lensName);
         }
     }
     if (DescBits.lens) {
-        if (!addKeywordList([DescBits.lens], DescBits.lens)) {
-            DescBits.alert('Lens "'+DescBits.lens+'" keywords issue');
-        }
+        addKeywordList([DescBits.lens], 'Lens:'+DescBits.lens);
     }
     //
     //
@@ -1081,23 +1073,17 @@ function scan_EXIF_tags(doc)
         if (!Overrides.knownLens) {
             var aLens = findAdaptedLens[originalFocalLength];
             if (aLens && !knownLens) {
-                if (!addKeywordList(aLens.keywords, originalFocalLength)) {
-                    DescBits.alert('Adapted "'+originalFocalLength+'" Lens keywords issue');
-                }
+                addKeywordList(aLens.keywords, ('Adapted:'+originalFocalLength));
                 DescBits.minAperture = aLens.minAperture;
             }
         }
     }
     if ((DescBits.camera === 'Scanned') || DescBits.film) { // no camera data - this must have been a film scan
-        if (!addKeywordList(['Film', scanned_or_made()], 'Scan')){
-            DescBits.alert('Film keywords issue');
-        }
+        addKeywordList(['Film', scanned_or_made()], 'Scan');
         if (!Overrides.knownLens) {
             var aLens = findAdaptedLens[originalFocalLength];
             if (aLens && !knownLens) {
-                if (!addKeywordList(aLens.keywords), 'Lens Override') {
-                    DescBits.alert('Override Adapted Lens "'+aLens+'" keywords issue');
-                }
+                addKeywordList(aLens.keywords, 'Scanned Lens Override');
                 DescBits.minAperture = aLens.minAperture;
             }
         }
@@ -1166,11 +1152,9 @@ function add_aspect_description(doc)
         addKey((wide?'2:1':'1:2')); 
     } else if (aspect>1.68) {
         addKey((wide?'16:9':'9:16'));
-     } else if (aspect>1.45) {
-        // addKey('35mm aspect');
+     } else if (aspect>1.45) { // 35mm
         addKey((wide?'3:2':'2:3'));
-    } else if (aspect>1.25) {
-        // addKey('645 aspect');
+    } else if (aspect>1.25) { // 645
         addKey((wide?'4:3':'3:4')); 
     } else {
         addKey('Square');           
@@ -1184,10 +1168,7 @@ function spot_known_lens(keyword)
 {
     var known_lens = findLens(keyword);
     if (known_lens) {
-        // alert('spotted known lens '+keyword);
-        if (!addKeywordList(known_lens.keywords)) {
-            DescBits.alert('Lens "'+known_lens+'" keywords issue');
-        }
+        addKeywordList(known_lens.keywords, ('Lens:'+keyword));
     }
     return known_lens;
 }
@@ -1196,9 +1177,7 @@ function spot_known_lens_family(keyword)
 {
     var K = LensFamilyNames[keyword];
     if (K) {
-        if (!addKeywordList(K.keywords)) {
-            DescBits.alert('Lens Family "'+K+'" keywords issue');
-        }
+        addKeywordList(K.keywords,  ('LensFam:'+keyword));
         return true;
     }
     return false;
@@ -1208,9 +1187,7 @@ function spot_film_camera(keyword)
 {
     var B = Cameras[keyword];
     if (B !== undefined) {
-        if (!addKeywordList(B.keywords)) {
-            DescBits.alert('Film Camera "'+B+'" keywords issue');
-        }
+        addKeywordList(B.keywords, ('Camera:'+keyword));
         return true;
     }
     return false;
@@ -1252,7 +1229,6 @@ function parse_initial_keys()
         if (!m) {
             m = keys[k].match(/^(\d+) *mm/);
             if (m) {
-                // DescBits.alert('\nFound mm value: "'+keys[k]+'" - '+m[0]);
                 Overrides.focal_length = Number(m[1]);                
             }
             continue;
@@ -1271,7 +1247,6 @@ function parse_initial_keys()
             case 'lens': {
                 m = val.match(/^\d+/);
                 if (m) {
-                    // DescBits.alert('\nFound lens value: "'+val+'" - '+m);
                     Overrides.focal_length = Number(m[1]);
                 } else {
                     DescBits.alert('\nOdd lens value: "'+keys[k]+'"');
@@ -1279,7 +1254,6 @@ function parse_initial_keys()
                 break;
             }
             default:
-                // DescBits.alert('\Found key pair: "'+keys[k]+'"');
                 continue;
         }
     }
@@ -1297,8 +1271,6 @@ function apply_user_overrides(Overrides)
     //    return;
     for (var k in Overrides) {
         DescBits[k] = Overrides[k];
-        // addKey(Overrides[k]);
-        // DescBits.alert('\noverride '+k+' = '+Overrides[k]);
     }
     if (Overrides.focal_length) {
         DescBits.equivFL = Math.floor( (Overrides.focal_length * DescBits.multiplier) + 0.49);

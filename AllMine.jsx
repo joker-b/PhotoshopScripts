@@ -743,15 +743,21 @@ function jobName(name) { // document name input
 
 function addKey(keyword) {
     'use strict';
+    if (keyword === '') { return false; }
+    if (keyword === undefined) { return false; }
+    if (keyword == 'Undefined value') { return false; }
     Info.keywords = Set.add(Info.keywords, keyword);
+    return true;
 }
 
 function addKeywordList(ItemList) {
     'use strict';
     var i;
+    var all = true;
     for (i in ItemList) {
-        addKey(ItemList[i]);
+        all &= addKey(ItemList[i]);
     }
+    return all;
 }
 
 ///////// Camera-model bits ////////////////////
@@ -760,7 +766,9 @@ function addAnyCameraInfo(ModelName) {
     'use strict';
     var camera = Cameras[ModelName];
     if (camera) {
-        addKeywordList(camera.keywords);
+        if (!addKeywordList(camera.keywords)) {
+            DescBits.alert('no keywords for camera "'+ModelName+'"');
+        }
         for (var v in camera) {
             if (v !== 'keywords') {
                 DescBits[v] = camera[v];
@@ -804,19 +812,23 @@ function scan_EXIF_tags(doc)
         var qName = trim11(q[1]);
         switch (q[0]) {
             case 'Make':
-                addKey(qName);
+                if (!addKey(qName)) {
+                    DescBits.alert('Make issue');
+                }
                 break;
-                case 'Model':
-                    addAnyCameraInfo(qName);  // identify specific model of camera
-                    const x100Types = /^X100/;
-                    if (x100Types.test(qName)) {
-                        lensName = 'Fujinon 23/2'; // not in EXIF for these cameras
-                        knownLens = true
-                    }
+            case 'Model':
+                addAnyCameraInfo(qName);  // identify specific model of camera
+                const x100Types = /^X100/;
+                if (x100Types.test(qName)) {
+                    lensName = 'Fujinon 23/2'; // not in EXIF for these cameras
+                    knownLens = true
+                }
                 break;
             case 'Date Time':
             case 'Date Time Original':
-                addKey(q[1].substr(0,4));
+                if (!addKey(q[1].substr(0,4))) {
+                    DescBits.alert('Date issue');
+                }
                 break;
             case 'Focal Length in 35mm Film':
                 DescBits.equivFL = parseFloat(q[1]);
@@ -857,19 +869,25 @@ function scan_EXIF_tags(doc)
                 break;
             case 'Scene Capture Type':
                 if (q[1] !== 'Standard') {
-                    addKey(('Capture: '+q[1]));
+                    if (!addKey(('Capture: '+q[1]))) {
+                        DescBits.alert('Scene Capture Type issue');
+                    }
                 }
                 break;
             case 'Light Source':
-                if (q[1] !== 'Unknown') {
-                    addKey(q[1]);
+                if (q[1] !== 'Unknown' && q[1] !== 'Undefined value') {
+                    if (!addKey(q[1])) {
+                        DescBits.alert('Light Source issue');
+                    }
                 }
                 break;
             case 'Flash':
                 var flashVal = parseInt(q[1]);
                 if ((flashVal < 16) && (flashVal > 0)) {
                     DescBits.alert('\nflashVal: '+flashVal+'');
-                    addKey('Strobe');
+                    if (!addKey('Strobe')) {
+                        DescBits.alert('Flash issue');
+                    }
                     DescBits.flash = '+ Flash';
                 }
                 break;
@@ -878,7 +896,9 @@ function scan_EXIF_tags(doc)
                 break;
             case 'Custom Rendered':
                 if (q[1] === 'Custom Process') {
-                    addKey('BW');
+                    if (!addKey('BW')) {
+                        DescBits.alert('Custom Rendered issue');
+                    }
                 }
                 break;
             case 'Artist':
@@ -1043,11 +1063,15 @@ function scan_EXIF_tags(doc)
     }
     if (knownLens) {
         if (lensID) {
-            addKeywordList(lensID.keywords);
+            if (!addKeywordList(lensID.keywords)) {
+                DescBits.alert('LensID "'+lensID+'" keywords issue');
+            }
         }
     }
     if (DescBits.lens) {
-        addKeywordList([DescBits.lens]);
+        if (!addKeywordList([DescBits.lens])) {
+            DescBits.alert('Lens "'+DescBits.lens+'" keywords issue');
+        }
     }
     //
     //
@@ -1060,17 +1084,23 @@ function scan_EXIF_tags(doc)
         if (!Overrides.knownLens) {
             var aLens = findAdaptedLens[originalFocalLength];
             if (aLens && !knownLens) {
-                addKeywordList(aLens.keywords);
+                if (!addKeywordList(aLens.keywords)) {
+                    DescBits.alert('Adapted Lens "'+aLens+'" keywords issue');
+                }
                 DescBits.minAperture = aLens.minAperture;
             }
         }
     }
     if ((DescBits.camera === 'Scanned') || DescBits.film) { // no camera data - this must have been a film scan
-        addKeywordList(['Film', scanned_or_made()]); // try to correctly label generated images, e.g. from a GAN
+        if (!addKeywordList(['Film', scanned_or_made()])){
+            DescBits.alert('Film keywords issue');
+        }
         if (!Overrides.knownLens) {
             var aLens = findAdaptedLens[originalFocalLength];
             if (aLens && !knownLens) {
-                addKeywordList(aLens.keywords);
+                if (!addKeywordList(aLens.keywords)) {
+                    DescBits.alert('Override Adapted Lens "'+aLens+'" keywords issue');
+                }
                 DescBits.minAperture = aLens.minAperture;
             }
         }
@@ -1088,7 +1118,9 @@ function scan_EXIF_tags(doc)
         if (fls.substr(0,1) === '0') {
            fls = fls.substr (1);
         }
-        addKey((fls+'mm_orig'));
+        if (fls != originalFocalLength) {
+            addKey((fls+'mm_orig'));
+        }
     }
     if (DescBits.equivFL > 0) {
         if (DescBits.equivFL <= 35) {
@@ -1156,7 +1188,9 @@ function spot_known_lens(keyword)
     var known_lens = findLens(keyword);
     if (known_lens) {
         // alert('spotted known lens '+keyword);
-        addKeywordList(known_lens.keywords);
+        if (!addKeywordList(known_lens.keywords)) {
+            DescBits.alert('Lens "'+known_lens+'" keywords issue');
+        }
     }
     return known_lens;
 }
@@ -1165,7 +1199,9 @@ function spot_known_lens_family(keyword)
 {
     var K = LensFamilyNames[keyword];
     if (K) {
-        addKeywordList(K.keywords);
+        if (!addKeywordList(K.keywords)) {
+            DescBits.alert('Lens Family "'+K+'" keywords issue');
+        }
         return true;
     }
     return false;
@@ -1175,7 +1211,9 @@ function spot_film_camera(keyword)
 {
     var B = Cameras[keyword];
     if (B !== undefined) {
-        addKeywordList(B.keywords);
+        if (!addKeywordList(B.keywords)) {
+            DescBits.alert('Film Camera "'+B+'" keywords issue');
+        }
         return true;
     }
     return false;
@@ -1303,7 +1341,9 @@ function main()
     // keywords added to doc...
     //
     newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
-    addKeywordList(newKeys);
+    if (!addKeywordList(newKeys)) {
+        DescBits.alert('Keywords issue');
+    }
     scan_EXIF_tags(app.activeDocument);
     add_aspect_description(app.activeDocument);
     if (DescBits.alertText !== '') {

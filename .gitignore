@@ -3,5 +3,7 @@
 Scripts
 scripts22
 
+.DS_Store
+
 
 *.sublime-workspace

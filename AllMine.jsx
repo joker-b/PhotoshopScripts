@@ -752,21 +752,17 @@ function addKey(keyword, source) {
             if (source) {
                 DescBits.alert('empty keyword from '+source);
             }
-            return false;
     }
     Info.keywords = Set.add(Info.keywords, keyword);
-    return true;
 }
 
 function addKeywordList(ItemList, source) {
     'use strict';
     source = source || null;
     var i;
-    var all = true;
     for (i in ItemList) {
-        all &= addKey(ItemList[i], source);
+        addKey(ItemList[i], source);
     }
-    return all;
 }
 
 ///////// Camera-model bits ////////////////////
@@ -775,9 +771,7 @@ function addAnyCameraInfo(ModelName) {
     'use strict';
     var camera = Cameras[ModelName];
     if (camera) {
-        if (!addKeywordList(camera.keywords, ModelName)) {
-            DescBits.alert('Keyword issue for camera "'+ModelName+'"');
-        }
+        addKeywordList(camera.keywords, ('Camera:'+ModelName));
         for (var v in camera) {
             if (v !== 'keywords') {
                 DescBits[v] = camera[v];
@@ -1065,7 +1059,6 @@ function scan_EXIF_tags(doc)
     //
     //
     if (DescBits.brand === Vendor.lumix) {
-        // used to accomodate the Leica/Panasonic relationship
         addKeywordList(['Panasonic','Lumix']);
     } else if (DescBits.brand === Vendor.fuji) {
         // Various "Fuji X' cameras
@@ -1310,9 +1303,7 @@ function main()
     // keywords added to doc...
     //
     newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
-    if (!addKeywordList(newKeys)) {
-        DescBits.alert('Keywords issue');
-    }
+    addKeywordList(newKeys, 'document keys');
     scan_EXIF_tags(app.activeDocument);
     add_aspect_description(app.activeDocument);
     if (DescBits.alertText !== '') {

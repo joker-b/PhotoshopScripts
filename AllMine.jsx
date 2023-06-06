@@ -465,6 +465,7 @@ var LensCatalog = {
     'Sonnar 50': { remap: 'Zeiss C Sonnar T* 1,5/50 ZM' },
     'Planar 50': { remap: 'Zeiss Planar T* 2/50 ZM' },
     'Elmarit 90': { remap: 'Tele-Elmarit 1:2.8/90' },
+    'Rokkor-M': { remap: 'M-Rokkor 1:2/40' },
     'TT 50': { remap: 'TTArtisans-M 1:1.4/50 ASPH.' },
 
     //

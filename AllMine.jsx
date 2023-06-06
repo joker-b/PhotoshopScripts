@@ -445,6 +445,9 @@ var LensCatalog = {
     'Ultron': {
         remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
     },
+    'Ultron-M 1:2/35 Asph': {
+        remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
+    },
     //
     // Leica Remaps
     //
@@ -741,21 +744,27 @@ function jobName(name) { // document name input
 
 //////// add keywords from a list ///
 
-function addKey(keyword) {
+function addKey(keyword, source) {
     'use strict';
-    if (keyword === '') { return false; }
-    if (keyword === undefined) { return false; }
-    if (keyword == 'Undefined value') { return false; }
+    if ((keyword === '') || (keyword === null) ||
+        (keyword === undefined) || (keyword === 'undefined') ||
+        (keyword == 'Undefined value')) {
+            if (source) {
+                DescBits.alert('empty keyword from '+source);
+            }
+            return false;
+    }
     Info.keywords = Set.add(Info.keywords, keyword);
     return true;
 }
 
-function addKeywordList(ItemList) {
+function addKeywordList(ItemList, source) {
     'use strict';
+    source = source || null;
     var i;
     var all = true;
     for (i in ItemList) {
-        all &= addKey(ItemList[i]);
+        all &= addKey(ItemList[i], source);
     }
     return all;
 }
@@ -766,8 +775,8 @@ function addAnyCameraInfo(ModelName) {
     'use strict';
     var camera = Cameras[ModelName];
     if (camera) {
-        if (!addKeywordList(camera.keywords)) {
-            DescBits.alert('no keywords for camera "'+ModelName+'"');
+        if (!addKeywordList(camera.keywords, ModelName)) {
+            DescBits.alert('Keyword issue for camera "'+ModelName+'"');
         }
         for (var v in camera) {
             if (v !== 'keywords') {
@@ -812,9 +821,7 @@ function scan_EXIF_tags(doc)
         var qName = trim11(q[1]);
         switch (q[0]) {
             case 'Make':
-                if (!addKey(qName)) {
-                    DescBits.alert('Make issue');
-                }
+                addKey(qName, 'Make');
                 break;
             case 'Model':
                 addAnyCameraInfo(qName);  // identify specific model of camera
@@ -826,9 +833,7 @@ function scan_EXIF_tags(doc)
                 break;
             case 'Date Time':
             case 'Date Time Original':
-                if (!addKey(q[1].substr(0,4))) {
-                    DescBits.alert('Date issue');
-                }
+                addKey(q[1].substr(0,4), 'Date');
                 break;
             case 'Focal Length in 35mm Film':
                 DescBits.equivFL = parseFloat(q[1]);
@@ -869,25 +874,19 @@ function scan_EXIF_tags(doc)
                 break;
             case 'Scene Capture Type':
                 if (q[1] !== 'Standard') {
-                    if (!addKey(('Capture: '+q[1]))) {
-                        DescBits.alert('Scene Capture Type issue');
-                    }
+                    addKey(('Capture: '+q[1]), 'Scene Capture Type');
                 }
                 break;
             case 'Light Source':
                 if (q[1] !== 'Unknown' && q[1] !== 'Undefined value') {
-                    if (!addKey(q[1])) {
-                        DescBits.alert('Light Source issue');
-                    }
+                    addKey(q[1], 'Light Source');
                 }
                 break;
             case 'Flash':
                 var flashVal = parseInt(q[1]);
                 if ((flashVal < 16) && (flashVal > 0)) {
                     DescBits.alert('\nflashVal: '+flashVal+'');
-                    if (!addKey('Strobe')) {
-                        DescBits.alert('Flash issue');
-                    }
+                    addKey('Strobe');
                     DescBits.flash = '+ Flash';
                 }
                 break;
@@ -896,9 +895,7 @@ function scan_EXIF_tags(doc)
                 break;
             case 'Custom Rendered':
                 if (q[1] === 'Custom Process') {
-                    if (!addKey('BW')) {
-                        DescBits.alert('Custom Rendered issue');
-                    }
+                    addKey('BW');
                 }
                 break;
             case 'Artist':
@@ -912,7 +909,7 @@ function scan_EXIF_tags(doc)
                 }
                 break;
             case 'Exposure Program': // manual, AE... ignore for now
-                // addKey(('Exp: '+q[1]));
+                // addKey(('Exp: '+q[1]), 'Exposure Program');
                 break;
             case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS' - EXIF Photo.LensModel
                 if (findLens(q[1]) === undefined) {
@@ -1063,13 +1060,13 @@ function scan_EXIF_tags(doc)
     }
     if (knownLens) {
         if (lensID) {
-            if (!addKeywordList(lensID.keywords)) {
-                DescBits.alert('LensID "'+lensID+'" keywords issue');
+            if (!addKeywordList(lensID.keywords, lensName)) {
+                DescBits.alert('LensID "'+lensName+'" keywords issue');
             }
         }
     }
     if (DescBits.lens) {
-        if (!addKeywordList([DescBits.lens])) {
+        if (!addKeywordList([DescBits.lens], DescBits.lens)) {
             DescBits.alert('Lens "'+DescBits.lens+'" keywords issue');
         }
     }
@@ -1084,21 +1081,21 @@ function scan_EXIF_tags(doc)
         if (!Overrides.knownLens) {
             var aLens = findAdaptedLens[originalFocalLength];
             if (aLens && !knownLens) {
-                if (!addKeywordList(aLens.keywords)) {
-                    DescBits.alert('Adapted Lens "'+aLens+'" keywords issue');
+                if (!addKeywordList(aLens.keywords, originalFocalLength)) {
+                    DescBits.alert('Adapted "'+originalFocalLength+'" Lens keywords issue');
                 }
                 DescBits.minAperture = aLens.minAperture;
             }
         }
     }
     if ((DescBits.camera === 'Scanned') || DescBits.film) { // no camera data - this must have been a film scan
-        if (!addKeywordList(['Film', scanned_or_made()])){
+        if (!addKeywordList(['Film', scanned_or_made()], 'Scan')){
             DescBits.alert('Film keywords issue');
         }
         if (!Overrides.knownLens) {
             var aLens = findAdaptedLens[originalFocalLength];
             if (aLens && !knownLens) {
-                if (!addKeywordList(aLens.keywords)) {
+                if (!addKeywordList(aLens.keywords), 'Lens Override') {
                     DescBits.alert('Override Adapted Lens "'+aLens+'" keywords issue');
                 }
                 DescBits.minAperture = aLens.minAperture;
@@ -1125,7 +1122,7 @@ function scan_EXIF_tags(doc)
     if (DescBits.equivFL > 0) {
         if (DescBits.equivFL <= 35) {
             addKey('Wide Angle');
-            if (DescBits.equivFL < 27) {
+            if (DescBits.equivFL < 25) {
                 addKey('Ultra Wide Angle');
             }
         } else if (DescBits.equivFL >= 85) {

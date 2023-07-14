@@ -575,6 +575,7 @@ var AdaptedFocalLengths = {
 // much of this script is about manipulating elements of this global object
 var DescBits = {
     camera: 'Scanned',
+    isFilm: false,
     alertText: '',
     multiplier: 1.0,
     equivFL: 0,
@@ -815,14 +816,18 @@ function scan_EXIF_tags(doc)
         var qName = trim11(q[1]);
         switch (q[0]) {
             case 'Make':
-                addKey(qName, 'Make');
+                if (!DescBits.isFilm) {
+                    addKey(qName, 'Make');
+                }
                 break;
             case 'Model':
-                addAnyCameraInfo(qName);  // identify specific model of camera
-                const x100Types = /^X100/;
-                if (x100Types.test(qName)) {
-                    lensName = 'Fujinon 23/2'; // not in EXIF for these cameras
-                    knownLens = true;
+                if (!DescBits.isFilm) {
+                    addAnyCameraInfo(qName);  // identify specific model of camera
+                    const x100Types = /^X100/;
+                    if (x100Types.test(qName)) {
+                        lensName = 'Fujinon 23/2'; // not in EXIF for these cameras
+                        knownLens = true;
+                    }
                 }
                 break;
             case 'Date Time':
@@ -830,33 +835,45 @@ function scan_EXIF_tags(doc)
                 addKey(q[1].substr(0,4), 'Date');
                 break;
             case 'Focal Length in 35mm Film':
-                DescBits.equivFL = parseFloat(q[1]);
+                if (!DescBits.isFilm) {
+                    DescBits.equivFL = parseFloat(q[1]);
+                }
                 break;
             case 'Shutter Speed':
-                DescBits.shutter = q[1];
+                if (!DescBits.isFilm) {
+                    DescBits.shutter = q[1];
+                }
                 break;
             case 'Focal Length':
-                originalFocalLength = parseFloat(q[1]);
-                fls = (Math.floor(originalFocalLength+0.49)).toString();
-                DescBits.lens = (fls+'mm');
-                // DescBits.alert('EXIF focal length is '+fls+'\n');
+                if (!DescBits.isFilm) {
+                    originalFocalLength = parseFloat(q[1]);
+                    fls = (Math.floor(originalFocalLength+0.49)).toString();
+                    DescBits.lens = (fls+'mm');
+                    // DescBits.alert('EXIF focal length is '+fls+'\n');
+                }
                 break;
             case 'F-Stop':
-                DescBits.aperture = (' '+q[1]);
+                if (!DescBits.isFilm) {
+                    DescBits.aperture = (' '+q[1]);
+                }
                 break;
             case 'ISO Speed Ratings':
-                DescBits.iso = (', ISO '+q[1]);
-                break;
-            case 'Lens Type': 
-                if (findLens(q[1]) === undefined) {
-                    DescBits.alert('Lens Type? {' + q[1] + '}');
-                } else {
-                    lensName = q[1];
-                    //DescBits.alert('Lens Type: '+lensName+'\n');
+                if (!DescBits.isFilm) {
+                    DescBits.iso = (', ISO '+q[1]);
                 }
-                knownLens = true;
                 break;
-             case 'Copyright':
+            case 'Lens Type':
+                if (!DescBits.isFilm) {
+                    if (findLens(q[1]) === undefined) {
+                        DescBits.alert('Lens Type? {' + q[1] + '}');
+                    } else {
+                        lensName = q[1];
+                        //DescBits.alert('Lens Type: '+lensName+'\n');
+                    }
+                    knownLens = true;
+                }
+                break;
+            case 'Copyright':
             case 'Copyright Notice':
                 if (q[1].match(/[0-9]/) && !knownPerson) {
                     if (q[1].indexOf(Person.fullName) < 0) {
@@ -867,29 +884,37 @@ function scan_EXIF_tags(doc)
                 }
                 break;
             case 'Scene Capture Type':
-                if (q[1] !== 'Standard') {
-                    addKey(('Capture: '+q[1]), 'Scene Capture Type');
+                if (!DescBits.isFilm) {
+                    if (q[1] !== 'Standard') {
+                        addKey(('Capture: '+q[1]), 'Scene Capture Type');
+                    }
                 }
                 break;
             case 'Light Source':
-                if (q[1] !== 'Unknown' && q[1] !== 'Undefined value') {
-                    addKey(q[1], 'Light Source');
+                if (!DescBits.isFilm) {
+                    if (q[1] !== 'Unknown' && q[1] !== 'Undefined value') {
+                        addKey(q[1], 'Light Source');
+                    }
                 }
                 break;
             case 'Flash':
-                var flashVal = parseInt(q[1]);
-                if ((flashVal < 16) && (flashVal > 0)) {
-                    DescBits.alert('\nflashVal: '+flashVal+'');
-                    addKey('Strobe');
-                    DescBits.flash = '+ Flash';
+                if (!DescBits.isFilm) {
+                    var flashVal = parseInt(q[1]);
+                    if ((flashVal < 16) && (flashVal > 0)) {
+                        DescBits.alert('\nflashVal: '+flashVal+'');
+                        addKey('Strobe');
+                        DescBits.flash = '+ Flash';
+                    }
                 }
                 break;
             case 'Scene Type':
                 Info.source = q[1];
                 break;
             case 'Custom Rendered':
-                if (q[1] === 'Custom Process') {
-                    addKey('BW');
+                if (!DescBits.isFilm) {
+                    if (q[1] === 'Custom Process') {
+                        addKey('BW');
+                    }
                 }
                 break;
             case 'Artist':
@@ -906,13 +931,15 @@ function scan_EXIF_tags(doc)
                 // addKey(('Exp: '+q[1]), 'Exposure Program');
                 break;
             case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS' - EXIF Photo.LensModel
-                if (findLens(q[1]) === undefined) {
-                    DescBits.alert('Lens? {' + q[1] + '}');
-                } else {
-                    lensName = q[1];
-                    //DescBits.alert('EXIF tag 42036 lens: '+lensName+'\n');
+                if (!DescBits.isFilm) {
+                    if (findLens(q[1]) === undefined) {
+                        DescBits.alert('Lens? {' + q[1] + '}');
+                    } else {
+                        lensName = q[1];
+                        //DescBits.alert('EXIF tag 42036 lens: '+lensName+'\n');
+                    }
+                    knownLens = true;
                 }
-                knownLens = true;
                 break;
             case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
             case 'Orientation': // debugMsg=true;
@@ -1186,6 +1213,21 @@ function spot_film_camera(keyword)
     return false;
 }
 
+// recognize films and relateed keywords
+function spot_film(keyword)
+{
+    var films = ['Film', 'film', 'D-76', 'HP5', 'HP 5', 'HP-5', 'Neopan', 'Neopan 1600',
+        'PanF', 'Pan F', 'Pan-F', 'Ilford', 'Kodak', 'Agfa', 'ProImage 100', 'Rodinal',
+        'T-Max', 'TMax', 'T-Max 400', 'TMax 400', 'TriX', 'Tri X', 'TX 400', 'Tri-X',
+        'X-tol', 'Xtol'];
+    for (var f in films) {
+        if (f == keyword) {
+            return true
+        }
+    }
+    return false;
+}
+
 // watch for potential overrides, e.g. for a shot with one lens scanning another lens's negatives
 function parse_initial_keys()
 {
@@ -1216,7 +1258,11 @@ function parse_initial_keys()
         }
         if (spot_film_camera(keys[k])) {
             DescBits.camera = keys[k];
+            DescBits.isFilm = true;
             continue;
+        }
+        if (spot_film(keys[k])) {
+            DescBits.isFilm = true;
         }
         var m = keys[k].match(/^([A-Za-z]+):(.+)/);
         if (!m) {

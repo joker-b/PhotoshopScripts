@@ -46,6 +46,7 @@ var Vendor = { // an enum
     leica: 'Leica',
     nikon: 'Nikon',
     minolta: 'Minolta',
+    konica: 'Konica',
     bronica: 'Bronica',
     yashica: 'Yashica',
     google: 'Google',
@@ -256,6 +257,13 @@ var Cameras = {
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'Leica M5',
+        film: true,
+    },
+    'Konica II': {
+        keywords: ['Konica', 'Konica II', 'Film'],
+        brand: Vendor.konica,
+        multiplier: 1.0,
+        camera: 'Konica II',
         film: true,
     },
     'Canon AE-1': {

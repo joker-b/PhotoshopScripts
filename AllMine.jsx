@@ -80,6 +80,8 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Planar': { keywords: [Vendor.zeiss] },
     'Biogon': { keywords: [Vendor.zeiss] },
     'Sonnar': { keywords: [Vendor.zeiss] },
+    'Milvus': { keywords: [Vendor.zeiss] },
+    'Otus': { keywords: [Vendor.zeiss] },
     'FD': { keywords: [Vendor.canon] },
 };
 
@@ -392,6 +394,13 @@ var LensCatalog = {
         family: 'Elmarit',
         mount: 'M',
     },
+    'Zeiss Milvus 1.4/85 ZE': {
+        keywords: [Vendor.zeiss, 'Milvus'],
+        minAperture: 'f/1.4',
+        primeLength: 85,
+        family: 'Zeiss',
+        mount: 'EF',
+    },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
         keywords: ['Summicron'],
         minAperture: 'f/2',
@@ -475,6 +484,9 @@ var LensCatalog = {
     // shortcuts
     'TTArtisans': {
         remap: 'TTArtisans-M 1:1.4/50 ASPH.',
+    },
+    'Milvus': {
+        remap: 'Zeiss Milvus 1.4/85 ZE',
     },
     'Ultron': {
         remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical',
@@ -605,6 +617,7 @@ var LensCatalog = {
     'Distagon 35': { remap: 'Zeiss Distagon T* 1,4/35 ZM' },
     'Sonnar 50': { remap: 'Zeiss C Sonnar T* 1,5/50 ZM' },
     'Planar 50': { remap: 'Zeiss Planar T* 2/50 ZM' },
+    'Milvus 85': { remap: 'Zeiss Milvus 1.4/85 ZE' },
     'Elmarit 90': { remap: 'Tele-Elmarit 1:2.8/90' },
     'Rokkor-M': { remap: 'M-Rokkor 1:2/40' },
     'TT 50': { remap: 'TTArtisans-M 1:1.4/50 ASPH.' },
@@ -623,6 +636,7 @@ var AdaptedFocalLengths = {
     '35': 'Zeiss Distagon T* 1,4/35 ZM', // Nikkor-O skipped
     50: 'Nikkor 50mm f/1.4',
     55: 'Micro-Nikkor 55mm f/3.5',
+    85: 'Zeiss Milvus 1.4/85 ZE',
     90: 'Contax Sonnar 2.8/90',
     300: 'Nikkor-ED 300mm f/4.5',
     49: 'Meike-X 2/50', // hack
@@ -1179,13 +1193,23 @@ function scan_EXIF_tags(doc)
     if ((DescBits.camera === 'Scanned') || DescBits.film) { // no camera data - this must have been a film scan
         addKeywordList(['Film', scanned_or_made()], 'Scan');
     }
-    if (!knownLens && (DescBits.lens.primeLength == 23)) {
-        // unique case: no reported EXIF 
-        update_lens_data(find_lens_by_name('Nokton-X 23/1.2'));
-        if (verbose) {
-            alert('Special Case Fuji Lens: '+DescBits.lens.name+'\n');
+    if (!knownLens) {
+
+        if (DescBits.lens.primeLength == 23) {
+            // unique case: no reported EXIF 
+            update_lens_data(find_lens_by_name('Nokton-X 23/1.2'));
+            if (verbose) {
+                alert('Special Case Fuji Lens: '+DescBits.lens.name+'\n');
+            }
+            knownLens = true;
+        } else if (DescBits.lens.primeLength == 85) {
+            // unique case: no reported EXIF 
+            update_lens_data(find_lens_by_name('Zeiss Milvus 1.4/85 ZE'));
+            if (verbose) {
+                alert('Special Case Lens: '+DescBits.lens.name+'\n');
+            }
+            knownLens = true;
         }
-        knownLens = true;
     }
     //
     // get any override focal length before looking for adapted lenses

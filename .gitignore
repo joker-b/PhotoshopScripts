@@ -1,9 +1,11 @@
 *.sublime-project
 *.sublime-workspace
 Scripts
-scripts22
+scripts2*
 
 .DS_Store
 
 
 *.sublime-workspace
+.DS_Store
+

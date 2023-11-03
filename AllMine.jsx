@@ -724,9 +724,9 @@ function find_lens_by_name(lens_name) {
         lens_obj.name = lens_name;
         lens_obj.keywords.push(lens_name);
     }
-    if (!lens_obj) {
+    /* if (!lens_obj) {
         DescBits.log('\nNo lens found named "'+lens_name+'"/"'+LN+'"');
-    }
+    } */
     return lens_obj;
 }
 
@@ -1367,7 +1367,7 @@ function parse_initial_keys()
         }
         var m = keys[k].match(/^([A-Za-z]+):(.+)/);
         if (!m) {
-            m = keys[k].match(/^(\d+) *mm/);
+            m = keys[k].match(/^(\d+) *mm/); // e.g. "35mm"
             if (m) {
                 Overrides.primeLength = Number(m[1]);                
             }
@@ -1418,7 +1418,7 @@ function apply_user_overrides(Overrides)
     }
 }
 
-//
+///////////////////////////////////////////
 
 function apply_personal_information() {
     Info.author = Person.fullname;

@@ -669,7 +669,12 @@ var DescBits = {
     },
     brand: 'Bjorke',
     alert : function(text) {
-        this.alertText += text;
+            this.alertText += text;
+    },
+    log : function(text) {
+        if (verbose) {
+            this.alertText += text;
+        }
     }
 };
 
@@ -707,14 +712,10 @@ function find_lens_by_name(lens_name) {
     lens_obj = LensCatalog[LN];
     if (lens_obj) {
         if (lens_obj.remap !== undefined) {
-            if (verbose) {
-                DescBits.alert('\nRemapping "'+lens_name+'" to "'+lens_obj.remap+'"\n');
-            }
+            DescBits.log('\nRemapping "'+lens_name+'" to "'+lens_obj.remap+'"\n');
             return find_lens_by_name(lens_obj.remap);
         } else {
-            if (verbose) {
-                DescBits.alert('\nFound "'+lens_obj.family+'" lens "'+lens_name+'"');
-            }
+            DescBits.log('\nFound "'+lens_obj.family+'" lens "'+lens_name+'"');
         }
     } else {
         lens_obj = guess_lens_from_name(lens_name);
@@ -723,8 +724,8 @@ function find_lens_by_name(lens_name) {
         lens_obj.name = lens_name;
         lens_obj.keywords.push(lens_name);
     }
-    if (!lens_obj &&  verbose) {
-        DescBits.alert('\nNo lens found named "'+lens_name+'"/"'+LN+'"');
+    if (!lens_obj) {
+        DescBits.log('\nNo lens found named "'+lens_name+'"/"'+LN+'"');
     }
     return lens_obj;
 }
@@ -732,14 +733,10 @@ function find_lens_by_name(lens_name) {
 function find_adapted_lens_by_FL(focal_length) {
     var a = AdaptedFocalLengths[focal_length];
     if (!a) {
-        if (verbose) {
-            DescBits.alert('\nNo adapted lens name found for '+focal_length+'');
-        }
+        DescBits.log('\nNo adapted lens name found for '+focal_length+'');
         return(null);
     }
-    if (verbose) {
-        DescBits.alert('\nAdapted name for '+focal_length+'mm is "'+a+'"');
-    }
+    DescBits.log('\nAdapted name for '+focal_length+'mm is "'+a+'"');
     lens_obj = find_lens_by_name(a);
     if (lens_obj) {
         lens_obj.guessed = true;
@@ -947,7 +944,7 @@ function scan_EXIF_tags(doc)
     const bjorkeType = /Bjorke/;
     var Overrides = parse_initial_keys();
     if (verbose) {
-        alert('Found '+Info.exif.length+' EXIF values:');
+        alert('Found '+Info.exif.length+' EXIF values');
     }
     for (var i = 0; i < Info.exif.length; i++) {
         var q = Info.exif[i];
@@ -1004,25 +1001,19 @@ function scan_EXIF_tags(doc)
             case 'Lens Type':
             case 'EXIF tag 42036': // X-T1: "XF18-55mmF2.8-4 R LM OIS' - EXIF Photo.LensModel
                 if (!DescBits.isFilm) {
-                    if (verbose) {
-                        DescBits.alert('\nLens Type(42036): "'+qName+'"');
-                    }
+                    DescBits.log('\nLens Type(42036): "'+qName+'"');
                     var lensObj = find_lens_by_name(qName);
                     if (lensObj) {
                         update_lens_data(lensObj);
                         DescBits.lens.description = DescBits.lens.name;
                     } else {
-                        if (verbose) {
-                            DescBits.alert('Lens Type? {' + qName + '}');
-                        }
+                        DescBits.log('Lens Type? {' + qName + '}');
                         DescBits.lens = LensCatalog['UNKNOWN'];
                         DescBits.lens.keywords.push(qName);
                     }
                     knownLens = true;
                 } else {
-                    if (verbose) {
-                        DescBits.alert('\nLens Type: "'+qName+'" ignored when scanning film');
-                    }
+                    DescBits.log('\nLens Type: "'+qName+'" ignored when scanning film');
                 }
                 break;
             case 'Copyright':
@@ -1053,9 +1044,7 @@ function scan_EXIF_tags(doc)
                 if (!DescBits.isFilm) {
                     var flashVal = parseInt(q[1]);
                     if ((flashVal < 16) && (flashVal > 0)) {
-                        if (verbose) {
-                            DescBits.alert('\nflashVal: '+flashVal+'');
-                        }
+                        DescBits.log('\nflashVal: '+flashVal+'');
                         addKey('Strobe');
                         addKey('flashVal: '+flashVal+'');
                         DescBits.flash = '+ Flash';
@@ -1422,55 +1411,28 @@ function apply_user_overrides(Overrides)
     //    return;
     for (var k in Overrides) {
         DescBits[k] = Overrides[k];
+        DescBits.log('\nOverride: '+k+' = '+Overrides[k]);
     }
     if (Overrides.focal_length) {
         DescBits.lens.equivFL = Math.floor( (Overrides.focal_length * DescBits.multiplier) + 0.49);
     }
 }
 
-////////////////////////////////////////////
+//
 
-
-function main()
-{
-    'use strict';
-    if (app.documents.length < 1) {    // stop if no document is opened.
-        alert('Sorry, No Current Document');
-        return;
-    }
-    var strtRulerUnits = app.preferences.rulerUnits;
-    if (strtRulerUnits !== Units.PIXELS) {
-        app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
-    }
-    Info = app.activeDocument.info; // global shortcut
-    var msgs = '';
-    var initKeys = Info.keywords.length;
-    var newKeys = [];
-    if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
-        newKeys = newKeys.concat(['BW','Black and White','Black & White','B&W', 'Monochrome']);
-    }
-    var dt = new Date();
-    var thisYear = dt.getFullYear();
-    var thisYearS = thisYear.toString();
-    if (Info.CreationDate === '') {
-        Info.creationDate = dt.toString();
-    }
-    //newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname, Person.city, Person.region]));
-    newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname]));
-    //
-    // keywords added to doc...
-    //
-    newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
-    addKeywordList(newKeys, 'document keys');
-    scan_EXIF_tags(app.activeDocument);
-    add_aspect_description(app.activeDocument);
-    if (DescBits.alertText !== '') {
-        if (msgs !== '') { msgs += '\n'; }
-        msgs += DescBits.alertText;
-    }
+function apply_personal_information() {
     Info.author = Person.fullname;
     Info.credit = Person.fullname;
     Info.authorPosition = Person.relation;
+    Info.ownerUrl = Person.url;
+    if (Info.city === '') {Info.city = Person.city; }
+    if (Info.provinceState === '') {Info.provinceState = Person.region; }
+    if (Info.country === '') { Info.country = Person.country; }
+}
+
+function assign_copyright(dateObj) {
+    var thisYear = dateObj.getFullYear();
+    var thisYearS = thisYear.toString();
     Info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
     if (!(Info.copyrightNotice.length > 2)) {
         Info.copyrightNotice = ('(C) ' + thisYearS + ' ' + Person.fullname);
@@ -1481,7 +1443,9 @@ function main()
             Info.copyrightNotice = ('(C) ' + m[1] + ' ' + Person.fullname);
         }
     }
-    Info.ownerUrl = Person.url;
+}
+
+function apply_caption() {
     if (Info.title === '') {
         var t = noExtension(app.activeDocument.name);
         Info.title = t.replace(/^bjorke_/,'');
@@ -1510,9 +1474,49 @@ function main()
         Info.caption = (Info.caption + noExtension(app.activeDocument.name));
         Info.captionWriter = Person.fullname;
     }
-    if (Info.city === '') {Info.city = Person.city; }
-    if (Info.provinceState === '') {Info.provinceState = Person.region; }
-    if (Info.country === '') { Info.country = Person.country; }
+}
+
+////////////////////////////////////////////
+
+function main()
+{
+    'use strict';
+    if (app.documents.length < 1) {    // stop if no document is opened.
+        alert('Sorry, No Current Document');
+        return;
+    }
+    var strtRulerUnits = app.preferences.rulerUnits;
+    if (strtRulerUnits !== Units.PIXELS) {
+        app.preferences.rulerUnits = Units.PIXELS; // selections always in pixels
+    }
+    Info = app.activeDocument.info; // global shortcut
+    var msgs = '';
+    var initKeys = Info.keywords.length;
+    var newKeys = [];
+    if (app.activeDocument.mode === DocumentMode.GRAYSCALE) {
+        newKeys = newKeys.concat(['BW','Black and White','Black & White','B&W', 'Monochrome']);
+    }
+    var dt = new Date();
+    if (Info.CreationDate === '') {
+        Info.creationDate = dt.toString();
+    }
+    //newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname, Person.city, Person.region]));
+    newKeys = newKeys.concat(Person.commonTags.concat([Person.fullname]));
+    //
+    // keywords added to doc...
+    //
+    newKeys = newKeys.concat( [ jobName(app.activeDocument.name) ] );
+    addKeywordList(newKeys, 'document keys');
+    scan_EXIF_tags(app.activeDocument);
+    add_aspect_description(app.activeDocument);
+    if (DescBits.alertText !== '') {
+        if (msgs !== '') { msgs += '\n'; }
+        msgs += DescBits.alertText;
+    }
+    apply_personal_information();
+    assign_copyright(dt);
+    apply_caption();
+
     if (initKeys === 0) {
         addKey(Person.reminder);
     }

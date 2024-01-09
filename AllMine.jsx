@@ -555,6 +555,13 @@ var LensCatalog = {
         family: 'Nikkor-O',
         mount: 'F',
     },
+    'Nikkor-N 24mm f/2.8': {
+        keywords: [Vendor.nikon, 'Nikkor'],
+        minAperture: 'f/2.8',
+        primeLength: 24,
+        family: 'Nikkor-N',
+        mount: 'F',
+    },
     'Nikkor-P 10.5cm f/2.5': {
         keywords: [Vendor.nikon, 'Nikkor'],
         minAperture: 'f/2.5',

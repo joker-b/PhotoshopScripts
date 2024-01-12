@@ -28,7 +28,7 @@ app.bringToFront();
 
 // basic globals
 
-var verbose = true;
+var verbose = false;
 var originalRulerUnits = null;
 var Info; // linked to document.info
 
@@ -680,13 +680,6 @@ function unknown_lens() {
     return {
         keywords: [],
         name: 'UNKNOWN',
-        minAperture: 'f/?',
-        family: '', // e.g. "Biogon" not "zeiss"
-        brand: '',
-        primeLength: 0,
-        equivFL: 0,
-        description: '',
-        mount: null,
         found: false
     };
 }
@@ -696,10 +689,15 @@ function composite_lens_value(fieldName) {
     for (var i=0; i<stack.length; i++) {
         var s = stack[i];
         if (DescBits.lensData[s].found) {
-            return DescBits.lensData[s][fieldName];
+            if (fieldName in DescBits.lensData[s]) {
+                DescBits.log('composite_lens_value('+fieldName+')['+s+'] = '+DescBits.lensData[s][fieldName]+'\n');
+                return DescBits.lensData[s][fieldName];
+            } else {
+                return undefined;
+            }
         }
     }
-    return null;
+    return undefined;
 }
 
 //
@@ -713,11 +711,22 @@ var DescBits = {
     lensData: {
         'OVERRIDE': unknown_lens(),
         'SCANNED': unknown_lens(),
-        'IMPLIED': unknown_lens(),
+        'IMPLIED': unknown_lens(), // also use for remaps
         'LENGTH': unknown_lens(),
         'EXIF': unknown_lens(),
     },
-    lens: unknown_lens(),
+    lens: {
+        keywords: [],
+        name: 'UNKNOWN',
+        minAperture: 'f/?',
+        family: '', // e.g. "Biogon" not "zeiss"
+        brand: '',
+        primeLength: 0,
+        equivFL: 0,
+        description: '',
+        mount: null,
+        found: false
+    },
     brand: 'Bjorke',
     alert : function(text) {
             this.alertText += text;
@@ -755,6 +764,15 @@ function guess_lens_from_name(lens_name) {
     return null;
 }
 
+function add_possible_description(lensObj, description) {
+    if ((lensObj.description === undefined) || (lensObj.description == '')) {
+        lensObj.description = description;
+        DescBits.log('Set Description for "'+lensObj.name+'" to "'+lensObj.description+'"\n');
+    } else {
+        DescBits.log('\nExisting Description for "'+lensObj.name+'" is "'+lensObj.description+'"\n');
+    }
+}
+
 function find_lens_by_name(lens_name) {
     var lensObj, LN;
     // alert('looking for "'+lens_name+'"');
@@ -768,21 +786,24 @@ function find_lens_by_name(lens_name) {
     if (lensObj) {
         if (lensObj.remap !== undefined) {
             DescBits.log('\nRemapping "'+lens_name+'" to "'+lensObj.remap+'"\n');
-            return find_lens_by_name(lensObj.remap);
+            lens_name = lensObj.remap;
+            lensObj = find_lens_by_name(lens_name);
+            if (lensObj) {
+                lensObj.name = lens_name;
+                lensObj.remapped = true;
+                add_possible_description(lensObj, lens_name);
+            }
+            return lensObj;
         } else {
-            DescBits.log('\nFound "'+lensObj.family+'" lens "'+lens_name+'"');
+            DescBits.log('\nFound "'+lensObj.family+'" lens "'+lens_name+'"\n');
         }
     } else {
         lensObj = guess_lens_from_name(lens_name);
     }
     if (lensObj) {
-        lensObj.name = lens_name;
-        if (!lensObj.description) {
-            lensObj.description = lens_name;
-        }
+        lensObj.name = lens_name;;
+        add_possible_description(lensObj, lens_name);
         lensObj.keywords.push(lens_name);
-    //} else {
-    //    DescBits.log('err find_lens_by_name('+lens_name+') "'+LN+'"');
     }
     return lensObj;
 }
@@ -790,10 +811,10 @@ function find_lens_by_name(lens_name) {
 function find_adapted_lens_by_FL(focal_length) {
     var a = AdaptedFocalLengths[focal_length];
     if (!a) {
-        DescBits.log('\nNo adapted lens name found for '+focal_length+'');
+        DescBits.log('\nNo adapted lens name found for '+focal_length+'\n');
         return(null);
     }
-    DescBits.log('\nAdapted name for '+focal_length+'mm is "'+a+'"');
+    DescBits.log('\nAdapted name for '+focal_length+'mm is "'+a+'"\n');
     var lensObj = find_lens_by_name(a);
     if (lensObj) {
         lensObj.guessed = true;
@@ -805,8 +826,18 @@ function find_adapted_lens_by_FL(focal_length) {
 
 function seek_implied_lenses()
 {
+    if (DescBits.lensData['OVERRIDE'].found) {
+        var n = DescBits.lensData['OVERRIDE'].name;
+        DescBits.log('seek_implied_lenses: already assigned as '+n+', skipping\n');
+        return;
+    }
+    const x100Types = /^X100/;
     var primeLength = composite_lens_value('primeLength');
-    if (primeLength == 23) {
+    if (x100Types.test(DescBits.camera)) {
+        // lens not in EXIF for these cameras
+        update_lens_data('IMPLIED', find_lens_by_name('Fujinon 23/2'));
+        return true;
+    } else if (primeLength == 23) {
         // unique case: no reported EXIF 
         update_lens_data('IMPLIED', find_lens_by_name('Nokton-X 23/1.2'));
         vAlert('Special Case Fuji Lens: '+DescBits.lensData['IMPLIED'].name+'\n');
@@ -816,8 +847,7 @@ function seek_implied_lenses()
         update_lens_data('IMPLIED', find_lens_by_name('Zeiss Milvus 1.4/85 ZE'));
         vAlert('Special Case Lens: '+DescBits.lensData['IMPLIED'].name+'\n');
         return true;
-    }
-    if (DescBits.camera == "Konica II") {
+    } else if (DescBits.camera == "Konica II") {
         update_lens_data('IMPLIED', find_lens_by_name("Konica Hexanon AR 40mm f/1.8"));
         vAlert('Special Case Lens: '+DescBits.lensData['IMPLIED'].name+'\n');
         return true;
@@ -1008,8 +1038,11 @@ function addAnyCameraInfo(ModelName) {
 
 function update_lens_data(FIELD, lensObj) {
     'use strict';
-    vAlert('Updating "'+FIELD+'" with "'+lensObj+'"');
+    vAlert('Updating "'+FIELD+'" from "'+lensObj.name+'"');
     DescBits.lensData[FIELD].name = lensObj.name;
+    if (lensObj.description) {
+        DescBits.lensData[FIELD].description = lensObj.description;
+    }
     if (lensObj.minAperture && (lensObj.minAperture !== '')) {
         DescBits.lensData[FIELD].minAperture = lensObj.minAperture;
     }
@@ -1077,11 +1110,6 @@ function scan_EXIF_tags()
             case 'Model': // camera model, not a person
                 if (!DescBits.isFilm) {
                     addAnyCameraInfo(qName);  // identify specific model of camera
-                    const x100Types = /^X100/;
-                    if (x100Types.test(qName)) {
-                        // lens not in EXIF for these cameras
-                        update_lens_data('IMPLIED', find_lens_by_name('Fujinon 23/2'));
-                    }
                 } else {
                     DescBits.log('\Scanned using: "'+qName+'"');
                     DescBits.lensData['SCANNED'].found = true;
@@ -1126,8 +1154,7 @@ function scan_EXIF_tags()
                     var lensObj = find_lens_by_name(qName);
                     if (lensObj) {
                         update_lens_data('EXIF', lensObj);
-                        //DescBits.lensData['EXIF'].description = DescBits.lensData['EXIF'].name;
-                        DescBits.lensData['EXIF'].description = qName;
+                        // DescBits.lensData['EXIF'].description = qName;
                     } else {
                         DescBits.log('Lens Type? {' + qName + '}');
                         // DescBits.lens = LensCatalog['UNKNOWN']; // TODO: needed at all? 
@@ -1138,6 +1165,7 @@ function scan_EXIF_tags()
                     DescBits.log('\nLens Type: "'+qName+'" ignored when scanning film');
                 }
                 break;
+                // TODO: why no TTArtisan?
             case 'Copyright':
             case 'Copyright Notice':
                 if (q[1].match(/[0-9]/) && !knownPerson) {
@@ -1337,8 +1365,12 @@ function flatten_lens_descriptions()
     }
     // compose accumulated lens data
     for (var s in DescBits.lens) {
-        DescBits.lens[s] = composite_lens_value(s);
+        v = composite_lens_value(s);
+        if (v !== undefined) {
+            DescBits.lens[s] = v;
+        }
     }
+    addKeywordList(DescBits.lens.keywords, 'Lens');
     //
     if (DescBits.lens.mount) {
         addKey(DescBits.lens.mount);
@@ -1346,10 +1378,15 @@ function flatten_lens_descriptions()
     //
     // TODO: descriptions more generally
     //
-    if (DescBits.lens.description == '' || !hasAnyData) { // TODO: weird case
+    if (DescBits.lens.description == '') { // TODO: weird case
         if (DescBits.lens.primeLength > 0) {
             vAlert('Guessing at description: '+DescBits.lens.primeLength+'mm')
             DescBits.lens.description = DescBits.lens.primeLength+'mm';
+        }
+        if (hasAnyData) {
+            if (DescBits.lensFamily) {
+                DescBits.lens.description = (DescBits.lensFamily + ' ' + DescBits.lens.description);
+            }
         }
     }
 }
@@ -1579,11 +1616,7 @@ function apply_caption() {
         // TODO - nope! We need the camera if it's been tagged... "Scanned" is not a camera
         Info.caption = (Person.blog + ' * ' + DescBits.camera);
         if (DescBits.lens.description) {
-            Info.caption = (Info.caption + ' + ');
-            if (DescBits.lensFamily) {
-                Info.caption = (Info.caption + DescBits.lensFamily + ' ');
-            }
-            Info.caption = (Info.caption + DescBits.lens.description);
+            Info.caption = (Info.caption + ' + ' + DescBits.lens.description);
         }
         if (DescBits.minAperture) Info.caption = (Info.caption + ' ' + DescBits.minAperture);
         Info.caption = (Info.caption + '\n');

@@ -630,8 +630,8 @@ var LensCatalog = {
     'Summicron-M 1:2/50': { remap: 'Zeiss Planar T* 2/50 ZM', },
     'Summilux-M 1:1.4/35 ASPH.': { remap: 'Zeiss Distagon T* 1,4/35 ZM', },
     // TODO: how to best map 35mm ƒ/2?
-    'Summicron-M 1:2/35': { remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical', },
-    'Summicron-M 1:2/35 ASPH.': { remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical', },
+    'Summicron-M 1:2/35': { remap: 'Zeiss Biogon T* 2/35 ZM', },
+    'Summicron-M 1:2/35 ASPH.': { remap: 'Zeiss Biogon T* 2/35 ZM', },
     // TODO: how to best map 28mm?
     'Elmarit-M 1:2.8/28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
     'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },

@@ -1224,6 +1224,23 @@ function scan_EXIF_tags()
             case 'Exposure Program': // manual, AE... ignore for now
                 // addKey(('Exp: '+q[1]), 'Exposure Program');
                 break;
+            case 'Pixel X Dimension':
+                DescBits.PixX = parseInt(q[1]); break;
+            case 'Pixel Y Dimension':
+                DescBits.PixY = parseInt(q[1]); break;
+            case 'Focal Plane X Resolution':
+                DescBits.FocalY = parseInt(q[1]); break;
+            case 'Focal Plane Y Resolution':
+                DescBits.FocalY = parseInt(q[1]); break;
+            case 'Image Width':
+                DescBits.ImgW = parseInt(q[1]); break;
+            case 'Image Height':
+                DescBits.ImgH = parseInt(q[1]); break;
+            case 'X Resolution':
+                DescBits.ResX = parseInt(q[1]); break;
+            case 'Y Resolution':
+                DescBits.ResY = parseInt(q[1]); break;
+            // MANY THINGS TO IGNORE
             case 'Metering Mode': // debugMsg=true; // e.g. "Spot"
             case 'Orientation': // debugMsg=true;
             case 'Color Space':
@@ -1249,15 +1266,7 @@ function scan_EXIF_tags()
             //
             case 'Image Description': // theta s single \n char
             case 'Components Configuration': // theta s
-            case 'Pixel X Dimension':
-            case 'Pixel Y Dimension':
-            case 'Focal Plane X Resolution':
-            case 'Focal Plane Y Resolution':
             case 'Focal Plane Resolution Unit':
-            case 'Image Width':
-            case 'Image Height':
-            case 'X Resolution':
-            case 'Y Resolution':
             case 'Resolution Unit':
             case 'yCbCr Positioning':
             case 'Exposure Time':
@@ -1417,6 +1426,47 @@ function classify_focal_length()
             }
             addKey((fls+'mm_equiv'));
         }
+    }
+}
+
+/////////////////////////////////////////////////////////////
+
+function original_width(doc)
+{ 
+    var w = doc.width;
+    w = DescBits.ResX || w;
+    w = DescBits.FocalX || w;
+    w = DescBits.ResX || w;
+    w = DescBits.ImgW || w;
+    return w;
+}
+
+function original_height(doc)
+{ // PixY FocalY ResY ImgH
+    var h = doc.height;
+    h = DescBits.ResY || h;
+    h = DescBits.FocalY || h;
+    h = DescBits.ResY || h;
+    h = DescBits.ImgH || h;
+    return h;
+}
+
+function marked_resized_images(doc)
+{
+    var x = original_width(doc);
+    var y = original_height(doc);
+    if ((doc.width != x) || (doc.height != y)) {
+        DescBits.alert('Resized from '+x+', '+y);
+        addKey('resized');
+    }
+}
+
+function marked_hires_images(doc)
+{
+    var x = original_width(doc);
+    var y = original_height(doc);
+    if (x*y > (9000*6000)) { // guess
+        addKey('hires');
     }
 }
 
@@ -1666,6 +1716,8 @@ function main()
     flatten_lens_descriptions();
     classify_focal_length();
     add_aspect_description(app.activeDocument);
+    marked_hires_images(app.activeDocument);
+    marked_resized_images(app.activeDocument);
     if (DescBits.alertText !== '') {
         if (msgs !== '') { msgs += '\n'; }
         msgs += DescBits.alertText;

@@ -467,6 +467,13 @@ var LensCatalog = {
         family: 'Zeiss',
         mount: 'M',
     },
+    'Zeiss Biogon T* 2,8/21 ZM': {
+        keywords: [Vendor.zeiss, 'Biogon'],
+        minAperture: 'f/2.8',
+        primeLength: 21,
+        family: 'Zeiss',
+        mount: 'M',
+    },
     'M-Rokkor 1:2.8/28': {
         keywords: ['Rokkor', 'Minolta', 'M-Rokkor'],
         minAperture: 'f/2.8',
@@ -632,6 +639,9 @@ var LensCatalog = {
     // TODO: how to best map 35mm ƒ/2?
     'Summicron-M 1:2/35': { remap: 'Zeiss Biogon T* 2/35 ZM', },
     'Summicron-M 1:2/35 ASPH.': { remap: 'Zeiss Biogon T* 2/35 ZM', },
+    // TODO: how to best map 21mm?
+    'Elmarit-M 1:2.8/21': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },
+    'Elmarit-M 1:2.8/21 ASPH.': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },
     // TODO: how to best map 28mm?
     'Elmarit-M 1:2.8/28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
     'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
@@ -654,6 +664,7 @@ var LensCatalog = {
 };
 
 var AdaptedFocalLengths = {
+    21: 'Zeiss Biogon T* 2,8/21 ZM', // Contax Skipped
     24: 'Nikkor-N 24mm f/2.8', // Contax Skipped
     28: 'M-Rokkor 1:2.8/28', // Contax Skipped
     40: 'M-Rokkor 1:2/40',
@@ -665,6 +676,7 @@ var AdaptedFocalLengths = {
     85: 'Zeiss Milvus 1.4/85 ZE',
     90: 'Contax Sonnar 2.8/90',
     300: 'Nikkor-ED 300mm f/4.5',
+    // goofy cheats
     49: 'Meike-X 2/50', // hack
     51: 'Canon-FD 50mm f1.8', // hack
     16: 'Rokinon-X 2.8/16',

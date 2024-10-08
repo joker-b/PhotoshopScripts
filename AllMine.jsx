@@ -183,10 +183,17 @@ var Cameras = {
         camera: 'M Monochrom',
     },
     'LEICA M MONOCHROM (Typ 246)': {
-        keywords: [Vendor.leica, 'Monochrom 246', 'Monochrom', 'M246'],
+        keywords: [Vendor.leica, 'Monochrom 246', 'Monochrom', 'M246', 
+            'Mono', 'Black and White'],
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'Leica M246',
+    },
+    'LEICA M10-R': {
+        keywords: [Vendor.leica, 'M', 'M10', 'M10-R'],
+        brand: Vendor.leica,
+        multiplier: 1.0,
+        camera: 'Leica M10-R',
     },
     'Canon EOS 5D': {
         keywords: ['5D','EOS','Canon 5D'],

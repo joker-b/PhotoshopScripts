@@ -40,7 +40,7 @@ var Person = {
     fullname: 'Kevin Bjorke',
     altNames: ["K.Bjorke botzilla.com","K. Bjorke", 'K BJORKE', 'KEVIN BJORKE'],
     url: 'http://www.kevin-bjorke.com/',
-    blog: 'http://photorant.com',
+    blog: 'http://kevinbjorke.com',
     relation: 'Owner',
     city: 'San Francisco',
     region: 'California',
@@ -89,6 +89,7 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
     'Otus': { keywords: [Vendor.zeiss] },
     'ZE': { keywords: [Vendor.canon, Vendor.zeiss] },
     'ZF': { keywords: [Vendor.nikon, Vendor.zeiss] },
+    'ZM': { keywords: [Vendor.leica, Vendor.zeiss] },
     'EF': { keywords: [Vendor.canon] },
     'FD': { keywords: [Vendor.canon] },
 };
@@ -426,14 +427,14 @@ var LensCatalog = {
         mount: 'M',
     },
     'Zeiss Planar T* 2/50 ZM': {
-        keywords: [Vendor.zeiss, 'Planar'],
+        keywords: [Vendor.zeiss, 'Planar', 'ZM'],
         minAperture: 'f/2',
         primeLength: 50,
         family: 'Zeiss',
         mount: 'M',
     },
     'Zeiss C Sonnar T* 1,5/50 ZM': {
-        keywords: [Vendor.zeiss, 'Sonnar'],
+        keywords: [Vendor.zeiss, 'Sonnar', 'ZM'],
         minAperture: 'f/1.5',
         primeLength: 50,
         family: 'Zeiss',
@@ -454,28 +455,28 @@ var LensCatalog = {
         mount: 'M',
     },
     'Zeiss Distagon T* 1,4/35 ZM': {
-        keywords: [Vendor.zeiss, 'Biogon'],
+        keywords: [Vendor.zeiss, 'Biogon', 'ZM'],
         minAperture: 'f/1.4',
         primeLength: 35,
         family: 'Zeiss',
         mount: 'M',
     },
     'Zeiss Biogon T* 2/35 ZM': {
-        keywords: [Vendor.zeiss, 'Biogon'],
+        keywords: [Vendor.zeiss, 'Biogon', 'ZM'],
         minAperture: 'f/2.0',
         primeLength: 35,
         family: 'Zeiss',
         mount: 'M',
     },
     'Zeiss Biogon T* 2,8/28 ZM': {
-        keywords: [Vendor.zeiss, 'Biogon'],
+        keywords: [Vendor.zeiss, 'Biogon', 'ZM'],
         minAperture: 'f/2.8',
         primeLength: 28,
         family: 'Zeiss',
         mount: 'M',
     },
     'Zeiss Biogon T* 2,8/21 ZM': {
-        keywords: [Vendor.zeiss, 'Biogon'],
+        keywords: [Vendor.zeiss, 'Biogon', 'ZM'],
         minAperture: 'f/2.8',
         primeLength: 21,
         family: 'Zeiss',
@@ -1248,7 +1249,7 @@ function scan_EXIF_tags()
             case 'Pixel Y Dimension':
                 DescBits.PixY = parseInt(q[1]); break;
             case 'Focal Plane X Resolution':
-                DescBits.FocalY = parseInt(q[1]); break;
+                DescBits.FocalX = parseInt(q[1]); break;
             case 'Focal Plane Y Resolution':
                 DescBits.FocalY = parseInt(q[1]); break;
             case 'Image Width':
@@ -1452,21 +1453,13 @@ function classify_focal_length()
 
 function original_width(doc)
 { 
-    var w = doc.width;
-    w = DescBits.ResX || w;
-    w = DescBits.FocalX || w;
-    w = DescBits.ResX || w;
-    w = DescBits.ImgW || w;
+    var w = doc.width || DescBits.ImgW; // simplified nov '24
     return w;
 }
 
 function original_height(doc)
-{ // PixY FocalY ResY ImgH
-    var h = doc.height;
-    h = DescBits.ResY || h;
-    h = DescBits.FocalY || h;
-    h = DescBits.ResY || h;
-    h = DescBits.ImgH || h;
+{
+    var h = doc.height || DescBits.ImgH;
     return h;
 }
 
@@ -1474,6 +1467,9 @@ function marked_resized_images(doc)
 {
     var x = original_width(doc);
     var y = original_height(doc);
+    if (x==300 && y==300 && !verbose) {
+        return; // a DNG thing?
+    }
     if ((doc.width != x) || (doc.height != y)) {
         DescBits.alert('Resized from '+x+', '+y);
         addKey('resized');

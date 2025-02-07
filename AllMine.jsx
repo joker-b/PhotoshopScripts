@@ -97,9 +97,9 @@ var LensFamilyNames = { // various typical keywords for adapted lenses - hints
 };
 
 //
-// "Cameras" here can also include scanners, renderers, or programs like Midjourney
+// "CameraCatalog" here can also include scanners, renderers, or programs like Midjourney
 //
-var Cameras = {
+var CameraCatalog = {
     'DMC-LX1': {
         keywords: ['LX1','DMC_LX1','Leica','Lumix'],
         brand: Vendor.lumix,
@@ -695,6 +695,7 @@ var LensCatalog = {
     'Zeiss Distagon T* 1,5/35 ZM': { remap: 'Zeiss Distagon T* 1,4/35 ZM', },
 };
 
+// if you know the length but not the name, try these guesses
 var AdaptedFocalLengths = {
     21: 'Zeiss Biogon T* 2,8/21 ZM', // Contax Skipped
     24: 'Nikkor-N 24mm f/2.8', // Contax Skipped
@@ -735,10 +736,11 @@ var DescBits = {
     },
     lens: {
         keywords: [],
-        name: 'UNKNOWN',
+        name: 'UNKNOWN', // e.g. "Summicron 50mm f/2"
         minAperture: 'f/?',
         family: '', // e.g. "Biogon" not "zeiss"
         brand: '',
+        nick: '', // e.g. "Biogon 28"
         primeLength: 0,
         equivFL: 0,
         description: '',
@@ -746,6 +748,7 @@ var DescBits = {
         found: false
     },
     brand: 'Bjorke',
+    // these methods stash text for "proper" alerts
     alert : function(text) {
             this.alertText += text;
     },
@@ -756,9 +759,9 @@ var DescBits = {
     }
 };
 
-//////////////////////
-// METHODS BEGIN /////
-//////////////////////
+/////////////////////////////////////////
+// METHODS BEGIN ////////////////////////
+/////////////////////////////////////////
 
 function vAlert(text) {
     if (verbose) {
@@ -1057,7 +1060,7 @@ function trim11 (str) {
 
 function addAnyCameraInfo(ModelName) {
     'use strict';
-    var camera = Cameras[ModelName];
+    var camera = CameraCatalog[ModelName];
     if (camera) {
         addKeywordList(camera.keywords, ('Camera:'+ModelName));
         for (var v in camera) {
@@ -1482,21 +1485,23 @@ function marked_resized_images(doc)
 {
     var x = original_width(doc);
     var y = original_height(doc);
-    if (x==300 && y==300 && !verbose) {
-        return; // a DNG thing?
-    }
     if ((doc.width != x) || (doc.height != y)) {
-        DescBits.alert('Resized from '+x+', '+y);
+        var rText = ('Resized from '+x+', '+y);
+        if ((rText == 'Resized from 300, 300') && !verbose) { // a DNG thing?
+            return;
+        }
+        DescBits.alert(rText);
         addKey('resized');
     }
 }
 
-function marked_hires_images(doc)
+function marked_hi_res_images(doc)
 {
     var x = original_width(doc);
     var y = original_height(doc);
     if (x*y > (9000*6000)) { // guess
         addKey('hires');
+        addKey('hi-res');
     }
 }
 
@@ -1553,7 +1558,7 @@ function spot_known_lens_family(keyword)
 
 function spot_film_camera(keyword)
 {
-    var B = Cameras[keyword];
+    var B = CameraCatalog[keyword];
     if (B !== undefined) {
         addKeywordList(B.keywords, ('Camera:'+keyword));
         return true;
@@ -1746,7 +1751,7 @@ function main()
     flatten_lens_descriptions();
     classify_focal_length();
     add_aspect_description(app.activeDocument);
-    marked_hires_images(app.activeDocument);
+    marked_hi_res_images(app.activeDocument);
     marked_resized_images(app.activeDocument);
     if (DescBits.alertText !== '') {
         if (msgs !== '') { msgs += '\n'; }

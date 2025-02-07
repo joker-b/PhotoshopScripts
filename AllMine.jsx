@@ -9,6 +9,7 @@
 app.bringToFront();
 /* jshint ignore: end */
 
+// TODO -- add "common names" for lenses
 // TODO -- look for jobname_xxx_###.ext pattern in name, insert jobname into Info if found
 // TODO - identify scanner type via ICC Profile
 // TODO - handle 'lens:##' keywords - esp for adapted lenses
@@ -63,6 +64,7 @@ var Vendor = { // an enum
     google: 'Google',
     olympus: 'Olympus',
     samsung: 'Samsung',
+    sigma: 'Sigma',
     ricoh: 'Ricoh',
     zeiss: 'Zeiss',
 };
@@ -511,6 +513,12 @@ var LensCatalog = {
         family: 'Lumix',
         mount: 'L',
     },
+    '24-70mm F2.8 DG DN II | Art 024': {
+        keywords: [Vendor.sigma, 'zoom'],
+        minAperture: 'f/2.8',
+        family: 'Art',
+        mount: 'L',
+    },
     //
     // shortcuts
     //
@@ -573,7 +581,14 @@ var LensCatalog = {
         family: 'Micro-Nikkor',
         mount: 'F',
     },
-    'Nikkor 50mm f/1.4': {
+    'Nikkor 50mm f/1.4 AI': {
+        keywords: [Vendor.nikon, 'Nikkor'],
+        minAperture: 'f/1.4',
+        primeLength: 50,
+        family: 'Nikkor',
+        mount: 'F',
+    },
+    'Nikkor-S 50mm f/1.4': {
         keywords: [Vendor.nikon, 'Nikkor'],
         minAperture: 'f/1.4',
         primeLength: 50,
@@ -592,6 +607,13 @@ var LensCatalog = {
         minAperture: 'f/2.8',
         primeLength: 24,
         family: 'Nikkor-N',
+        mount: 'F',
+    },
+    'Nikkor-H 2.8cm f/3.5': {
+        keywords: [Vendor.nikon, 'Nikkor'],
+        minAperture: 'f/3.5',
+        primeLength: 28,
+        family: 'Nikkor-H',
         mount: 'F',
     },
     'Nikkor-P 10.5cm f/2.5': {
@@ -665,8 +687,10 @@ var LensCatalog = {
     'TT 50': { remap: 'TTArtisans-M 1:1.4/50 ASPH.' },
     'VM 35': { remap: 'Voigtlander VM 35mm f/2 Ultron Aspherical' },
     'Nikkor 24': { remap: 'Nikkor-N 24mm f/2.8' },
+    'Nikkor 28': { remap: 'Nikkor-H 2.8cm f/3.5' },
     'Nikkor 105': { remap: 'Nikkor-P 10.5cm f/2.5' },
     'Nikkor 300': { remap: 'Nikkor-ED 300mm f/4.5' },
+    'Nikkor 50mm f/1.4': { remap: 'Nikkor 50mm f/1.4 AI' },
     // Stupid mistake dept: mislabelled in-camera on some shots
     'Zeiss Distagon T* 1,5/35 ZM': { remap: 'Zeiss Distagon T* 1,4/35 ZM', },
 };
@@ -679,7 +703,7 @@ var AdaptedFocalLengths = {
     45: 'Contax Planar 2/45',
     35: 'Contax Planar 2/35', // Nikkor-O skipped
     '35': 'Zeiss Distagon T* 1,4/35 ZM', // Nikkor-O skipped
-    50: 'Nikkor 50mm f/1.4',
+    50: 'Nikkor 50mm f/1.4 AI',
     55: 'Micro-Nikkor 55mm f/3.5',
     85: 'Zeiss Milvus 1.4/85 ZE',
     90: 'Contax Sonnar 2.8/90',
@@ -694,32 +718,6 @@ var AdaptedFocalLengths = {
 // GLOBAL DATA FOR THIS DOCUMENT
 //
 
-// Layers of Lens Data
-
-function unknown_lens() {
-    return {
-        keywords: [],
-        name: 'UNKNOWN',
-        found: false
-    };
-}
-
-function composite_lens_value(fieldName) {
-    var stack = ['OVERRIDE', 'SCANNED', 'IMPLIED', 'LENGTH', 'EXIF'];
-    for (var i=0; i<stack.length; i++) {
-        var s = stack[i];
-        if (DescBits.lensData[s].found) {
-            if (fieldName in DescBits.lensData[s]) {
-                DescBits.log('composite_lens_value('+fieldName+')['+s+'] = '+DescBits.lensData[s][fieldName]+'\n');
-                return DescBits.lensData[s][fieldName];
-            } else {
-                return undefined;
-            }
-        }
-    }
-    return undefined;
-}
-
 //
 // much of this script is about manipulating elements of this global object
 //
@@ -729,11 +727,11 @@ var DescBits = {
     alertText: '',
     multiplier: 1.0,
     lensData: {
-        'OVERRIDE': unknown_lens(),
-        'SCANNED': unknown_lens(),
-        'IMPLIED': unknown_lens(), // also use for remaps
-        'LENGTH': unknown_lens(),
-        'EXIF': unknown_lens(),
+        'OVERRIDE': { keywords: [], name: 'UNKNOWN', found: false},
+        'SCANNED':  { keywords: [], name: 'UNKNOWN', found: false},
+        'IMPLIED':  { keywords: [], name: 'UNKNOWN', found: false}, // also use for remaps
+        'LENGTH':   { keywords: [], name: 'UNKNOWN', found: false},
+        'EXIF':     { keywords: [], name: 'UNKNOWN', found: false},
     },
     lens: {
         keywords: [],
@@ -758,8 +756,9 @@ var DescBits = {
     }
 };
 
-
+//////////////////////
 // METHODS BEGIN /////
+//////////////////////
 
 function vAlert(text) {
     if (verbose) {
@@ -840,6 +839,22 @@ function find_adapted_lens_by_FL(focal_length) {
         lensObj.guessed = true;
     }
     return lensObj;
+}
+
+function composite_lens_value(fieldName) {
+    var stack = ['OVERRIDE', 'SCANNED', 'IMPLIED', 'LENGTH', 'EXIF'];
+    for (var i=0; i<stack.length; i++) {
+        var s = stack[i];
+        if (DescBits.lensData[s].found) {
+            if (fieldName in DescBits.lensData[s]) {
+                DescBits.log('composite_lens_value('+fieldName+')['+s+'] = '+DescBits.lensData[s][fieldName]+'\n');
+                return DescBits.lensData[s][fieldName];
+            } else {
+                return undefined;
+            }
+        }
+    }
+    return undefined;
 }
 
 /// Special Case Unnamed Lenses

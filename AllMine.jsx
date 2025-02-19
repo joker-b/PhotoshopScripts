@@ -29,7 +29,7 @@ app.bringToFront();
 
 // basic globals
 
-var verbose = false;
+var verbose = true;
 var originalRulerUnits = null;
 var Info; // linked to document.info
 
@@ -198,6 +198,12 @@ var CameraCatalog = {
         multiplier: 1.0,
         camera: 'Leica M10-R',
     },
+    'LEICA SL2': {
+        keywords: [Vendor.leica, 'SL', 'SL2'],
+        brand: Vendor.leica,
+        multiplier: 1.0,
+        camera: 'Leica SL2',
+    },
     'Canon EOS 5D': {
         keywords: ['5D','EOS','Canon 5D'],
         brand: Vendor.canon,
@@ -283,6 +289,13 @@ var CameraCatalog = {
         brand: Vendor.leica,
         multiplier: 1.0,
         camera: 'Leica M5',
+        film: true,
+    },
+    'Leica M4-P': {
+        keywords: ['Leica', 'Leica M4-P', 'Leitz', 'Leica M', 'Film'],
+        brand: Vendor.leica,
+        multiplier: 1.0,
+        camera: 'Leica M4-P',
         film: true,
     },
     'Konica II': {
@@ -677,6 +690,7 @@ var LensCatalog = {
     'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
     'Elmarit-M 1:2.8/28 Leitz': { remap: 'Zeiss Biogon T* 2,8/28 ZM' }, // both editions
     // Shorthand names
+    'Biogon 21': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },
     'Biogon 28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },
     'Distagon 35': { remap: 'Zeiss Distagon T* 1,4/35 ZM' },
     'Sonnar 50': { remap: 'Zeiss C Sonnar T* 1,5/50 ZM' },
@@ -833,7 +847,7 @@ function find_lens_by_name(lens_name) {
 function find_adapted_lens_by_FL(focal_length) {
     var a = AdaptedFocalLengths[focal_length];
     if (!a) {
-        DescBits.log('\nNo adapted lens name found for '+focal_length+'\n');
+        DescBits.log('\nNo adapted lens name found for "'+focal_length+'"\n');
         return(null);
     }
     DescBits.log('\nAdapted name for '+focal_length+'mm is "'+a+'"\n');
@@ -1427,8 +1441,16 @@ function flatten_lens_descriptions()
     //
     if (DescBits.lens.description == '') { // TODO: weird case
         if (DescBits.lens.primeLength > 0) {
-            vAlert('Guessing at description: '+DescBits.lens.primeLength+'mm')
-            DescBits.lens.description = DescBits.lens.primeLength+'mm';
+            var lensObj = find_adapted_lens_by_FL(DescBits.lens.primeLength);
+            if (lensObj) {
+                update_lens_data('IMPLIED', lensObj); // parrt of the current mess - feb 2025
+                addKey(lensObj.name);
+                hasAnyData = true;
+            } else {
+                DescBits.alert('No adapted lens found for '+DescBits.lens.primeLength+'mm');
+                // vAlert('Using guessed description: "'+DescBits.lens.primeLength+'mm"');
+                DescBits.lens.description = DescBits.lens.primeLength+'mm';
+            }
         }
         if (hasAnyData) {
             if (DescBits.lensFamily) {

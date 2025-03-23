@@ -29,7 +29,7 @@ app.bringToFront();
 
 // basic globals
 
-var verbose = true;
+var verbose = false;
 var originalRulerUnits = null;
 var Info; // linked to document.info
 
@@ -1701,11 +1701,16 @@ function assign_copyright(dateObj) {
     Info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
     if (!(Info.copyrightNotice.length > 2)) {
         Info.copyrightNotice = ('(C) ' + thisYearS + ' ' + Person.fullname);
+        DescBits.log('\nAssigned Copyright Notice: "'+Info.copyrightNotice+'"');
     } else {
         // catch minimal notices
         m = Info.copyrightNotice.match(/\[[cC]\] *(\d\d\d\d)$/);
         if (m) {
+            DescBits.log('\nExisting Copyright Notice was: "'+Info.copyrightNotice+'"');
             Info.copyrightNotice = ('(C) ' + m[1] + ' ' + Person.fullname);
+            DescBits.log('\nAdjusted: "'+Info.copyrightNotice+'"');
+        } else {
+            DescBits.log('\nUnmatched Existing Copyright Notice: "'+Info.copyrightNotice+'"');
         }
     }
 }
@@ -1775,13 +1780,13 @@ function main()
     add_aspect_description(app.activeDocument);
     marked_hi_res_images(app.activeDocument);
     marked_resized_images(app.activeDocument);
+    apply_personal_information();
+    assign_copyright(dt);
+    apply_caption();
     if (DescBits.alertText !== '') {
         if (msgs !== '') { msgs += '\n'; }
         msgs += DescBits.alertText;
     }
-    apply_personal_information();
-    assign_copyright(dt);
-    apply_caption();
 
     if (initKeys === 0) {
         addKey(Person.reminder);

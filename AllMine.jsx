@@ -55,6 +55,7 @@ var Vendor = { // an enum
     fuji: 'Fuji',
     contax: 'Contax',
     canon: 'Canon',
+    dji: 'DJI',
     leica: 'Leica',
     nikon: 'Nikon',
     minolta: 'Minolta',
@@ -221,6 +222,19 @@ var CameraCatalog = {
         brand: Vendor.canon,
         multiplier: 1.6,
         camera: '300D',
+    },
+    //
+    'DJI Air 3S': {
+        keywords: ['Air 3S', 'DJI', 'Drone', 'Quadcopter', 'Aerial'],
+        brand: Vendor.dji,
+        // multiplier: 1.6,
+        camera: 'Air 3S',
+    },
+    'FC9184': {
+        keywords: ['Air 3S', 'DJI', 'Drone', 'Quadcopter', 'Aerial'],
+        brand: Vendor.dji,
+        // multiplier: 1.6,
+        camera: 'Air 3S',
     },
     // /// CAMCORDER //////////////////////////
     'Canon VIXIA HF S11': {
@@ -1352,6 +1366,7 @@ function scan_EXIF_tags()
             case 'EXIF tag 277': // "3' Samples Per Pixel (channels)
             case 'EXIF tag 284': // TIFF compression type, e.g. "Chunky"
             case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
+            case 'EXIF tag 34866': // "100" from DJI Air3S - June 2025
             case 'EXIF tag 42037': // lens ser #
             case 'EXIF tag 42034': // lens info "rdf:Seq" Photo.LensSpecification
             case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Photo.LensMake

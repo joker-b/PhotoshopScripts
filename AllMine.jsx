@@ -740,6 +740,7 @@ var AdaptedFocalLengths = {
     55: 'Micro-Nikkor 55mm f/3.5',
     85: 'Zeiss Milvus 1.4/85 ZE',
     90: 'Contax Sonnar 2.8/90',
+    100: 'Nikkor 105mm f/2.5', // strange but true
     300: 'Nikkor-ED 300mm f/4.5',
     // goofy cheats
     49: 'Meike-X 2/50', // hack

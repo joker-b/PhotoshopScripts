@@ -5,6 +5,7 @@ Animal
 		Hummingbird
 		Pelican
 	Cat
+	Crab
 	Deer
 		Columbia Black-tailed Deer
 	Dog
@@ -116,14 +117,17 @@ Places
 		Wailea
 	Japan
 		Hanami
+		Kagoshima
 		Kyushu
+			Beppu
+			Kugino
 			Kumamoto
 			Minamata
-			Tsugino
-			Kugino
-			Satsumasendai
 			Oita
-			Beppu
+			Satsumasendai
+			Shiranui
+			Tsunagi
+		Nagashima
 		Nagoya
 		Tokyo
 			Haneda
@@ -194,6 +198,7 @@ Stuff
 	Gardens
 	Hike
 	Roox
+	Rope
 	skate
 	Subaru
 Technical

@@ -13,6 +13,7 @@ Animal
 	Insect
 		Bee
 	Llama
+	Spider
 Book
 	Champions
 	DancingWNo1
@@ -42,6 +43,7 @@ People
 				Jing
 			Nang
 			Sarah
+		Tomimori
 		Wendy
 	Fam
 		Bud
@@ -119,16 +121,29 @@ Places
 		Hanami
 		Kagoshima
 		Kyushu
+			Aso
 			Beppu
+			Harmonyland
 			Kugino
 			Kumamoto
 			Minamata
+				Chisso
+				Disease and Eco Museum
+				Ferry Port
+				Hizen Camp
+				Sanno Shrine
+				Station
+				Water God
+			Nakakoba
 			Oita
 			Satsumasendai
 			Shiranui
+			Tomimori Citrus Garden
 			Tsunagi
 		Nagashima
 		Nagoya
+		Shrine
+		Temple
 		Tokyo
 			Haneda
 			Shibuya
@@ -186,6 +201,7 @@ See See Lo Art
 		Oil
 	Watercolor
 Stuff
+	Bamboo
 	BMW
 		G310GS
 		X5
@@ -197,10 +213,16 @@ Stuff
 	Fog
 	Gardens
 	Hike
+	Jihanki
+	Mirror
+	Recorder
+	Roadsign
 	Roox
 	Rope
+	Ship
 	skate
 	Subaru
+	Water
 Technical
 	Aperture
 		ƒ/1.4

@@ -127,13 +127,17 @@ Places
 			Kugino
 			Kumamoto
 			Minamata
+				Castle
 				Chisso
 				Disease and Eco Museum
+				Eco-Town
 				Ferry Port
 				Hizen Camp
+				Minmin Falls
 				Sanno Shrine
 				Station
 				Water God
+				Yunotsuru
 			Nakakoba
 			Oita
 			Satsumasendai
@@ -216,6 +220,7 @@ Stuff
 	Jihanki
 	Mirror
 	Recorder
+	Rice
 	Roadsign
 	Roox
 	Rope

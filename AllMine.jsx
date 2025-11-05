@@ -442,10 +442,16 @@ var LensCatalog = {
         mount: 'EF',
     },
     'Leica Summicron-M 50mm f/2 (IV, V)': {
-        keywords: ['Summicron'],
+        keywords: ['Summicron', Vendor.leica],
         minAperture: 'f/2',
         primeLength: 50,
         family: 'Summicron',
+        mount: 'M',
+    },
+    'Summilux-M 1:1.4/35 ASPH.': {
+        keywords: ['Summilux', 'Asph', Vendor.leica], // this *is* coded but doesn't come through on Lumix
+        primeLength: 50,
+        family: 'Summilux',
         mount: 'M',
     },
     'TTArtisans-M 1:1.4/50 ASPH.': {

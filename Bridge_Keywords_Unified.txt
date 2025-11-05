@@ -85,6 +85,7 @@ Places
 			Milpitas
 			Pt Reyes
 			San Francisco
+				JTown
 				SFO
 			San Jose
 			San Rafael
@@ -173,9 +174,14 @@ Places
 		Sonoma
 	Taiwan
 	USA
+		Arkansas
 		Minnesota
+		Mississippi
+			Clarksdale
+			Stovall
 		New York
 		Portland
+		Tennessee
 		Washington
 Project
 	Book
@@ -205,6 +211,7 @@ See See Lo Art
 		Oil
 	Watercolor
 Stuff
+	Balloon
 	Bamboo
 	BMW
 		G310GS
@@ -214,11 +221,13 @@ Stuff
 	Camera
 	DNA
 	Fire
+	Flower
 	Fog
 	Gardens
 	Hike
 	Jihanki
 	Mirror
+	Night
 	Recorder
 	Rice
 	Roadsign
@@ -228,6 +237,7 @@ Stuff
 	skate
 	Subaru
 	Water
+	Window
 Technical
 	Aperture
 		ƒ/1.4
@@ -247,6 +257,7 @@ Technical
 		Nikon F2
 		Nikon FM
 	Corrected
+	Crop
 	Drone
 	Film
 		D-76
@@ -284,6 +295,7 @@ Technical
 		Nikkor-O 35mm f/2
 		Nikkor-P 10.5cm f/2.5
 		Nikkor-S 50mm f/1.4
+		Summilux-M 1:1.4/35 ASPH.
 		Tele-Elmarit 1:2.8/90
 		TTArtisans 2.8/40 Macro
 		TTArtisans-M 1:1.4/50 ASPH.
@@ -298,6 +310,7 @@ Technical
 	Lighting
 		CheetahBox
 		Flash
+	Macro
 	Mono
 	OutOfFocus
 	Plotter

@@ -698,7 +698,7 @@ var LensCatalog = {
     'Elmarit-M 1:2.8/28': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },           // 28 f/2.8 11809
     'Summicron-M 1:2/28 ASPH.': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },     // 28 f/2 11604 yes f/2 !
     'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2/35 ZM' },       // 28 f/28 11606
-    'Summilux-M 1:1.4/35 ASPH.': { remap: 'Zeiss Distagon T* 1,4/35 ZM', }, // 35 f/14 ASPH 11873
+    // 'Summilux-M 1:1.4/35 ASPH.': { remap: 'Zeiss Distagon T* 1,4/35 ZM', }, // 35 f/14 ASPH 11873 - now have one
     //
     'Elmarit-M 1:2.8/90': { remap: 'Tele-Elmarit 1:2.8/90' },
     'Summilux-M 1:1.4/50 ASPH.': { remap: 'TTArtisans-M 1:1.4/50 ASPH.', },

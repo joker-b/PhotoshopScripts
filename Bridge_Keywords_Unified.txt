@@ -122,17 +122,15 @@ Places
 		Maui
 		Wailea
 	Japan
+		Castle
 		Hanami
 		Kagoshima
-		Kyushu
-			Aso
-			Beppu
-			Harmonyland
-			Kugino
+			Satsumasendai
+			Nagashima
 		Kumamoto
+			Aso
 			Minamata
-		Nachikatsuura
-				Castle
+				Kugino
 				Chisso
 				Disease and Eco Museum
 				Eco-Town
@@ -141,15 +139,17 @@ Places
 				Minmin Falls
 				Sanno Shrine
 				Station
+				Tomimori Citrus Garden
+				Tsunagi
 				Water God
 				Yunotsuru
-			Nakakoba
-			Oita
-			Satsumasendai
 			Shiranui
-			Tomimori Citrus Garden
-			Tsunagi
-		Nagashima
+		Nakakoba
+		Oita
+			Beppu
+			Harmonyland
+		Kyushu
+		Nachikatsuura
 		Nagoya
 		Shrine
 		Temple
@@ -242,6 +242,7 @@ Stuff
 	Ship
 	skate
 	Subaru
+	Umbrella
 	Water
 	Window
 Technical

@@ -199,6 +199,12 @@ var CameraCatalog = {
         multiplier: 1.0,
         camera: 'Leica M10-R',
     },
+    'LEICA M EV1': {
+        keywords: [Vendor.leica, 'M', 'EV1', 'M-EV1'],
+        brand: Vendor.leica,
+        multiplier: 1.0,
+        camera: 'Leica M EV1',
+    },
     'LEICA SL2': {
         keywords: [Vendor.leica, 'SL', 'SL2'],
         brand: Vendor.leica,
@@ -1298,6 +1304,12 @@ function scan_EXIF_tags()
                     DescBits.alert('Artist tag: "'+q[1]+'"');
                 }
                 break;
+            case 'User Comment': // on EV1 -- how to set?
+                var comment = trim11(q[1]);
+                if (comment.length > 0) {
+                    addKey('User Comment: '+comment);
+                }
+                break;
             case 'Exposure Program': // manual, AE... ignore for now
                 // addKey(('Exp: '+q[1]), 'Exposure Program');
                 break;
@@ -1395,6 +1407,8 @@ function scan_EXIF_tags()
             case 'EXIF tag 34865': // S5ii, unknown, value 2000?
             // Leica Monochrom
             case 'EXIF tag 530': // Leica -- "2 1" (contrast, sharpness?)
+            // Leica M EV1
+            case 'EXIF tag 34867': // value... 1000? M EV1
 
                 break;
                 // DescBits.alert('\nTag '+q[0]+': "'+qName+'"');

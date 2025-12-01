@@ -2,6 +2,7 @@ Animal
 	Bee
 	Bird
 		Cormorant
+		Crow
 		Egret
 		Hummingbird
 		Owl
@@ -125,17 +126,17 @@ Places
 		Castle
 		Hanami
 		Kagoshima
-			Satsumasendai
 			Nagashima
+			Satsumasendai
 		Kumamoto
 			Aso
 			Minamata
-				Kugino
 				Chisso
 				Disease and Eco Museum
 				Eco-Town
 				Ferry Port
 				Hizen Camp
+				Kugino
 				Minmin Falls
 				Sanno Shrine
 				Station
@@ -144,13 +145,13 @@ Places
 				Water God
 				Yunotsuru
 			Shiranui
+		Kyushu
+		Nachikatsuura
+		Nagoya
 		Nakakoba
 		Oita
 			Beppu
 			Harmonyland
-		Kyushu
-		Nachikatsuura
-		Nagoya
 		Shrine
 		Temple
 		Tokyo
@@ -269,8 +270,10 @@ Technical
 	Film
 		D-76
 		Double-X
+		Fujichrome
 		HP5
 			Ilford HP5+
+		Neopan
 		Neopan 1600
 		Pan F
 		ProImage 100
@@ -318,6 +321,7 @@ Technical
 		CheetahBox
 		Flash
 	Macro
+	MME
 	Mono
 	Neurography
 	OutOfFocus

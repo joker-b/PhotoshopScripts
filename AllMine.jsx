@@ -706,19 +706,26 @@ var LensCatalog = {
     'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2/35 ZM' },       // 28 f/28 11606
     // 'Summilux-M 1:1.4/35 ASPH.': { remap: 'Zeiss Distagon T* 1,4/35 ZM', }, // 35 f/14 ASPH 11873 - now have one
     //
+    // My mappings
+    // 90mm
     'Elmarit-M 1:2.8/90': { remap: 'Tele-Elmarit 1:2.8/90' },
+    // 50mm
     'Summilux-M 1:1.4/50 ASPH.': { remap: 'TTArtisans-M 1:1.4/50 ASPH.', },
     'Summilux-M 1:1.4/50': { remap: 'Zeiss C Sonnar T* 1,5/50 ZM', },
     'Summicron-M 1:2/50': { remap: 'Zeiss Planar T* 2/50 ZM', },
+    // 35mm
     // TODO: how to best map 35mm ƒ/2?
     'Summicron-M 1:2/35': { remap: 'Zeiss Biogon T* 2/35 ZM', },
     'Summicron-M 1:2/35 ASPH.': { remap: 'Zeiss Biogon T* 2/35 ZM', },
-    // TODO: how to best map 21mm?
-    'Elmarit-M 1:2.8/21': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },
-    'Elmarit-M 1:2.8/21 ASPH.': { remap: 'Zeiss Biogon T* 2,8/21 ZM' }, // 11134
+    // 28mm
     // TODO: how to best map 28mm?
     //'Elmarit-M 1:2.8/28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' }, // 11804(?)
     'Elmarit-M 1:2.8/28 Leitz': { remap: 'Zeiss Biogon T* 2,8/28 ZM' }, // both editions
+    'Elmarit-M 1:2.8/28 ASPH.': { remap: 'Zeiss Biogon T* 2,8/28 ZM' }, // added 2025
+    // 21mm
+    // TODO: how to best map 21mm?
+    'Elmarit-M 1:2.8/21': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },
+    'Elmarit-M 1:2.8/21 ASPH.': { remap: 'Zeiss Biogon T* 2,8/21 ZM' }, // 11134
     // Shorthand names
     'Biogon 21': { remap: 'Zeiss Biogon T* 2,8/21 ZM' },
     'Biogon 28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' },

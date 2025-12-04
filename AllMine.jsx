@@ -1359,6 +1359,8 @@ function scan_EXIF_tags()
             case 'GPS DOP': // Leica
             case 'GPS Track': // Leica
             case 'GPS Status': // Leica
+            case 'GPS Track Ref': // Leica 2025
+            case 'GPS Processing Method': // Leica 2025
             //
             case 'Image Description': // theta s single \n char
             case 'Components Configuration': // theta s

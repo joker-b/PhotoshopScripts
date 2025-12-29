@@ -717,6 +717,9 @@ var LensCatalog = {
     // TODO: how to best map 35mm ƒ/2?
     'Summicron-M 1:2/35': { remap: 'Zeiss Biogon T* 2/35 ZM', },
     'Summicron-M 1:2/35 ASPH.': { remap: 'Zeiss Biogon T* 2/35 ZM', },
+    'Leica Summilux-R 35mm f/1.4': { remap: 'Zeiss Biogon T* 1,4/35 ZM', },
+    // "Leica Summicron-R 35mm f/2" for VM 35/2
+    // 'Leica Summilux-R 50mm f/1.4': { remap: 'TTArtisans-M 1:1.4/50 ASPH.', },
     // 28mm
     // TODO: how to best map 28mm?
     //'Elmarit-M 1:2.8/28': { remap: 'Zeiss Biogon T* 2,8/28 ZM' }, // 11804(?)

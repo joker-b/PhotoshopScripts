@@ -253,6 +253,32 @@ Technical
 		Midrange
 		Stopped Down
 		Wide Open
+	Branding
+		Biogon
+		Botzilla.com
+		Bronica
+		Contax
+		Elmarit
+		Fuji
+		Fujinon
+		Leica
+		Leica Camera AG
+		Leitz
+		Lumix
+		M10
+		M10-R
+		Milvus
+		Monochrom
+		Nikkor
+		Nikon
+		Planar
+		Samsung
+		Sigma
+		Sonnar
+		Summicron
+		Summilux
+		Voigtlander
+		Zeiss
 	Camera
 		Chaozhou
 		Contax G2

@@ -17,6 +17,8 @@ app.bringToFront();
 // TODO - handle 'camera:##' keywords
 // TODO - handle camera brand keywords & lens brand keywords
 // TODO - handle other film-related (scanning) keywords
+// TODO - handle "uncoded lens" left by EV1 etc
+
 
 // User Personalization //////////////////////////
 //

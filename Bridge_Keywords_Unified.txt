@@ -181,11 +181,14 @@ Places
 		Sonoma
 	Taiwan
 	USA
+		Arizona
 		Arkansas
 		Minnesota
 		Mississippi
 			Clarksdale
 			Stovall
+		Nevada
+			Las Vegas
 		New York
 		Portland
 		Tennessee
@@ -378,6 +381,11 @@ Technical
 		L
 		M
 		N
+		O
+		P
+		Q
+		R
+		S
 	Test
 		ƒ/1.2
 		ƒ/1.4

@@ -248,6 +248,7 @@ Stuff
 	Window
 Technical
 	Aperture
+		ƒ/1.1
 		ƒ/1.4
 		ƒ/8
 		Midrange
@@ -313,6 +314,7 @@ Technical
 	Giga
 	Hi-Res
 	Lens
+		7Artisans 1.1/50
 		Contax Biogon 2.8/21
 		Contax Biogon 2.8/28
 		Contax Planar 2/35

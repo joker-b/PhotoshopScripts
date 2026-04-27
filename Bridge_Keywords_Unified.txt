@@ -181,11 +181,14 @@ Places
 		Sonoma
 	Taiwan
 	USA
+		Arizona
 		Arkansas
 		Minnesota
 		Mississippi
 			Clarksdale
 			Stovall
+		Nevada
+			Las Vegas
 		New York
 		Portland
 		Tennessee
@@ -295,6 +298,7 @@ Technical
 	Crop
 	Drone
 	Film
+		BWNeg
 		D-76
 		Double-X
 		Fujichrome
@@ -379,6 +383,11 @@ Technical
 		L
 		M
 		N
+		O
+		P
+		Q
+		R
+		S
 	Test
 		ƒ/1.2
 		ƒ/1.4

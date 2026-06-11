@@ -105,6 +105,8 @@ Places
 	China
 		Chaoshan
 		Hong Kong
+			Mong Kok
+			Shek O
 		Shanghai
 	Europe
 		England
@@ -114,6 +116,11 @@ Places
 			Rijksmuseum
 		Norway
 		Paris
+		Spain
+			Madrid
+			Menorca
+				Alaior
+				Maó
 		Wales
 	Farm
 	Hawaii
@@ -155,9 +162,18 @@ Places
 		Shrine
 		Temple
 		Tokyo
+			Aoyama
+			Ebisu
+			Ginza
 			Haneda
+			Megutama
 			Shibuya
 			Shinjuku
+	Morocco
+		Casablanca
+		Fes
+		Marrakech
+	Museum
 	Rapa Nui
 	Sonoma County
 		Bodega
@@ -221,6 +237,7 @@ See See Lo Art
 		Oil
 	Watercolor
 Stuff
+	Airplane
 	Balloon
 	Bamboo
 	BMW
@@ -245,6 +262,7 @@ Stuff
 	Rope
 	Ship
 	skate
+	Solar
 	Subaru
 	Umbrella
 	Water

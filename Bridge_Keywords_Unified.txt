@@ -7,12 +7,14 @@ Animal
 		Hummingbird
 		Owl
 		Pelican
+	Butterfly
 	Cat
 	Crab
 	Deer
 		Columbia Black-tailed Deer
 	Dog
 	Fish
+	Horse
 	Insect
 		Bee
 	Llama
@@ -25,6 +27,7 @@ Book
 Events
 	AatS
 	ArtTrails
+		ArtTrails2026
 	Birthday
 	Graduation
 	Parade
@@ -46,6 +49,7 @@ People
 				Jing
 			Nang
 			Sarah
+			Venta
 		Tomimori
 		Wendy
 	Fam
@@ -246,6 +250,7 @@ Stuff
 	Boat
 	Book
 	Camera
+	Car
 	DNA
 	Fire
 	Flower
@@ -255,6 +260,7 @@ Stuff
 	Jihanki
 	Mirror
 	Night
+	Notebook
 	Recorder
 	Rice
 	Roadsign
@@ -315,6 +321,7 @@ Technical
 	Corrected
 	Crop
 	Drone
+		Mastershot
 	Film
 		BWNeg
 		D-76
@@ -335,6 +342,7 @@ Technical
 		Yellow 22
 	Giga
 	Hi-Res
+	Instax
 	Lens
 		7Artisans 1.1/50
 		Contax Biogon 2.8/21
@@ -374,8 +382,10 @@ Technical
 	MME
 	Mono
 	Neurography
+	Oops
 	OutOfFocus
 	Painting
+	Panorama
 	Plotter
 	Print-Size
 		7.65x7.65

@@ -1383,6 +1383,7 @@ function scan_EXIF_tags()
             case 'ExifVersion':
             case 'FlashPix Version':
             case 'Date Time Digitized':
+            case 'Device Setting Description': // "IFD Segment, ID = 41995" from DJI Air3S Pano
             case 'Software':
             case 'Digital Zoom Ratio':
             case 'Compressed Bits Per Pixel':
@@ -1404,6 +1405,7 @@ function scan_EXIF_tags()
             case 'EXIF tag 284': // TIFF compression type, e.g. "Chunky"
             case 'EXIF tag 34864': // "1" on XP2 JPG or RAW... FileSource? Colorspace? SensitivityType?
             case 'EXIF tag 34866': // "100" from DJI Air3S - June 2025
+            case 'EXIF tag 5-708': // "DJI FC9184" from DJI Air3S Panorama - June 2026
             case 'EXIF tag 42037': // lens ser #
             case 'EXIF tag 42034': // lens info "rdf:Seq" Photo.LensSpecification
             case 'EXIF tag 42035': // X-T1: "FUJIFILM' - Photo.LensMake

@@ -56,6 +56,7 @@ People
 		Bud
 		Isaac
 			Crystal
+			Margaret
 		Kay
 		Kevin
 		Linda
@@ -77,8 +78,11 @@ People
 	RECA
 		Chorus
 		Dancers
+			synchronized
 		Dragon
 		Lion
+		Nancy
+		Sophia
 		Wu
 Places
 	California
@@ -113,8 +117,16 @@ Places
 			Shek O
 		Shanghai
 	Europe
+		Belgium
+			Brussels
+			Ypres
 		England
 			London
+		France
+			Dunkerque
+			Lille
+			Paris
+			Vincennes
 		Nederland
 			Amsterdam
 			Rijksmuseum
@@ -192,6 +204,8 @@ Places
 			Blossom
 			E65
 			Ellis Creek
+			Parking Garage
+			Six C Street
 		Regional Parks
 			Doran Beach
 			Helen Putnam
@@ -318,6 +332,7 @@ Technical
 		MME
 		Nikon F2
 		Nikon FM
+	Contact Sheet
 	Corrected
 	Crop
 	Drone
@@ -350,6 +365,7 @@ Technical
 		Contax Planar 2/35
 		Contax Planar 2/45
 		Contax Sonnar 2.8/90
+		Lailens KP Night Owl Abyss 1.1/50
 		LUMIX S 50/F1.8
 		M-Rokkor 1:2.8/28
 		M-Rokkor 1:2/40

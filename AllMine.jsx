@@ -532,6 +532,20 @@ var LensCatalog = {
         family: 'M-Rokkor',
         mount: 'M',
     },
+    'Lailens KP Night Owl Abyss 1.1/50': {
+        keywords: ['Night Owl Abyss', 'Lailens','KP','Kino Plasmat'],
+        minAperture: 'f/1.1',
+        primeLength: 50,
+        family: 'Lailens',
+        mount: 'M',
+    },
+    '7Artisans 1.1/50': {
+        keywords: ['Night Owl Abyss', 'Sonnar'],
+        minAperture: 'f/1.1',
+        primeLength: 50,
+        family: '7Artisans',
+        mount: 'M',
+    },
     // Fixed Lens
     'Fujinon 23/2': { // for X100 series
         keywords: ['X100'],
@@ -551,6 +565,13 @@ var LensCatalog = {
         keywords: [Vendor.lumix, 'Normal'],
         minAperture: 'f/1.8',
         primeLength: 50,
+        family: 'Lumix',
+        mount: 'L',
+    },
+    'LUMIX S 85/F1.8': {
+        keywords: [Vendor.lumix, 'Normal'],
+        minAperture: 'f/1.8',
+        primeLength: 85,
         family: 'Lumix',
         mount: 'L',
     },

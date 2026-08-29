@@ -18,6 +18,7 @@ app.bringToFront();
 // TODO - handle camera brand keywords & lens brand keywords
 // TODO - handle other film-related (scanning) keywords
 // TODO - handle "uncoded lens" left by EV1 etc
+// TODO - handle "Macro-Adapter-M (Universal)" which is not really a lens but claims to be a 90mm
 
 
 // User Personalization //////////////////////////

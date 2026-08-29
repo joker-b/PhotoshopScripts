@@ -581,6 +581,12 @@ var LensCatalog = {
         family: 'Art',
         mount: 'L',
     },
+    '70-200mm F2.8 DG DN OS | Sports 023': {
+        keywords: [Vendor.sigma, 'zoom'],
+        minAperture: 'f/2.8',
+        family: 'Sports',
+        mount: 'L',
+    },
     //
     // shortcuts
     //

@@ -245,6 +245,12 @@ var CameraCatalog = {
         // multiplier: 1.6,
         camera: 'Air 3S',
     },
+    'FC9113': {
+        keywords: ['Air 3S', 'DJI', 'Drone', 'Quadcopter', 'Aerial', 'wide'],
+        brand: Vendor.dji,
+        // multiplier: 1.6,
+        camera: 'Air 3S',
+    },
     // /// CAMCORDER //////////////////////////
     'Canon VIXIA HF S11': {
         keywords: ['Camcorder','VIXIA'],
